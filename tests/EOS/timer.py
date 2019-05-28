@@ -92,9 +92,9 @@ class Measure(object):
             return None
 
         if (msl % 2 == 0):
-            return (ms[msl / 2] + ms[msl / 2 + 1]) / 2.0
+            return (ms[msl // 2] + ms[msl // 2 + 1]) / 2.0
         else:
-            return ms[msl / 2]
+            return ms[msl // 2]
 
     @property
     def overallSum(self):
@@ -118,15 +118,11 @@ class Profiling(object):
 
     def __init__(self):
         self.stats = Measure()
-
         self.overallStopWatch = StopWatch()
-
-    def start(self):
         self.overallStopWatch.start()
 
     def stop(self):
         self.overallStopWatch.stop()
-        self.stats.startMeasurement()
 
     def __str__(self):
         return 'Stats: %s\nOverall time: %s\n' % (self.stats, self.overallStopWatch)

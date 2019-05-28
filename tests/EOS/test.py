@@ -77,12 +77,14 @@ for files in range(number_of_files):
     file_name = str(name) + extension
     with open(file_name, 'wb') as fout:
         # create files filled with random bytes
-        timer.start()
+        measure=timer.stats.startMeasurement()
         content = os.urandom(size * bytes_required)
         hash_num = hashlib.sha256(content).hexdigest()
         fout.write(content)
-        timer.stop()
+        measure.stop()
+        print(measure)
 
+timer.stop()
 print(timer)
 
     # store hashed values in dictionary
