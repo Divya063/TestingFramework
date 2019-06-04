@@ -4,7 +4,8 @@ import glob
 import traceback
 import re
 import binascii
-from timer import StopWatch, Measure, Profiling
+import logging
+from .timer import StopWatch, Measure, Profiling
 
 BLOCKSIZE = 65536
 
@@ -66,6 +67,12 @@ class Benchmark():
         return requested_size, byte
 
     def write_test(self, number_of_files, input_size):
+        """
+
+        :param number_of_files:
+        :param input_size:
+        :return: write throughput
+        """
         size, bytes_required = self.convert_size(input_size)
         timer = Profiling()
         for files in range(number_of_files):
@@ -78,18 +85,16 @@ class Benchmark():
                 hash_num = hashlib.sha256(content).hexdigest()
                 fout.write(content)
                 measure.stop()
-                #print(measure)
             dictionary[file_name] = hash_num
         timer.stop()
         return timer
 
-            # store hashed values in dictionary
-            #
-            # !dd if=/dev/urandom of=$file_name bs=$size count=$bytes_required
-            # print(hash_num)
-
     def read_test(self, number_of_files):
-        corruption_status = []
+        """
+
+        :param number_of_files:
+        :return: read throughput
+        """
         output = open("output.txt", "w+")
         output.write("%s %s %s\n" % ("name", "size", "corruption_boolean"))
         timer = Profiling()
@@ -106,7 +111,6 @@ class Benchmark():
                     measure = timer.stats.startMeasurement()
                     random_data = text_file.read()
                     measure.stop()
-                    print(measure)
                     # checks the integrity of the file by comparing the hashed values
                     if (self.calculate_hash(file_name1) != dictionary[file_name1]):
                         corruption_boolean = "YES"
@@ -114,15 +118,18 @@ class Benchmark():
             except IOError:
                 corruption_boolean = "YES"
                 traceback.print_exc()
-            #print(file_name1, file_size, corruption_boolean)
             output.write("%s %s %s\n" % (file_name1, file_size, corruption_boolean))
         output.close()
         timer.stop()
         return timer
 
     def corruption_test(self):
+        """
+
+        :return: number of corrupted files
+        """
         flag = 0
-        count = 0
+        corrupted_files = 0
         with open('output.txt', 'rb') as text:
             for line in text:
                 string = line.decode('utf-8', 'ignore')
@@ -130,10 +137,10 @@ class Benchmark():
                     list = string.split(" ")
                     if (list[3].strip() == "YES"):
                         # counts number of corrupted files
-                        count += 1
+                        corrupted_files += 1
                 flag = 1
 
-        return count
+        return corrupted_files
 
     def print_result(self):
         result=('\n\nWritten {} in {} files\n {}'.format(
@@ -142,7 +149,5 @@ class Benchmark():
             self.number_of_files, self.input_size, self.read_result, self.corruption_result))
 
         print(result)
+        return result
 
-
-test= Benchmark(10, "1M")
-test.print_result()
