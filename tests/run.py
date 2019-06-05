@@ -4,7 +4,7 @@ import glob
 import logging
 import time
 
-from EOS.test import Benchmark
+from EOS.test_throughput import Benchmark
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
