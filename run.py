@@ -2,6 +2,8 @@ import os, sys
 import argparse
 import glob
 import logging
+import yaml
+from yaml import load
 import time
 
 from EOS.test_throughput import Benchmark
@@ -26,9 +28,14 @@ def cleanup():
     for f in filelist:
         os.remove(f)
 
+def get_config(cfg):
+    with open(cfg, 'r') as stream:
+        return yaml.safe_load(stream)
 
 
 def main():
+    tasks = get_config('test.yaml')
+    print(tasks['tests']['storage']['throughput']['fileNumber'])
     args = get_args()
     logging.basicConfig(level=logging.INFO, filename='test.log', filemode='w',
                         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s')

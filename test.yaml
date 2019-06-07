@@ -1,0 +1,17 @@
+tests: 
+  storage: 
+    throughput: 
+      fileNumber: 10 
+      fileSize: 1M 
+    statFile:
+      filepath: "/eos/user/"
+  eos: 
+    mountedFilesystem: 
+      fileSystemName: "eosuser" 
+  jupyterhub:
+    webReachable:
+      hostname: "swan.cern.ch"
+      port: 443
+      protocol: HTTPS
+      ignoreTlsCertificate: True
+  docker: daemonRuns
