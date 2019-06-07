@@ -1,10 +1,10 @@
 tests: 
-  storage: 
+  storage:
     throughput: 
-      fileNumber: 10 
-      fileSize: 1M 
+      fileNumber: 10
+      fileSize: 1M
     statFile:
-      filepath: "/eos/user/"
+      filepath: "/eos/user/u/"
   eos: 
     mountedFilesystem: 
       fileSystemName: "eosuser" 
