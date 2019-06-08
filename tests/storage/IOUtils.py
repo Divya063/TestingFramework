@@ -64,38 +64,37 @@ class ReadWriteOp:
             with open(file_path, 'wb') as fout:
                 fout.write(payload)
         except Exception as err:
-            return -1
+            return err
 
     def plain_read(self, file_path):
         try:
             with open(file_path, 'rb') as fout:
                 random_data = fout.read()
+            sum= sum/0
         except Exception as err:
-            return -1
+            return err
         else:
             return random_data
 
 
 
 
-class Checksum:
+class ChecksumCal:
     def __init__(self):
-        self.source_checksum = None
-        self.dest_checksum = None
+        pass
 
-    def calculate_source_hash(self, data):
-        hasher = hashlib.sha256()
-        hasher.update(data)
-        return hasher.hexdigest()
-
-    def calculate_dest_hash(self, file):
+    def calculate_hash(self, data):
         block = 65536
         hasher = hashlib.sha256()
-        with open(file, 'rb') as afile:
-            buf = afile.read(block)
-            while len(buf) > 0:
-                hasher.update(buf)
+        if hasattr(data, 'read'):
+            with open(data, 'rb') as afile:
                 buf = afile.read(block)
+                while len(buf) > 0:
+                    hasher.update(buf)
+                    buf = afile.read(block)
+        else:
+            hasher.update(data)
+
         return hasher.hexdigest()
 
 
