@@ -1,9 +1,11 @@
 import argparse
-import logging
-import yaml
 import glob
+import logging
 import os
-from EOS.helper import run_eos
+
+import yaml
+
+from tests.storage.helper import run_eos
 
 
 def get_args():
@@ -12,10 +14,9 @@ def get_args():
                         nargs='*', default='compTest',
                         required=False,
                         help='name of the test you want to run')
-    parser.add_argument('-j', '--json',
-                        required=False,
-                        action='store',
-                        help='Output to json file')
+    parser.add_argument('-c', '--config',
+                        required = True,
+                        help='load config file')
     args = parser.parse_args()
     return args
 
@@ -39,7 +40,7 @@ def main():
                         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
     logging.info('Started')
     logger = logging.getLogger(args.test[0])
-    tasks = get_config('test.yaml')
+    tasks = get_config(args.config)
     for test in args.test:
         if test == "EOS":
             run_eos(tasks)
