@@ -26,16 +26,18 @@ class ReadWriteOp:
         """
         this function separates digits and strings
         """
-        string = s.strip('0123456789')
+        # remove whitespaces if any
+        new_string = s.replace(" ", "")
+        string = new_string.strip('0123456789')
         digit = int(re.search(r'\d+', s).group(0))
-        return digit, string
+        return digit, string[0]
 
 
     def convert_size(self, string):
         """
         this function calculates total bytes
         """
-        units = ['K', 'M', 'G']
+        units = ['K', 'M', 'G', 'T']
         requested_size, unit = self.extract_digits(string)
         # for conversion of lowercase to uppercase
         if (unit.islower()):
@@ -66,4 +68,6 @@ class Checksum:
                 hasher.update(buf)
                 buf = afile.read(BLOCKSIZE)
         return hasher.hexdigest()
+
+
 
