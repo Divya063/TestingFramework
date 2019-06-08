@@ -5,7 +5,7 @@ import traceback
 import re
 import binascii
 
-BLOCKSIZE = 65536
+BYTES = 1024.0
 
 class ReadWriteOp:
 
@@ -16,10 +16,11 @@ class ReadWriteOp:
         """
         this function will convert bytes to MB.... GB... etc
         """
+        global BYTES
         for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-            if num < 1024.0:
+            if num < BYTES:
                 return "%3.1f %s" % (num, x)
-            num /= 1024.0
+            num /= BYTES
 
 
     def extract_digits(self, s):
@@ -37,6 +38,7 @@ class ReadWriteOp:
         """
         this function calculates total bytes
         """
+        global BYTES
         units = ['K', 'M', 'G', 'T']
         requested_size, unit = self.extract_digits(string)
         # for conversion of lowercase to uppercase
@@ -45,7 +47,7 @@ class ReadWriteOp:
         byte = 1
         if unit in units:
             for i in range(units.index(unit) + 1):
-                byte *= 1024
+                byte *= BYTES
         return requested_size, byte
 
 
@@ -61,12 +63,13 @@ class Checksum:
         return hasher.hexdigest()
 
     def calculate_dest_hash(self, file):
+        block = 65536
         hasher = hashlib.sha256()
         with open(file, 'rb') as afile:
-            buf = afile.read(BLOCKSIZE)
+            buf = afile.read(block)
             while len(buf) > 0:
                 hasher.update(buf)
-                buf = afile.read(BLOCKSIZE)
+                buf = afile.read(block)
         return hasher.hexdigest()
 
 
