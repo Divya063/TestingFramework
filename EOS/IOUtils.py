@@ -4,8 +4,9 @@ import glob
 import traceback
 import re
 import binascii
+import time
 
-BYTES = 1024.0
+BYTES = 1024
 
 class ReadWriteOp:
 
@@ -49,6 +50,31 @@ class ReadWriteOp:
             for i in range(units.index(unit) + 1):
                 byte *= BYTES
         return requested_size, byte
+
+    def generate_payload(self, file_no, file_size):
+        payload=[]
+        size, bytes_required = self.convert_size(file_size)
+        for data in range(file_no):
+            content = os.urandom(size * bytes_required)
+            payload.append(content)
+        return payload
+
+    def plain_write(self, file_path, payload):
+        try:
+            with open(file_path, 'wb') as fout:
+                fout.write(payload)
+        except Exception as err:
+            return -1
+
+    def plain_read(self, file_path):
+        try:
+            with open(file_path, 'rb') as fout:
+                random_data = fout.read()
+        except Exception as err:
+            return -1
+        else:
+            return random_data
+
 
 
 
