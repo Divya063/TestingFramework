@@ -29,11 +29,10 @@ class Checksum:
         self.eos_path = dest_path
         self.ref_test_name = 'checksum'
         self.ref_timestamp = int(time.time())
-        self.parentDirectory = os.path.dirname(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
-        if (self.parentDirectory == "\home"):
-            self.parentDirectory = (os.path.join(os.getcwd(), os.pardir))
+        self.parentDirectory = os.path.expanduser('~')
+        #print(self.parentDirectory)
         self.file_path = os.path.join(self.parentDirectory, self.eos_path)
-        print(self.file_path)
+        #print(self.file_path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
         self.ops = ReadWriteOp()
@@ -50,6 +49,15 @@ class Checksum:
         self.log.write("parameters", "File size: " + str(self.input_size))
         self.log.write("parameters", "Typed output folder: " + self.file_path)
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
+
+    def check_directory(self):
+        if not (os.path.isdir(self.file_path)):
+            self.log.write("error", "eos directory does not exist")
+            self.exit = 1
+        else:
+            self.log.write("info", "eos directory exists, check passed...")
+            self.exit = 0
+        return self.exit
 
 
     def checksum_test(self, number_of_files, input_size):

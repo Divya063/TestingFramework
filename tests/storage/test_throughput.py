@@ -42,9 +42,7 @@ class Throughput():
         self.eos_path = dest_path
         self.ref_test_name = 'throughput'
         #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-        self.parentDirectory= os.path.dirname(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
-        if(self.parentDirectory=="\home"):
-            self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+        self.parentDirectory= os.path.expanduser('~')
         self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
@@ -62,7 +60,8 @@ class Throughput():
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
 
     def check_directory(self):
-        if not (os.path.isdir("eos")):
+
+        if not (os.path.isdir(self.file_path)):
             self.log.write("error", "eos directory does not exist")
             self.exit = 1
         else:
@@ -141,11 +140,10 @@ class Throughput():
 
     def exit_code(self):
         self.check_dir = self.check_directory()
-        if (self.check_dir == 0):
+        if (self.check_dir == 1):
             self.exit |= 1
         else:
             write_t = self.write_test(self.number_of_files, self.input_size)
-            print(write_t)
             read_t = self.read_test(self.number_of_files)
             if not write_t :
                 self.exit |=1
