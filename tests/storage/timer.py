@@ -20,8 +20,8 @@ class StopWatch(object):
 
         return self.stopTime - self.startTime
 
-    def __str__(self):
-        return '%ss ' % self.duration
+    def val(self):
+        return [self.startTime, self.stopTime, self.duration]
 
 
 class Measure(object):
@@ -110,7 +110,6 @@ class Measure(object):
         return sum
 
     def __str__(self):
-        # TODO add median
         return '[measurements: %s, sum: %s, min: %ss, max: %ss, average: %ss, median: %ss]' % (
         len(self.measurements), self.overallSum, self.min, self.max, self.average, self.median)
 
