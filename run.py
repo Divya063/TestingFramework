@@ -5,7 +5,7 @@ import os
 import sys
 import yaml
 
-from storage.helper import run_eos
+from tests.storage.helper import run_eos
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
