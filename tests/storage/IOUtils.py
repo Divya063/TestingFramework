@@ -6,12 +6,25 @@ import re
 import binascii
 import time
 
+
 BYTES = 1024
 
 class ReadWriteOp:
 
     def __init__(self):
-        pass
+        self.success = None
+        self.error = None
+        self.emessage = None
+        self.throughput = None
+
+    def set_success(self):
+        self.success = True
+        self.error = False
+
+    def set_error(self, emsg=None):
+        self.success = False
+        self.error = True
+        self.emessage = emsg
 
     def convert_bytes(self, num):
         """
@@ -64,17 +77,20 @@ class ReadWriteOp:
             with open(file_path, 'wb') as fout:
                 fout.write(payload)
         except Exception as err:
-            return err
+            raise Exception(err)
 
     def plain_read(self, file_path):
         try:
             with open(file_path, 'rb') as fout:
                 random_data = fout.read()
-            sum= sum/0
         except Exception as err:
-            return err
+            raise Exception(err)
         else:
             return random_data
+
+    def set_performance(self, time_taken, fsize):
+        self.throughput = (fsize / 1000000.0) / time_taken  # MB/sec
+        return self.throughput
 
 
 

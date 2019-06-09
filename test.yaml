@@ -4,7 +4,7 @@ tests:
       fileNumber: 10
       fileSize: 1M
     statFile:
-      filepath: "/eos/user/u/"
+      filepath: "eos/user/d/divya/"
   eos: 
     mountedFilesystem: 
       fileSystemName: "eosuser" 
