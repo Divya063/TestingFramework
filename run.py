@@ -42,6 +42,7 @@ def main():
     tasks = get_config(yaml_path)
     for test in args.test:
         if test == "EOS":
+            //passes the parameters loaded from yaml file to helper function
             run_eos(tasks)
             cleanup()
 
