@@ -1,6 +1,5 @@
 import argparse
 import glob
-import logging
 import os
 import sys
 import yaml
@@ -23,8 +22,9 @@ def get_args():
 def get_config(cfg):
     if os.path.exists(cfg):
         with open(cfg, 'r') as stream:
-         return yaml.safe_load(stream)
+            return yaml.safe_load(stream)
     else:
+        raise Exception("yaml file not present")
         sys.exit()
 
 def cleanup():
