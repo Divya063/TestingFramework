@@ -44,9 +44,15 @@ def check_input_validity(params):
     """
     for key , value in params.items():
         if "number" in key.lower():
+<<<<<<< HEAD
             if not type(value) == int:
                 raise Exception(str(value)+ "is not integer")
         if "size" in key.lower():
+=======
+            if not value.is_integer():
+                raise Exception(str(value)+ "is not integer")
+        if "size" in key.ilower():
+>>>>>>> d449252... validator function
             if not type(value)==str:
                 raise Exception( str(value) + "is not string")
 
