@@ -12,7 +12,7 @@ class Logger():
             "parameters": "[PARAMS] ",
             "info": "[INFO] ",
             "performance": "[PERF] ",
-            "consistency": "[CONS] ",
+            "sanity": "[SANITY] ",
             "warning": "[WARNING] ",
             "error": "[ERROR] ",
         }
