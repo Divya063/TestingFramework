@@ -35,12 +35,21 @@ class Mount:
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
 
+
+    def check_empty(self, repo_path):
+        if(next(os.scandir(repo_path), None) is None):
+            self.log.write("error", repo_path + " is empty")
+            self.exit|=1
+
+
+
     def check_mount(self, repo_path):
         first_command = subprocess.Popen(["mount", "-l"], stdout=subprocess.PIPE)
         second_command = subprocess.Popen(["grep", repo_path], stdin=first_command.stdout)
         if(second_command):
             self.log.write("sanity", repo_path + " exists")
             self.exit=0
+            self.check_empty(repo_path)
         else:
             self.log.write("error", repo_path + " does not exists")
             self.exit = 1
