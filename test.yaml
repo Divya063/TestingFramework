@@ -3,15 +3,19 @@ tests:
     throughput: 
       fileNumber: 10
       fileSize: 1M
+    checksum:
+      fileNumber: 10
+      fileSize: 1M
     statFile:
       filepath: "eos/user/d/divya/"
-  eos: 
-    mountedFilesystem: 
-      fileSystemName: "eosuser" 
-  jupyterhub:
-    webReachable:
-      hostname: "swan.cern.ch"
-      port: 443
-      protocol: HTTPS
-      ignoreTlsCertificate: True
-  docker: daemonRuns
+
+#  eos:
+#    mountedFilesystem:
+#      fileSystemName: "eosuser"
+#  jupyterhub:
+#    webReachable:
+#      hostname: "swan.cern.ch"
+#      port: 443
+#      protocol: HTTPS
+#      ignoreTlsCertificate: True
+#  docker: daemonRuns
