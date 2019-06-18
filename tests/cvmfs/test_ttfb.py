@@ -61,10 +61,10 @@ class TTFB:
 
         return self.exit
 
-        def exit_code(self):
-            code = self.ttfb(self.path)
-            self.log.write("info", "exit code: " + str(self.exit))
-            return code
+    def exit_code(self):
+        code = self.ttfb(self.path)
+        self.log.write("info", "exit code: " + str(self.exit))
+        return code
 
 if __name__ == "__main__":
     args = get_args()
