@@ -48,7 +48,7 @@ class Mount:
         second_command = subprocess.Popen(["grep", repo_path], stdin=first_command.stdout)
         if(second_command):
             self.log.write("sanity", repo_path + " exists")
-            self.exit=0
+            self.exit = 0
             self.check_empty(repo_path)
         else:
             self.log.write("error", repo_path + " does not exists")
