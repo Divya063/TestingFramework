@@ -8,7 +8,7 @@ import logging
 import time
 from pathlib import  Path
 from IOUtils import ReadWriteOp
-from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from tests.logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from timer import StopWatch, Measure, Profiling
 import argparse
 import sys

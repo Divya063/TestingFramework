@@ -1,7 +1,7 @@
 import os
 import sys
 from IOUtils import ReadWriteOp, ChecksumCal
-from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from tests.logger import Logger, LOG_FOLDER, LOG_EXTENSION
 import time
 import argparse
 
