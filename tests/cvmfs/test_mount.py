@@ -2,8 +2,8 @@ import os
 import argparse
 import subprocess
 import time
-from tests.logger import Logger, LOG_FOLDER, LOG_EXTENSION
-
+from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+import sys
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)

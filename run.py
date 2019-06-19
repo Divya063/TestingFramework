@@ -5,6 +5,7 @@ import sys
 import yaml
 
 from tests.storage.helper import run_eos
+from tests.cvmfs.helper import run_cvmfs
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
@@ -87,6 +88,9 @@ def main():
             #passes the parameters loaded from yaml file to helper function
             run_eos(tasks)
             cleanup()
+
+        if test == "CVMFS":
+            run_cvmfs(tasks)
 
 if __name__ == "__main__":
     main()

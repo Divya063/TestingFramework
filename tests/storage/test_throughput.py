@@ -1,18 +1,9 @@
-import hashlib
 import os
-import glob
-import traceback
-import re
-import binascii
-import logging
 import time
-from pathlib import  Path
 from IOUtils import ReadWriteOp
-from tests.logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from timer import StopWatch, Measure, Profiling
+from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from timer import Profiling
 import argparse
-import sys
-
 
 dictionary = {}
 extension = ".txt"

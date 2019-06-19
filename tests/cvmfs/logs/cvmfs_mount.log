@@ -1,0 +1,5 @@
+[INFO] 1560915896.4490| Tests starting...
+[INFO] 1560915896.4491| Wed Jun 19 09:14:56 2019
+[PARAMS] 1560915896.4491| Test name: cvmfs_mount
+[PARAMS] 1560915896.4491| Test time: 1560915896
+[SANITY] 1560915896.4508| sft.cern.ch/ exists

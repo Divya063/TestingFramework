@@ -1,7 +1,6 @@
 import os
-import sys
 from IOUtils import ReadWriteOp, ChecksumCal
-from tests.logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from tests.cvmfs.logger import Logger, LOG_FOLDER, LOG_EXTENSION
 import time
 import argparse
 

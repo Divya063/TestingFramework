@@ -2,8 +2,8 @@
 import argparse
 import os
 import time
-from tests.logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from test_mount import check_mount
+from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from test_mount import Mount
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
@@ -19,11 +19,11 @@ def get_args():
     return args
 
 class TTFB:
-    def __init__(self, repo, path):
+    def __init__(self, repo_path, path):
         self.repo = repo
         self.path = path
         self.exit = None
-        self.check_mount = check_mount(path)
+        self.check_mount = Mount.check_mount(repo_path)
         self.ref_test_name = "Time_till_First_Byte"
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
@@ -68,7 +68,7 @@ class TTFB:
 
 if __name__ == "__main__":
     args = get_args()
-    test_ttfb = ttfb(args.repo_name, args.path)
+    test_ttfb = TTFB(args.repo_name, args.path)
     test_ttfb.exit_code()
 
 
