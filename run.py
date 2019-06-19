@@ -28,6 +28,7 @@ def get_config(cfg):
         raise Exception("yaml file not present")
         sys.exit()
 
+<<<<<<< HEAD
 def check_test_exists(directory, test_name):
     """
     Checks if mentioned tests exist in particular directory or not
@@ -68,6 +69,8 @@ def validator(tasks):
 
 
 
+=======
+>>>>>>> parent of d449252... validator function
 def cleanup():
     """
     delete the created files
@@ -81,8 +84,6 @@ def main():
     args = get_args()
     yaml_path= os.path.join(os.getcwd(), args.configfile)
     tasks = get_config(yaml_path)
-   # Validates YAML File
-    validator(tasks)
     for test in args.test:
         if test == "EOS":
             #passes the parameters loaded from yaml file to helper function
