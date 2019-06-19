@@ -92,7 +92,7 @@ class Throughput():
             else:
                 size, fsize = self.ops.convert_size(input_size)
                 self.log.write("performance", "\t".join(
-                    [file_name, str(input_size), str("%.8f" % float(val[2])), str("%.4f" % float(self.ops.set_performance(val[2], fsize))), str(val[0]), str(val[1])]))
+                    [file_name, str(input_size), str(val[2]), str(self.ops.set_performance(val[2], fsize)), str(val[0]), str(val[1])]))
         stats = timer
         self.log.write("info", str(stats))
         self.log.write("info", "End of write operations")
@@ -125,7 +125,7 @@ class Throughput():
             else:
                 size, fsize = self.ops.convert_size(self.input_size)
                 self.log.write("performance", "\t".join(
-                    [file_name, str(self.input_size), str(("%.8f" % float(val[2]))), str(("%.4f" % float(self.ops.set_performance(val[2], fsize)))), str(val[0]),
+                    [file_name, str(self.input_size), str(val[2]), str(self.ops.set_performance(val[2], fsize)), str(val[0]),
                      str(val[1])]))
         stats = str(timer)
         self.log.write("info", stats)

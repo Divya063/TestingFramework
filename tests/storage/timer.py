@@ -18,10 +18,10 @@ class StopWatch(object):
         if((self.startTime == None) or (self.stopTime == None)):
             return None
 
-        return (self.stopTime - self.startTime)
+        return self.stopTime - self.startTime
 
     def val(self):
-        return ["%.4f" % float(self.startTime), "%.4f" % float(self.stopTime), self.duration]
+        return [self.startTime, self.stopTime, self.duration]
 
 
 class Measure(object):
@@ -111,7 +111,7 @@ class Measure(object):
 
     def __str__(self):
         return '[measurements: %s, sum: %s, min: %ss, max: %ss, average: %ss, median: %ss]' % (
-        len(self.measurements), "%.8f" % float(self.overallSum), "%.8f" % float(self.min), "%.8f" % float(self.max), "%.8f" % float(self.average), "%.8f" % float(self.median))
+        len(self.measurements), self.overallSum, self.min, self.max, self.average, self.median)
 
 class Profiling(object):
 
