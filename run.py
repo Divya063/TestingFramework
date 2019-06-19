@@ -42,13 +42,15 @@ def check_input_validity(params):
     """
     Check the parameter type
     """
-    for key , value in params.items():
-        if "number" in key.lower():
+    string_val = ['filePath', 'fileSize','repoName', 'repoSize']
+    int_val = ['fileNumber', 'num']
+    for key, value in params.items():
+        if key in int_val:
             if not type(value) == int:
-                raise Exception(str(value)+ "is not integer")
-        if "size" in key.lower():
+                raise Exception(key + " having value " + str(value)+ " is not integer")
+        if key in string_val:
             if not type(value)==str:
-                raise Exception( str(value) + "is not string")
+                raise Exception( key + " having value" + str(value) + " is not string")
 
 
 
