@@ -28,9 +28,9 @@ class Checksum:
         self.eos_path = dest_path
         self.ref_test_name = 'checksum'
         self.ref_timestamp = int(time.time())
-        self.parentDirectory = os.path.expanduser('~')
+        self.file_path = os.path.expanduser('~')
         #print(self.parentDirectory)
-        self.file_path = os.path.join(self.parentDirectory, self.eos_path)
+        #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         #print(self.file_path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
