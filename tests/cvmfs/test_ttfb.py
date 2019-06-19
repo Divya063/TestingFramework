@@ -20,16 +20,18 @@ def get_args():
 
 class TTFB:
     def __init__(self, repo_path, path):
-        self.repo = repo
-        self.path = path
         self.exit = None
-        self.check_mount = Mount.check_mount(repo_path)
+        self.parent = os.path.join(os.getcwd(), os.pardir)
+        self.repo_path = os.path.join(self.parent, repo_path)
+        self.path = os.path.join(self.parent, path)
+        print(repo_path)
+        self.mount = Mount(repo_path, path)
         self.ref_test_name = "Time_till_First_Byte"
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
         self.log.write("info", "Tests starting...")
         self.log.write("info", time.strftime("%c"))
-        self.exit = None
+        self.exit = 0
         self.ref_timestamp = int(time.time())
         self.log_params()
 
@@ -38,9 +40,9 @@ class TTFB:
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
 
 
-    def ttfb(self, path):
+    def ttfb(self, repo_path, path):
         global ttfb
-        if(check_mount == 0):
+        if(self.mount.check_mount(repo_path) == 0):
             start = time.time()
             try:
                 with open(path, 'rb') as file:
@@ -62,7 +64,7 @@ class TTFB:
         return self.exit
 
     def exit_code(self):
-        code = self.ttfb(self.path)
+        code = self.ttfb(self.repo_path, self.path)
         self.log.write("info", "exit code: " + str(self.exit))
         return code
 

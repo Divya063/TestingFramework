@@ -23,6 +23,9 @@ class Mount:
         self.repo_name = repo_name
         self.repo_path = repo_path
         self.ref_test_name = "cvmfs_mount"
+        self.parent= os.path.join(os.getcwd(), os.pardir)
+        self.repo_path = os.path.join(self.parent, repo_path)
+        print(repo_path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
         self.log.write("info", "Tests starting...")
