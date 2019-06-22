@@ -1,3 +1,7 @@
+"""
+Run using the command:
+python3 test_throughput.py --num 5 --repo_path cvmfs/sft.cern.ch --path cvmfs/sft.cern.ch/lcg/releases/
+"""
 import os
 import argparse
 import time
@@ -33,11 +37,17 @@ class Throughput:
         self.repo_path = os.path.join(self.parent, repo_path)
         self.path = os.path.join(self.parent, path)
         self.mount = Mount(repo_path, path)
-        print(repo_path)
+        #print(repo_path)
+        self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
         self.log.write("info", "Tests starting...")
         self.log.write("info", time.strftime("%c"))
+        self.log_params()
+
+    def log_params(self):
+        self.log.write("parameters", "Test name: " + self.ref_test_name)
+        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
 
 
     def read(self, num_packages, repo_path, path):

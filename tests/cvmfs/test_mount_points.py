@@ -4,12 +4,15 @@ Run using the command:
 python3 test_mount_points.py --repo_name sft.cern.ch --path cvmfs/sft.cern.ch --container cvmfs
 
 """
-
+import os
+import time
 import docker
 import argparse
 import sys
-from tests.cvmfs.test_mount_container import MountContainer
-sys.path.append('...')
+from test_mount_container import MountContainer
+sys.path.append('..')
+from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+
 
 client = docker.client.from_env()
 
@@ -31,11 +34,25 @@ def get_args():
 
 class MountPoint:
     def __init__(self, repo_name, repo_path, container):
-        self.check_mount = MountContainer.check_mount(repo_name, repo_path, container)
-        self.check_empty = MountContainer.check_empty(repo_name, repo_path, container)
+        self.repo_name = repo_name
+        self.repo_path = repo_path
         self.container = container
+        self.ref_timestamp = int(time.time())
+        self.ref_test_name = "mount_points"
+        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
+        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
+        self.log.write("info", "Tests starting...")
+        self.log.write("info", time.strftime("%c"))
+        self.mount = MountContainer(repo_name, repo_path, container)
+        self.code =0
+        self.log_params()
+
+    def log_params(self):
+        self.log.write("parameters", "Test name: " + self.ref_test_name)
+        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
 
     def check_config_status(self, container):
+        self.log.write("info", "Running command cvmfs_config status")
         output_status = client.containers.get(container).exec_run(cmd=["bash", "-c", "cvmfs_config status"],
                                                                stdout=True)
 
@@ -43,12 +60,18 @@ class MountPoint:
         ExecResult(exit_code=0, output=b'sft.cern.ch mounted on /cvmfs/sft.cern.ch with pid 82\nsft-nightlies.cern.ch mounted on /cvmfs/sft-nightlies.cern.ch with pid 148\n')
 
         """
+        if(output_status[0]==0):
+            self.log.write("info", str(output_status[1], "utf-8"))
+        else:
+            self.log.write("error", str(output_status[1], "utf-8"))
         #files = output_status[1].decode("utf-8")
-        print(output_status)
+        self.log.write("info", "exit code " + str(output_status[0]))
+        return (output_status[0])
 
 
 
     def check_config_probe(self, container):
+        self.log.write("info", "Running command cvmfs_config probe")
         output_probe = client.containers.get(container).exec_run(cmd=["bash", "-c", "cvmfs_config probe"],
                                                                   stdout=True)
         """
@@ -64,10 +87,16 @@ class MountPoint:
         2.4.1.0 148 1689 22728 26641 1 1 444516 10240001 0 65024 0 0 n/a 107 0 http://cvmfs-stratum-one.cern.ch/cvmfs/sft-nightlies.cern.ch DIRECT 1\n')
 
         """
+        if(output_probe[0]==0):
+            self.log.write("info", str(output_probe[1], "utf-8"))
+        else:
+            self.log.write("error", str(output_probe[1], "utf-8"))
         #exit_code
+        self.log.write("info", "exit code " + str(output_probe[0]))
         return output_probe[0]
 
     def check_config_stat(self, container):
+        self.log.write("info", "Running command cvmfs_config stat")
         output_stat = client.containers.get(container).exec_run(
             cmd=["bash", "-c", "cvmfs_config stat"], stdout=True)
         # result format
@@ -76,19 +105,26 @@ class MountPoint:
         (ro,nosuid,nodev,relatime,user_id=0,group_id=0,default_permissions,allow_other)\n')
 
         """
+        if (output_stat[0] == 0):
+            self.log.write("info", str(output_stat[1], "utf-8"))
+        else:
+            self.log.write("error", str(output_stat[1], "utf-8"))
+            # exit_code
+        self.log.write("info", "exit code " + str(output_stat[0]))
+
         # exit_code
         return output_stat[0]
 
 
 
     def exit_code(self):
-        code= self.check_mount
-        code |=self.check_empty
-        if(code==0):
-            code |=self.check_config_probe(self.container)
-            code |=self.check_config_stat(self.container)
-            code |=self.check_config_status(self.container)
-        return code
+        self.code= self.mount.check_mount(self.repo_path, self.container)
+        if(self.code==0):
+            self.code |=self.check_config_probe(self.container)
+            self.code |=self.check_config_stat(self.container)
+            self.code |=self.check_config_status(self.container)
+        self.log.write("info", "Overall exit code " + str(self.code))
+        return self.code
 
 
 if __name__ == "__main__":
