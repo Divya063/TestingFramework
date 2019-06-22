@@ -129,5 +129,5 @@ class MountPoint:
 
 if __name__ == "__main__":
     args = get_args()
-    test_mount = MountPoint(args.repo_name, args.path, args.container)
-    test_mount.exit_code()
+    test_mount_point = MountPoint(args.repo_name, args.path, args.container)
+    test_mount_point.exit_code()
