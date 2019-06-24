@@ -12,7 +12,7 @@ class Logger():
             "parameters": "[PARAMS] ",
             "info": "[INFO] ",
             "performance": "[PERF] ",
-            "consistency": "[CONS] ",
+            "consistency": "[INTEGRITY] ",
             "warning": "[WARNING] ",
             "error": "[ERROR] ",
         }
@@ -24,15 +24,15 @@ class Logger():
         self.fname = fname
         self.fout = open(fname, 'w')
 
-    def write(self, msg_type, msg, write_timestamp=True):
+    def write(self, msg_type, msg, val=None):
         try:
             type = self.msg_type[msg_type]
         except KeyError:
             type = "[None] "
 
-        message = type + LOG_DELIMITER + msg + "\n"
-        if (write_timestamp):
-            message = type + "%.4f" % time.time() + LOG_DELIMITER + msg + "\n"
+        message = type + "%.4f" % time.time() + LOG_DELIMITER + msg + "\n"
+        if (val!=None):
+            message = type + "%.4f" % time.time() + " " + val + LOG_DELIMITER + msg + "\n"
         self.fout.write(message)
         self.fout.flush()
 

@@ -1,17 +1,22 @@
-tests: 
+# Add the new parameters [here](tests/)
+tests:
   storage:
     throughput: 
       fileNumber: 10
       fileSize: 1M
+    checksum:
+      fileNumber: 10
+      fileSize: 1M
     statFile:
-      filepath: "eos/user/d/divya/"
-  eos: 
-    mountedFilesystem: 
-      fileSystemName: "eosuser" 
-  jupyterhub:
-    webReachable:
-      hostname: "swan.cern.ch"
-      port: 443
-      protocol: HTTPS
-      ignoreTlsCertificate: True
-  docker: daemonRuns
+      filepath: "eos/user/u/user2/"
+
+#  eos:
+#    mountedFilesystem:
+#      fileSystemName: "eosuser"
+#  jupyterhub:
+#    webReachable:
+#      hostname: "swan.cern.ch"
+#      port: 443
+#      protocol: HTTPS
+#      ignoreTlsCertificate: True
+#  docker: daemonRuns

@@ -15,6 +15,8 @@ def run_eos(tasks):
     exit_code = 0
     test_io = Throughput(number_of_files, size, file_path)
     exit_code |= test_io.exit_code()
+    number_of_files = test_storage['checksum']['fileNumber']
+    size = test_storage['checksum']['fileSize']
     test_integrity= Checksum(number_of_files, size, file_path)
     exit_code |= test_integrity.exit_code()
     return exit_code
