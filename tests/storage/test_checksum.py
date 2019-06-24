@@ -1,6 +1,12 @@
 import os
 from IOUtils import ReadWriteOp, ChecksumCal
+<<<<<<< HEAD
 from tests.cvmfs.logger import Logger, LOG_FOLDER, LOG_EXTENSION
+=======
+import sys
+sys.path.append("..")
+from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+>>>>>>> codesfixes
 import time
 import argparse
 
@@ -33,11 +39,11 @@ class Checksum:
         #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         #print(self.file_path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
+        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.ops = ReadWriteOp()
         self.check = ChecksumCal()
         self.match = None
-        self.log.write("info", "Tests starting...")
+        self.log.write("info", self.ref_test_name + " Tests starting...")
         self.log.write("info", time.strftime("%c"))
         self.exit = 0
 
@@ -71,8 +77,8 @@ class Checksum:
         payload = self.ops.generate_payload(number_of_files, input_size)
         self.log.write("info", "Workload created")
         self.log.write("info", "Begin of sanity check")
-        self.log.write("consistency", "\t".join(["file_name", "matching", "source_checksum", "disk_checksum"]),
-                       write_timestamp = True)
+        self.log.write("consistency", "\t".join(["file_name", "matching", "source_checksum", "disk_checksum"])
+                       )
         for files, content in enumerate(payload):
             name = files
             file_name = str(name) + extension
@@ -95,7 +101,7 @@ class Checksum:
                 self.exit |= 1
             else:
                 self.log.write("consistency", "\t".join([file_name, self.match, hash_num, returned_hash]),
-                               write_timestamp=True)
+                               )
 
         self.log.write("info", "Number of corrupted files "+ str(corrupted_files))
         self.log.write("info", "End of sanity check")

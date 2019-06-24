@@ -1,9 +1,15 @@
 import os
 import time
 from IOUtils import ReadWriteOp
+import sys
+sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from timer import Profiling
 import argparse
+<<<<<<< HEAD
+=======
+
+>>>>>>> codesfixes
 
 dictionary = {}
 extension = ".txt"
@@ -33,15 +39,19 @@ class Throughput():
         self.eos_path = dest_path
         self.ref_test_name = 'throughput'
         #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+<<<<<<< HEAD
         """
         In user container os.path.expanduser('~') is equal to '/eos/user/u/user2'
         """
         self.file_path = os.path.expanduser('~')
+=======
+        self.file_path= os.path.expanduser('~')
+>>>>>>> codesfixes
         #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
+        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.ops = ReadWriteOp()
-        self.log.write("info", "Tests starting...")
+        self.log.write("info", self.ref_test_name + " Tests starting...")
         self.log.write("info", time.strftime("%c"))
         self.log_params()
 
@@ -71,8 +81,7 @@ class Throughput():
         timer = Profiling()
         self.log.write("info", "Begin of write operations...")
         self.log.write("performance", "\t".join(
-            ["file_name", "file_size", "elapsed(s)", "through(MB/s)", "start-time", "end-time"]),
-                       write_timestamp= True)
+            ["file_name", "file_size", "elapsed(s)", "through(MB/s)", "start-time", "end-time"]), val = "read")
         for files, content in enumerate(payload):
             name = files
             file_name = str(name) + extension
@@ -92,9 +101,9 @@ class Throughput():
             else:
                 size, fsize = self.ops.convert_size(input_size)
                 self.log.write("performance", "\t".join(
-                    [file_name, str(input_size), str(val[2]), str(self.ops.set_performance(val[2], fsize)), str(val[0]), str(val[1])]))
+                    [file_name, str(input_size), str("%.8f" % float(val[2])), str("%.4f" % float(self.ops.set_performance(val[2], fsize))), str(val[0]), str(val[1])]), val = "write")
         stats = timer
-        self.log.write("info", str(stats))
+        self.log.write("info", str(stats), val = "write")
         self.log.write("info", "End of write operations")
         return stats
 
@@ -108,8 +117,7 @@ class Throughput():
         timer = Profiling()
         self.log.write("info", "Begin of read operations...")
         self.log.write("performance", "\t".join(
-            ["file_name", "file_size", "elapsed(s)", "through(MB/s)", "start-time", "end-time"]),
-                       write_timestamp=True)
+            ["file_name", "file_size", "elapsed(s)", "through(MB/s)", "start-time", "end-time"]), val = "read")
         for count in range(number_of_files):
             file_name = str(count) + extension
             dest = self.file_path + file_name
@@ -125,10 +133,10 @@ class Throughput():
             else:
                 size, fsize = self.ops.convert_size(self.input_size)
                 self.log.write("performance", "\t".join(
-                    [file_name, str(self.input_size), str(val[2]), str(self.ops.set_performance(val[2], fsize)), str(val[0]),
-                     str(val[1])]))
+                    [file_name, str(self.input_size), str(("%.8f" % float(val[2]))), str(("%.4f" % float(self.ops.set_performance(val[2], fsize)))), str(val[0]),
+                     str(val[1])]), val = "read")
         stats = str(timer)
-        self.log.write("info", stats)
+        self.log.write("info", stats, val ="read")
         self.log.write("info", "End of read operations")
         return stats
 

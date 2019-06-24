@@ -1,4 +1,5 @@
-tests: 
+# Add the new parameters [here](tests/)
+tests:
   storage:
     throughput: 
       fileNumber: 10
@@ -7,6 +8,7 @@ tests:
       fileNumber: 10
       fileSize: 1M
     statFile:
+<<<<<<< HEAD
       filepath: "eos/user/d/divya/"
   cvmfs:
     mount:
@@ -20,6 +22,9 @@ tests:
       repoPath: 'cvmfs/sft.cern.ch/'
       filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
 
+=======
+      filepath: "eos/user/u/user2/"
+>>>>>>> codesfixes
 
 #  eos:
 #    mountedFilesystem:
