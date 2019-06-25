@@ -8,8 +8,7 @@ tests:
       fileNumber: 10
       fileSize: 1M
     statFile:
-<<<<<<< HEAD
-      filepath: "eos/user/d/divya/"
+      filepath: "eos/user/u/user2/"
   cvmfs:
     mount:
       repoName: 'sft.cern.ch'
@@ -21,10 +20,6 @@ tests:
       num: 5 #Number of packages
       repoPath: 'cvmfs/sft.cern.ch/'
       filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
-
-=======
-      filepath: "eos/user/u/user2/"
->>>>>>> codesfixes
 
 #  eos:
 #    mountedFilesystem:

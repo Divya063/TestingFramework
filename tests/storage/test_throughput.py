@@ -6,10 +6,6 @@ sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from timer import Profiling
 import argparse
-<<<<<<< HEAD
-=======
-
->>>>>>> codesfixes
 
 dictionary = {}
 extension = ".txt"
@@ -39,14 +35,10 @@ class Throughput():
         self.eos_path = dest_path
         self.ref_test_name = 'throughput'
         #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-<<<<<<< HEAD
         """
         In user container os.path.expanduser('~') is equal to '/eos/user/u/user2'
         """
-        self.file_path = os.path.expanduser('~')
-=======
         self.file_path= os.path.expanduser('~')
->>>>>>> codesfixes
         #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))

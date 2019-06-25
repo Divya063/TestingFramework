@@ -12,11 +12,7 @@ class Logger():
             "parameters": "[PARAMS] ",
             "info": "[INFO] ",
             "performance": "[PERF] ",
-<<<<<<< HEAD:tests/storage/logger.py
-            "sanity": "[SANITY] ",
-=======
             "consistency": "[INTEGRITY] ",
->>>>>>> codesfixes:tests/logger.py
             "warning": "[WARNING] ",
             "error": "[ERROR] ",
         }

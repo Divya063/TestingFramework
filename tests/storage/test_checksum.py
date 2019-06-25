@@ -1,12 +1,8 @@
 import os
 from IOUtils import ReadWriteOp, ChecksumCal
-<<<<<<< HEAD
-from tests.cvmfs.logger import Logger, LOG_FOLDER, LOG_EXTENSION
-=======
 import sys
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
->>>>>>> codesfixes
 import time
 import argparse
 
