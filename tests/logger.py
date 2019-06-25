@@ -1,5 +1,6 @@
 import os
 import time
+import sys
 
 LOG_FOLDER      = "logs"
 LOG_EXTENSION   = ".log"
@@ -7,6 +8,7 @@ LOG_DELIMITER   = "| "
 
 class Logger():
     def __init__(self, fname):
+        self.terminal = sys.stdout
         #types of messages for logging
         self.msg_type = {
             "parameters": "[PARAMS] ",
@@ -22,7 +24,12 @@ class Logger():
         if (not os.path.exists(log_folder)):
             os.makedirs(log_folder)
         self.fname = fname
-        self.fout = open(fname, 'w')
+        self.flag = 0
+        try:
+            self.fout = open(fname, 'w')
+        except Exception as err:
+            self.flag =1
+            self.terminal.write("Permission error")
 
     def write(self, msg_type, msg, val=None):
         try:
@@ -33,8 +40,11 @@ class Logger():
         message = type + "%.4f" % time.time() + LOG_DELIMITER + msg + "\n"
         if (val!=None):
             message = type + "%.4f" % time.time() + " " + val + LOG_DELIMITER + msg + "\n"
-        self.fout.write(message)
-        self.fout.flush()
+        self.terminal.write(message)
+        if(self.flag!=1):
+            self.fout.write(message)
+            self.fout.flush()
+        self.terminal.flush()
 
     def close(self):
         self.fout.close()
