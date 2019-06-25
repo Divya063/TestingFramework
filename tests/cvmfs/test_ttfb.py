@@ -2,7 +2,9 @@
 import argparse
 import os
 import time
-from tests.logger import Logger, LOG_FOLDER, LOG_EXTENSION
+import sys
+sys.path.append('..')
+from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from test_mount import Mount
 
 def get_args():
