@@ -41,6 +41,7 @@ class ActiveSession:
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
+        self.log_params()
 
     def log_params(self):
         self.log.write("parameters", "Test name: " + self.ref_test_name)
@@ -82,7 +83,7 @@ class ActiveSession:
             s = subprocess.check_output('docker ps', shell=True)
             sessions_not_running = set()
             for user in self.user:
-                container_name = "jupyter-" + user
+                container_name = "jupyterhub_api-" + user
             if(s.decode("utf-8").find(container_name) == -1):
                 sessions_not_running.add(user)
                 self.exit|=1

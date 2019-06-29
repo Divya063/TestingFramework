@@ -41,10 +41,10 @@ def get_args():
 
 
 class Session:
-    def __init__(self, port, users, configfile):
+    def __init__(self, port, users, path):
         self.port = port
         self.users = users
-        self.configfile = configfile
+        self.path = path
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name = "Session creation test"
         self.exit = 0
@@ -53,7 +53,7 @@ class Session:
         self.session = CreateSession(self.port, users, self.configfile)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
-
+        self.log_params()
 
     def log_params(self):
         self.log.write("parameters", "Test name: " + self.ref_test_name)
@@ -103,50 +103,50 @@ class Session:
 
         return self.exit
 
-    def check_create_sessions(self):
-        self.log.write("info", "creating sessions..")
+    def check_create_server(self):
+        self.log.write("info", "creating servers..")
         for user in self.users:
             global r
             try:
-                r = self.session.create_sessions(user)
-            except Exception as err:
+                r = self.session.create_server(user)
+            except requests.exceptions.RequestException as e:
                 self.exit |= 1
                 self.log.write("error", "status code " + str(r.status_code) + " " + str(err))
 
             else:
                 if r.status_code == 202:
-                    self.log.write("info", "Successfully requested the session")
+                    self.log.write("info", "Successfully requested the server")
                     """
-                     After creation of sessions server needs to respond within 30 seconds otherwise there will 
+                     After requesting a server it needs to respond within 30 seconds otherwise there will 
                      Timeout Error
                      Example:
         
                      TimeoutError: Server at http://172.18.0.15:8888/user/user0/ didn't respond in 30 seconds
-                     So, even after a successful request a session may not be created
+                     So, even after a successful request a server may not be created
                     """
                     time.sleep(30)
 
                     """
-                    Try to create a same session again, a conflict request for creating a session returns  400 status code 
+                    Try to create a same server again, a conflict request for creating a server returns  400 status code 
                     An example from log:
                     
                     [W 2019-06-29 14:46:20.850 SWAN web:1782] 400 POST /hub/api/users/user1/server (::ffff:127.0.0.1): user1 is already running
                     """
-                    check_session = self.session.create_sessions(user)
-                    if(check_session.status_code==409 or check_session.status_code==400):
-                        self.log.write("info", "Successfully created the" + user + " session")
+                    check_session = self.session.create_server(user)
+                    if(check_session.status_code==400):
+                        self.log.write("info", "Successfully created the" + user + " server")
 
                     else:
-                        self.log.write("error",  user + " session was not created")
+                        self.log.write("error",  user + " server was not created")
                         self.exit |= 1
                 elif r.status_code == 201:
                     """
-                    Sometimes session are created without any wait time
+                    Sometimes servers are created without any wait time
                     """
-                    self.log.write("info", "Successfully created the" + user + " session")
+                    self.log.write("info", "Successfully created the" + user + " server")
 
                 else:
-                    self.log.write("error", user + " session was not created")
+                    self.log.write("error", user + " server was not created")
                     self.log.write("error", "status code " + str(r.status_code) + " " + (r.content).decode('utf-8'))
                     self.exit |= 1
 
@@ -156,7 +156,7 @@ class Session:
     def exit_code(self):
         self.exit |= self.check_create_token()
         self.exit |= self.check_create_users()
-        self.exit|= self.check_create_sessions()
+        self.exit |= self.check_create_server()
         return self.exit
 
 
