@@ -1,5 +1,12 @@
 """
 Test if a session is running
+
+To run the test use the following command:
+python3 test_active_session.py --port 443 --users user1 --path /srv/jupyterhub
+
+For multiple users
+
+python3 test_active_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub
 """
 
 import json
