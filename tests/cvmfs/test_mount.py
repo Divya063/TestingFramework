@@ -1,3 +1,7 @@
+"""
+python3 test_mount.py --repo sft.cern.ch --path cvmfs/sft.cern.ch/
+"""
+
 import os
 import argparse
 import subprocess
