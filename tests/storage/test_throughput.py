@@ -40,10 +40,11 @@ class Throughput():
         self.exit = None
         self.ref_timestamp = int(time.time())
         self.input_size = input_size
-        self.eos_path = dest_path
+        self.storage_path = dest_path
         self.ref_test_name = 'throughput'
         #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-        self.file_path= os.path.expanduser('~')
+        os.chdir('/')
+        self.file_path= os.path.join(os.getcwd(), dest_path)
         #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
