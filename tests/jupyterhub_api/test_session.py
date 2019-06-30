@@ -50,7 +50,7 @@ class Session:
         self.exit = 0
         self.token = ""
         self.ref_timestamp = int(time.time())
-        self.session = CreateSession(self.port, users, self.configfile)
+        self.session = CreateSession(self.port, users, self.path)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log_params()
