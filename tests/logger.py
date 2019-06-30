@@ -22,16 +22,7 @@ class Logger():
         if (not os.path.exists(log_folder)):
             os.makedirs(log_folder)
         self.fname = fname
-<<<<<<< HEAD
-        self.flag = 0
-        try:
-            self.fout = open(fname, 'w')
-        except PermissionError:
-            self.flag =1
-            self.terminal.write("[Logging] " + "Permission denied" + "\n")
-=======
         self.fout = open(fname, 'w')
->>>>>>> parent of 38ee9dc... fixed paths and added stdout
 
     def write(self, msg_type, msg, val=None):
         try:
