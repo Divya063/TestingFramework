@@ -24,8 +24,7 @@ def get_args():
 
 
 class webReachable:
-    def __init__(self, port, users, path):
-        self.users = users
+    def __init__(self, port):
         self.port = port
         self.exit =0
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
