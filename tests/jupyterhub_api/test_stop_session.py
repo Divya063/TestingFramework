@@ -34,7 +34,7 @@ class StopSession:
         self.users = users
         self.path = path
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
-        self.ref_test_name =""
+        self.ref_test_name ="Stop_Session"
         self.exit = 0
         self.token = ""
         self.session = CreateSession(port, users, path)
@@ -133,7 +133,7 @@ class StopSession:
 if __name__ == "__main__":
     args = get_args()
     test_stop_session = StopSession(args.port, args.users, args.path)
-    print(test_stop_session.exit_code())
+    (test_stop_session.exit_code())
 
 
 

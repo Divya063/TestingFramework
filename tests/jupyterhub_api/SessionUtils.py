@@ -18,6 +18,7 @@ class CreateSession:
 
 
     def create_token(self):
+        owd = os.getpwd()
         os.chdir(os.path.expanduser(self.path))
         command = subprocess.check_output(["jupyterhub", "token", "dummy_admin"], stderr=subprocess.STDOUT)\
             .decode('utf-8').split(
@@ -25,6 +26,10 @@ class CreateSession:
         size = len(command)
 
         self.token = command[size-2]
+        """
+        get back to old directory
+        """
+        os.chdir(owd)
         return self.token, command
 
     def create_users(self, user):
