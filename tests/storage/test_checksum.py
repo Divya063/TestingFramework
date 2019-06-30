@@ -31,8 +31,7 @@ class Checksum:
         self.storage_path = dest_path
         self.ref_test_name = 'checksum'
         self.ref_timestamp = int(time.time())
-        os.chdir('/')
-        self.file_path = os.path.join(os.getcwd(), dest_path)
+        self.file_path = os.path.join("/", dest_path)
         #print(self.parentDirectory)
         #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         #print(self.file_path)
