@@ -1,4 +1,11 @@
+"""
 
+Evaluates the time needed to get the first byte (TTFB) of a file known to exist.
+
+Run using the command:
+python3 test_ttfb.py ---repo sft.cern.ch --path cvmfs/sft.cern.ch/lcg/lastUpdate
+
+"""
 import argparse
 import os
 import time
@@ -23,14 +30,14 @@ def get_args():
 class TTFB:
     def __init__(self, repo_path, path):
         self.exit = None
-        self.parent = os.path.join(os.getcwd(), os.pardir)
-        self.repo_path = os.path.join(self.parent, repo_path)
-        self.path = os.path.join(self.parent, path)
+        #self.parent = os.path.join(os.getcwd(), os.pardir)
+        self.repo_path = os.path.join('/', repo_path)
+        self.path = os.path.join('/', path)
         print(repo_path)
         self.mount = Mount(repo_path, path)
         self.ref_test_name = "Time_till_First_Byte"
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
+        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log.write("info", "Tests starting...")
         self.log.write("info", time.strftime("%c"))
         self.exit = 0
@@ -74,14 +81,3 @@ if __name__ == "__main__":
     args = get_args()
     test_ttfb = TTFB(args.repo_name, args.path)
     test_ttfb.exit_code()
-
-
-            
-
-
-
-
-
-
-
-

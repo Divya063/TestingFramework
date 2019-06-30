@@ -22,7 +22,7 @@ class ConfigStat:
         self.ref_timestamp = int(time.time())
         self.ref_test_name = "config_stat"
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
+        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log.write("info", "Tests starting...")
         self.log.write("info", time.strftime("%c"))
         self.code = 0

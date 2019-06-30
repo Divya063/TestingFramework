@@ -1,6 +1,9 @@
 """
 Run using the command:
-python3 test_throughput.py --num 5 --repo_path cvmfs/sft.cern.ch --path cvmfs/sft.cern.ch/lcg/releases/
+python3 test_throughput.py --num 2 --repo_path cvmfs/sft.cern.ch --path cvmfs/sft.cern.ch/lcg/releases/
+
+Benchmark performance when reading from the repository and compute the read throughput.
+
 """
 import os
 import argparse
@@ -33,14 +36,13 @@ class Throughput:
         self.path = path
         self.ref_test_name = "Throughput"
         self.exit = 0
-        self.parent = os.path.join(os.getcwd(), os.pardir)
-        self.repo_path = os.path.join(self.parent, repo_path)
-        self.path = os.path.join(self.parent, path)
+        self.repo_path = os.path.join('/', repo_path)
+        self.path = os.path.join('/', path)
         self.mount = Mount(repo_path, path)
         #print(repo_path)
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name + LOG_EXTENSION))
+        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log.write("info", "Tests starting...")
         self.log.write("info", time.strftime("%c"))
         self.log_params()
@@ -52,17 +54,22 @@ class Throughput:
 
     def read(self, num_packages, repo_path, path):
         if (self.mount.check_mount(repo_path) == 0):
+            self.log.write("performance", "\t".join(
+                ["file_name","time_connect", "time_starttransfer" " total_time"]), val="read")
             count = 0
             for subdir, dirs, files in os.walk(path):
                 count = count +1
                 for file in files:
                     relevant_files = os.path.join(subdir, file)
+                    print(relevant_files)
 
-                    command = "curl -o /dev/null -s -w 'Total: %{time_total}s\n'" + " file:///" + relevant_files
+                    command = "curl -o /dev/null -s -w '%{time_connect} : %{time_starttransfer} : %{time_total}\n'" + " file:///" + relevant_files
                     p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out, err = p.communicate()
-                    if (str(err, 'utf-8')) == "":
-                        self.log.write("info", "time taken " + str(out))
+                    #print(out, err)
+                    if (p.returncode ==0):
+                        #print("time taken to read " + relevant_files + " " + str(out))
+                        self.log.write("info", relevant_files + " " + (out).decode('utf-8'), val = "read")
                     else:
                         self.log.write("error", str(err, 'utf-8'))
                         self.exit |= 1
