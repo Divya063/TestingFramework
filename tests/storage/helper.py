@@ -4,7 +4,7 @@ from test_throughput import Throughput
 from test_checksum import Checksum
 
 
-def run_storage(tasks):
+def run_eos(tasks):
     """
      Helper function for running EOS test suite
     """
