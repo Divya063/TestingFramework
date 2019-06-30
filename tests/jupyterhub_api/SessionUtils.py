@@ -14,7 +14,8 @@ class CreateSession:
         self.token =0
 
     def create_token(self):
-        os.chdir(self.path)
+        os.chdir('/')
+        os.chdir('/' + self.path)
         command = subprocess.check_output(["jupyterhub", "token", "dummy_admin"], stderr=subprocess.STDOUT)\
             .decode('utf-8').split(
             '\n')
