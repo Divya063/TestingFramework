@@ -1,4 +1,4 @@
-#curl -X DELETE "http://raw.githubusercontent.com/hub/api/users/user2/server"
+
 import json
 import requests
 import subprocess

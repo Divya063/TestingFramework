@@ -157,6 +157,8 @@ class Session:
         self.exit |= self.check_create_token()
         self.exit |= self.check_create_users()
         self.exit |= self.check_create_server()
+
+        self.log.write("info", "overall exit code" + str(self.exit))
         return self.exit
 
 
