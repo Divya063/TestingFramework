@@ -91,7 +91,7 @@ def main():
             run_storage(tasks)
             cleanup()
 
-        if test == "jupyter-api":
+        if test == "jupyterhub-api":
             run_jupyterhub_api(tasks)
 
 if __name__ == "__main__":

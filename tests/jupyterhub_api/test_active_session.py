@@ -14,6 +14,8 @@ from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from SessionUtils import CreateSession
 
 import argparse
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)

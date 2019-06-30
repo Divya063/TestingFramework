@@ -4,11 +4,11 @@ Create a session
 
 """
 To run the test run the following command:
-python3 test_session.py --port 443 --users user1 --path srv/jupyterhub
+python3 test_session.py --port 443 --users user1 --path /srv/jupyterhub
 
 For multiple users
 
-python3 test_session.py --port 443 --users user0 user1 user2 --path srv/jupyterhub
+python3 test_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub
 
 """
 
@@ -22,6 +22,8 @@ import sys
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from SessionUtils import CreateSession
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import time
 
 
@@ -46,7 +48,7 @@ class Session:
         self.users = users
         self.path = path
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
-        self.ref_test_name = "Session creation test"
+        self.ref_test_name = "Session_creation_test"
         self.exit = 0
         self.token = ""
         self.ref_timestamp = int(time.time())

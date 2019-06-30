@@ -2,6 +2,8 @@ import os
 import subprocess
 import requests
 import json
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class CreateSession:
 
@@ -13,9 +15,10 @@ class CreateSession:
         self.exit = 0
         self.token =0
 
+
+
     def create_token(self):
-        os.chdir('/')
-        os.chdir('/' + self.path)
+        os.chdir(os.path.expanduser(self.path))
         command = subprocess.check_output(["jupyterhub", "token", "dummy_admin"], stderr=subprocess.STDOUT)\
             .decode('utf-8').split(
             '\n')

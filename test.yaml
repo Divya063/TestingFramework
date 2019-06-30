@@ -15,14 +15,14 @@ tests:
       port: '443'
     session:
       port: '443'
-      users: 'user2'
-      path: 'srv/jupyterhub'
+      users: ['user2']
+      path: '/srv/jupyterhub'
     active_session:
       port: '443'
-      users: 'user2'
-      path: 'srv/jupyterhub'
+      users: ['user2']
+      path: '/srv/jupyterhub'
     stop_session:
       port: '443'
-      users: 'user2'
-      path: 'srv/jupyterhub'
+      users: ['user2']
+      path: '/srv/jupyterhub'
 
