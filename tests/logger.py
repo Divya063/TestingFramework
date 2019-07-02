@@ -24,11 +24,11 @@ class Logger():
         if (not os.path.exists(log_folder)):
             os.makedirs(log_folder)
         self.fname = fname
-        self.flag = 0
+        self.fopen_success = 0
         try:
             self.fout = open(fname, 'w')
         except PermissionError:
-            self.flag = 1
+            self.fopen_success = 1
             self.terminal.write("[Logging] " + "Permission denied" + "\n")
 
     def write(self, msg_type, msg, val=None):
@@ -41,7 +41,7 @@ class Logger():
         if (val!=None):
             message = type + "%.4f" % time.time() + " " + val + LOG_DELIMITER + msg + "\n"
         self.terminal.write(message)
-        if (self.flag != 1):
+        if (self.fopen_success != 1):
             self.fout.write(message)
             self.fout.flush()
         self.terminal.flush()
