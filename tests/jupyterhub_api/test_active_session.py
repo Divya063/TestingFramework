@@ -2,11 +2,12 @@
 Test if a session is running
 
 To run the test use the following command:
-python3 test_active_session.py --port 443 --users user1 --path /srv/jupyterhub
+python3 test_active_session.py --port 443 --users user1 --token {token-value}
 
 For multiple users
 
-python3 test_active_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub
+python3 test_active_session.py --port 443 --users user0 user1 user2 --token {token-value}
+
 """
 
 import json
@@ -18,8 +19,6 @@ import sys
 sys.path.append("..")
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from SessionUtils import CreateSession
-
 import argparse
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -32,21 +31,21 @@ def get_args():
     parser.add_argument( "--users", nargs='+', dest="users",
                         required  = True,
                         help='list of users')
-    parser.add_argument("--path", dest="path",
+    parser.add_argument("--token", dest="token",
                         required=True,
-                        help = 'Path where config file exists')
+                        help = 'Enter token value')
     args = parser.parse_args()
     return args
 
 
 class ActiveSession:
-    def __init__(self, port, users, path):
+    def __init__(self, port, users, token):
         self.users = users
         self.port = port
         self.exit =0
+        self.token = token
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name= "Active_Sessions"
-        self.session = CreateSession(port, users, path)
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
@@ -56,32 +55,6 @@ class ActiveSession:
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
-
-    def create_session(self):
-
-        try:
-            self.session.create_token()
-            self.log.write("info", "created token..")
-            self.log.write("info", "Creating Users..")
-            for user in self.users:
-                self.session.create_users(user)
-                self.log.write("info", "Created " + user)
-            self.log.write("info", "Creating Servers..")
-            for user in self.users:
-                self.session.create_server(user)
-                time.sleep(30)
-                self.log.write("info", "Created " + user + " session")
-        except requests.exceptions.RequestException as e:
-            self.log.write("error", str(e))
-            self.exit |=1
-
-        except Exception as e:
-            self.log.write("error", str(e))
-            self.exit |= 1
-        else:
-            self.log.write("info", "Session successfully created")
-
-        return self.exit
 
     def check_session(self):
 
@@ -102,39 +75,61 @@ class ActiveSession:
             Submit a post request to /hub/api/users/{username}/server which will in return
             result in 400 status code(conflict) as the server is already running
 
+            third method:
+            Submit a  get request to  https://localhost:443/hub/api/users/user1, this will return the information
+            of particular user in json format, check the value of the field 'server' if it is null server is not active
+
+            Example:
+                json of user having active server-
+                {"kind": "user", "name": "user1", "admin": false, "groups": [], "server": "/user/user1/", "pending": null,
+                }
+
+                json of user have non-active server -
+                {"kind": "user", "name": "user3", "admin": false, "groups": [], "server": null, "pending": null}
+
+
+
             """
+            global r
+            #self.token = '787fc9a32e1d477daa2be4202031bb28'
             for user in self.users:
                 try:
-                    check_session = self.session.create_server(user)
+                    r = requests.get(self.main_url + 'users/%s' % user,
+                                        headers={
+                                            'Authorization': 'token %s' % self.token,
+                                        },
+                                        verify=False
+                                        )
 
                 except requests.exceptions.RequestException as e:
                     self.log.write("error", str(e))
                     self.exit |= 1
                 else:
-                    if(check_session.status_code ==400):
-                        self.log.write("info", user + " session exists and running")
+                    if (r.status_code == 200):
+                        status = r.json()
+                        print(status)
+                        server_status = status['server']
+                        if(server_status!= None):
+                            self.log.write("info", user + " server is present at " + server_status)
+                        else:
+                            self.log.write("error", user + " server is not present ")
+                            self.exit |= 1
                     else:
-                        self.log.write("error", user + " session does not exist")
+                        self.log.write("error", r)
                         self.exit |= 1
+
             return self.exit
 
 
 
     def exit_code(self):
-        if(self.create_session()==0):
-            self.exit |= self.check_session()
+        self.exit |= self.check_session()
 
         return self.exit
 
 if __name__ == "__main__":
     args = get_args()
-    test_active_session = ActiveSession(args.port, args.users, args.path)
+    test_active_session = ActiveSession(args.port, args.users, args.token)
     print(test_active_session.exit_code())
-
-
-
-
-
-
 
 

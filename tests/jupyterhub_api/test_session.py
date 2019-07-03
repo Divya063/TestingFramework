@@ -4,12 +4,19 @@ Create a session
 
 """
 To run the test run the following command:
-python3 test_session.py --port 443 --users user1 --path /srv/jupyterhub
+
+python3 test_session.py --port 443 --users user1 --path /srv/jupyterhub 
+--token {token value} --data 
+{'LCG-rel': 'LCG_95a', 'platform': 'x86_64-centos7-gcc7-opt', 'scriptenv': 'none', 'ncores': 2,
+'memory': 8589934592, 'spark-cluster': 'none'}
+
 
 For multiple users
 
-python3 test_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub
-
+python3 test_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub 
+--token {token value} --data                                                                  
+{'LCG-rel': 'LCG_95a', 'platform': 'x86_64-centos7-gcc7-opt', 'scriptenv': 'none', 'ncores': 2
+'memory': 8589934592, 'spark-cluster': 'none' 
 """
 
 
@@ -24,6 +31,7 @@ from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from SessionUtils import CreateSession
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import json
 import time
 
 
@@ -38,21 +46,29 @@ def get_args():
     parser.add_argument("--path", dest="path",
                         required=True,
                         help = 'Path where config file exists')
+    parser.add_argument("--token", dest=" token",
+                        required=True,
+                        help = 'token value')
+
+    parser.add_argument("--json", dest="json",
+                         required=True,
+                         help = 'json data')
     args = parser.parse_args()
     return args
 
 
 class Session:
-    def __init__(self, port, users, path):
+    def __init__(self, port, users, path, token, params):
         self.port = port
         self.users = users
         self.path = path
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name = "Session_creation_test"
         self.exit = 0
-        self.token = ""
+        self.token = token
+        self.data = params
         self.ref_timestamp = int(time.time())
-        self.session = CreateSession(self.port, users, self.path)
+        self.session = CreateSession(self.port, users, self.path, token, params)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log_params()
@@ -62,18 +78,7 @@ class Session:
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
 
-    def check_create_token(self):
-        self.log.write("info", "creating tokens..")
-        global command
-        try:
-            self.token, command =self.session.create_token()
-        except subprocess.CalledProcessError as err:
-            self.log.write("error", str(err))
-            self.exit|=1
-        else:
-            self.log.write("info", "Successfully created token " + str(self.token))
-        self.log.write("info", "Exit code "+ str(self.exit))
-        return self.exit
+
 
 
     def check_create_users(self):
@@ -106,6 +111,7 @@ class Session:
         return self.exit
 
     def check_create_server(self):
+
         self.log.write("info", "creating servers..")
         for user in self.users:
             global r
@@ -113,13 +119,13 @@ class Session:
                 r = self.session.create_server(user)
             except requests.exceptions.RequestException as e:
                 self.exit |= 1
-                self.log.write("error", "status code " + str(r.status_code) + " " + str(err))
+                self.log.write("error", "status code " + str(r.status_code) + " " + str(e))
 
             else:
                 if r.status_code == 202:
                     self.log.write("info", "Successfully requested the server")
                     """
-                     After requesting a server it needs to respond within 30 seconds otherwise there will 
+                     After requesting a server it needs to respond within 30 seconds otherwise there will be 
                      Timeout Error
                      Example:
         
@@ -156,7 +162,6 @@ class Session:
 
 
     def exit_code(self):
-        self.exit |= self.check_create_token()
         self.exit |= self.check_create_users()
         self.exit |= self.check_create_server()
 
@@ -166,7 +171,8 @@ class Session:
 
 if __name__ == "__main__":
     args = get_args()
-    test_session = Session(args.port, args.users, args.path)
+    print(args.json)
+    test_session = Session(args.port, args.users, args.path, args.token, args.json)
     (test_session.exit_code())
 
 

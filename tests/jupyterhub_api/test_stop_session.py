@@ -33,22 +33,21 @@ def get_args():
     parser.add_argument( "--users", nargs='+', dest="users",
                         required  = True,
                         help='list of users')
-    parser.add_argument("--path", dest="path",
+    parser.add_argument("--token", dest="token",
                         required=True,
-                        help = 'Path where config file exists')
+                        help='Enter token value')
+
     args = parser.parse_args()
     return args
 
 class StopSession:
-    def __init__(self, port, users, path):
+    def __init__(self, port, users, token):
         self.port = port
         self.users = users
-        self.path = path
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name ="Stop_Session"
         self.exit = 0
-        self.token = ""
-        self.session = CreateSession(port, users, path)
+        self.token = token
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder,
@@ -59,54 +58,6 @@ class StopSession:
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
-
-
-
-    def create_session(self):
-
-        try:
-            self.token, command = self.session.create_token()
-            self.log.write("info", "created token..")
-            self.log.write("info", "Creating Users..")
-            for user in self.users:
-                self.session.create_users(user)
-                self.log.write("info", "Created " + user)
-            self.log.write("info", "Creating Servers..")
-            for user in self.users:
-                self.session.create_server(user)
-                time.sleep(30)
-                self.log.write("info", "Created " + user + " session")
-        except requests.exceptions.RequestException as e:
-            self.log.write("error", str(e))
-            self.exit |= 1
-
-        except Exception as e:
-            self.log.write("error", str(e))
-            self.exit |= 1
-        else:
-            self.log.write("info", "Session successfully created")
-
-        return self.exit
-
-
-    def check_running_session(self):
-        self.log.write("info", "checking if session is running or not")
-        for user in self.users:
-                try:
-                    check_session = self.session.create_server(user)
-
-                except requests.exceptions.RequestException as e:
-                    self.log.write("error", str(e))
-                    self.exit |= 1
-                else:
-                    if(check_session.status_code ==400):
-                        self.log.write("info", user + " session exists and running")
-                    else:
-                        self.log.write("error", user + " session does not exist")
-                        self.exit |= 1
-        return self.exit
-
-
 
 
     def stop_session(self):
@@ -134,16 +85,13 @@ class StopSession:
         return self.exit
 
     def exit_code(self):
-        self.exit |= self.create_session()
-        self.exit |= self.check_running_session()
-        if(self.exit !=1):
-            self.exit|=self.stop_session()
+        self.exit|=self.stop_session()
         return self.exit
 
 
 if __name__ == "__main__":
     args = get_args()
-    test_stop_session = StopSession(args.port, args.users, args.path)
+    test_stop_session = StopSession(args.port, args.users, args.token)
     (test_stop_session.exit_code())
 
 
