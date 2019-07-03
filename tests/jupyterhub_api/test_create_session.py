@@ -131,18 +131,37 @@ class CreateSession:
                     time.sleep(30)
 
                     """
-                    Try to create a same server again, a conflict request for creating a server returns  400 status code 
-                    An example from log:
+                    Submit a  get request to  https://localhost:443/hub/api/users/user1, this will return the information
+                    of particular user in json format, check the value of the field 'server' if it is null server is not active
+
+                    Example:
+
+                    json of user having active server-
+                    {"kind": "user", "name": "user1", "admin": false, "groups": [], "server": "/user/user1/", "pending": null,
+                    }
+
+                    json of user have non-active server -
+                    {"kind": "user", "name": "user3", "admin": false, "groups": [], "server": null, "pending": null}
                     
-                    [W 2019-06-29 14:46:20.850 SWAN web:1782] 400 POST /hub/api/users/user1/server (::ffff:127.0.0.1): user1 is already running
                     """
                     check_session = self.session.create_server(user)
-                    if(check_session.status_code==400):
-                        self.log.write("info", "Successfully created the" + user + " server")
 
-                    else:
-                        self.log.write("error",  user + " server was not created")
-                        self.exit |= 1
+                    r = requests.get(self.main_url + 'users/%s' % user,
+                                      headers={
+                                                'Authorization': 'token %s' % self.token,
+                                                },
+                                                verify=False
+                                                )
+                    if (r.status_code == 200):
+                        status = r.json()
+                        #print(status)
+                        server_status = status['server']
+                        if(server_status!= None):
+                            self.log.write("info", user + " server successfully created " + server_status)
+                        else:
+                            self.log.write("error", user + " server was not created ")
+                            self.log.write("error", "status code " + str(r.status_code) + " " + (r.content).decode('utf-8'))
+                            self.exit |= 1
                 elif r.status_code == 201:
                     """
                     Sometimes servers are created without any wait time
