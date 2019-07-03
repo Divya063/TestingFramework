@@ -11,18 +11,28 @@ tests:
       filepath: "eos/user/u/user2/"
 
   jupyterhub_api:
-    webReachable:
+    check_api:
       port: '443'
-    session:
+    create_session:
       port: '443'
       users: ['user2']
       path: '/srv/jupyterhub'
+      token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
+      params:
+        LCG-rel: "LCG_95a"
+        platform: "x86_64-centos7-gcc7-opt"
+        scriptenv: "none"
+        ncores: 2
+        memory: 8589934592
+        spark-cluster: "none"
     active_session:
       port: '443'
       users: ['user2']
       path: '/srv/jupyterhub'
+      token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
     stop_session:
       port: '443'
       users: ['user2']
       path: '/srv/jupyterhub'
+      token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
 
