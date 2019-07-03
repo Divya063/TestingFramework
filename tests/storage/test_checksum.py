@@ -28,10 +28,10 @@ class Checksum:
     def __init__(self, number_of_files, input_size, dest_path):
         self.number_of_files = number_of_files
         self.input_size = input_size
-        self.eos_path = dest_path
+        self.storage_path = dest_path
         self.ref_test_name = 'checksum'
         self.ref_timestamp = int(time.time())
-        self.file_path = os.path.expanduser('~')
+        self.file_path = os.path.join("/", dest_path)
         #print(self.parentDirectory)
         #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         #print(self.file_path)

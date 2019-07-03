@@ -4,9 +4,9 @@ from test_throughput import Throughput
 from test_checksum import Checksum
 
 
-def run_eos(tasks):
+def run_storage(tasks):
     """
-     Helper function for running EOS test suite
+     Helper function for running storage test suite
     """
     test_storage = tasks['tests']['storage']
     file_path = test_storage['statFile']['filepath']
