@@ -5,12 +5,11 @@ import json
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-class CreateSession:
+class Session:
 
-    def __init__(self, port, users, path, token, params):
+    def __init__(self, port, users, token, params):
         self.port = port
         self.users = users
-        self.path = path
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.exit = 0
         self.token = token

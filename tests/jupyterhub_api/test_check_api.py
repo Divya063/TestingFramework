@@ -25,7 +25,7 @@ def get_args():
     return args
 
 
-class webReachable:
+class CheckAPI:
     def __init__(self, port):
         self.port = port
         self.exit =0
@@ -66,7 +66,7 @@ class webReachable:
 
 if __name__ == "__main__":
     args = get_args()
-    test_web_reachable = webReachable(args.port)
+    test_web_reachable = CheckAPI(args.port)
     (test_web_reachable.exit_code())
 
 

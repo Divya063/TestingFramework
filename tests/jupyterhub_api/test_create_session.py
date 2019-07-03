@@ -5,7 +5,7 @@ Create a session
 """
 To run the test run the following command:
 
-python3 test_session.py --port 443 --users user1 --path /srv/jupyterhub 
+python3 test_create_session.py --port 443 --users user1 --path /srv/jupyterhub 
 --token {token value} --data 
 {'LCG-rel': 'LCG_95a', 'platform': 'x86_64-centos7-gcc7-opt', 'scriptenv': 'none', 'ncores': 2,
 'memory': 8589934592, 'spark-cluster': 'none'}
@@ -13,7 +13,7 @@ python3 test_session.py --port 443 --users user1 --path /srv/jupyterhub
 
 For multiple users
 
-python3 test_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub 
+python3 test_create_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub 
 --token {token value} --data                                                                  
 {'LCG-rel': 'LCG_95a', 'platform': 'x86_64-centos7-gcc7-opt', 'scriptenv': 'none', 'ncores': 2
 'memory': 8589934592, 'spark-cluster': 'none' 
@@ -28,7 +28,7 @@ import argparse
 import sys
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from SessionUtils import CreateSession
+from SessionUtils import Session
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import json
@@ -43,9 +43,6 @@ def get_args():
     parser.add_argument( "--users", nargs='+', dest="users",
                         required  = True,
                         help='list of users')
-    parser.add_argument("--path", dest="path",
-                        required=True,
-                        help = 'Path where config file exists')
     parser.add_argument("--token", dest=" token",
                         required=True,
                         help = 'token value')
@@ -57,18 +54,17 @@ def get_args():
     return args
 
 
-class Session:
-    def __init__(self, port, users, path, token, params):
+class CreateSession:
+    def __init__(self, port, users, token, params):
         self.port = port
         self.users = users
-        self.path = path
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name = "Session_creation_test"
         self.exit = 0
         self.token = token
         self.data = params
         self.ref_timestamp = int(time.time())
-        self.session = CreateSession(self.port, users, self.path, token, params)
+        self.session = Session(self.port, users, token, params)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log_params()
@@ -172,7 +168,7 @@ class Session:
 if __name__ == "__main__":
     args = get_args()
     print(args.json)
-    test_session = Session(args.port, args.users, args.path, args.token, args.json)
+    test_session = CreateSession(args.port, args.users, args.token, args.json)
     (test_session.exit_code())
 
 

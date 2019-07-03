@@ -2,11 +2,11 @@
 Test if a session is running
 
 To run the test use the following command:
-python3 test_active_session.py --port 443 --users user1 --token {token-value}
+python3 test_check_session.py --port 443 --users user1 --token {token-value}
 
 For multiple users
 
-python3 test_active_session.py --port 443 --users user0 user1 user2 --token {token-value}
+python3 test_check_session.py --port 443 --users user0 user1 user2 --token {token-value}
 
 """
 
@@ -38,14 +38,14 @@ def get_args():
     return args
 
 
-class ActiveSession:
+class CheckSession:
     def __init__(self, port, users, token):
         self.users = users
         self.port = port
         self.exit =0
         self.token = token
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
-        self.ref_test_name= "Active_Sessions"
+        self.ref_test_name= "Check_Sessions"
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
@@ -129,7 +129,7 @@ class ActiveSession:
 
 if __name__ == "__main__":
     args = get_args()
-    test_active_session = ActiveSession(args.port, args.users, args.token)
+    test_active_session = CheckSession(args.port, args.users, args.token)
     print(test_active_session.exit_code())
 
 

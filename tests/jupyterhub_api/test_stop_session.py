@@ -3,11 +3,11 @@
 Test to stop the session
 
 To run the test use the following command:
-python3 test_stop_session.py --port 443 --users user1 --path /srv/jupyterhub
+python3 test_stop_session.py --port 443 --users user1 --token {token-value}
 
 For multiple users
 
-python3 test_stop_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub
+python3 test_stop_session.py --port 443 --users user0 user1 user2 --token {token-value}
 
 """
 import json

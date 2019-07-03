@@ -16,7 +16,6 @@ tests:
     create_session:
       port: '443'
       users: ['user2']
-      path: '/srv/jupyterhub'
       token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
       params:
         LCG-rel: "LCG_95a"
@@ -25,14 +24,12 @@ tests:
         ncores: 2
         memory: 8589934592
         spark-cluster: "none"
-    active_session:
+    check_session:
       port: '443'
       users: ['user2']
-      path: '/srv/jupyterhub'
       token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
     stop_session:
       port: '443'
       users: ['user2']
-      path: '/srv/jupyterhub'
       token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
 
