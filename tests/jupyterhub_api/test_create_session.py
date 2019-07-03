@@ -142,10 +142,10 @@ class CreateSession:
 
                     json of user have non-active server -
                     {"kind": "user", "name": "user3", "admin": false, "groups": [], "server": null, "pending": null}
-                    
-                    """
-                    check_session = self.session.create_server(user)
 
+                    """
+                    
+                    
                     r = requests.get(self.main_url + 'users/%s' % user,
                                       headers={
                                                 'Authorization': 'token %s' % self.token,
