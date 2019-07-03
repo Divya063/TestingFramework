@@ -41,12 +41,13 @@ def get_args():
     return args
 
 class StopSession:
-    def __init__(self, port, users, token):
+    def __init__(self, port, users, token, verify):
         self.port = port
         self.users = users
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name ="Stop_Session"
         self.exit = 0
+        self.verify = verify
         self.token = token
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
@@ -69,7 +70,7 @@ class StopSession:
                                   headers={
                                       'Authorization': 'token %s' % self.token,
                                   },
-                                  verify=False
+                                  verify= self.verify
                               )
 
             except requests.exceptions.RequestException as e:
@@ -91,8 +92,5 @@ class StopSession:
 
 if __name__ == "__main__":
     args = get_args()
-    test_stop_session = StopSession(args.port, args.users, args.token)
+    test_stop_session = StopSession(args.port, args.users, args.token, False)
     (test_stop_session.exit_code())
-
-
-

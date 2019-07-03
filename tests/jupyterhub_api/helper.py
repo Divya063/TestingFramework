@@ -17,6 +17,7 @@ def run_jupyterhub_api(tasks):
     check if API is reachable
     """
     port = test_jupyterhub['check_api']['port']
+    TLS = test_jupyterhub['check_api']['TLS']
     exit_code = 0
     test_reachable = CheckAPI(port)
     exit_code |= test_reachable.exit_code()
@@ -31,7 +32,7 @@ def run_jupyterhub_api(tasks):
     session_users = test_jupyterhub['create_session']['users']
     session_token = test_jupyterhub['create_session']['token']
     session_params= test_jupyterhub['create_session']['params']
-    test_create_session = CreateSession(session_port, session_users, session_token, session_params)
+    test_create_session = CreateSession(session_port, session_users, session_token, session_params, TLS)
     exit_code |= test_create_session.exit_code()
     """
     Check if the session is active
@@ -39,7 +40,7 @@ def run_jupyterhub_api(tasks):
     session_port1 = test_jupyterhub['check_session']['port']
     session_users1 = test_jupyterhub['check_session']['users']
     session_token1 = test_jupyterhub['check_session']['token']
-    test_active_session = CheckSession(session_port1, session_users1, session_token1)
+    test_active_session = CheckSession(session_port1, session_users1, session_token1, TLS)
     exit_code |= test_active_session.exit_code()
     """
     Check if the session was stopped
@@ -47,7 +48,7 @@ def run_jupyterhub_api(tasks):
     session_port2 = test_jupyterhub['stop_session']['port']
     session_users2 = test_jupyterhub['stop_session']['users']
     session_token2 = test_jupyterhub['stop_session']['token']
-    test_stop_session = StopSession(session_port2, session_users2, session_token2)
+    test_stop_session = StopSession(session_port2, session_users2, session_token2, TLS)
     exit_code |= test_stop_session.exit_code()
 
     return exit_code

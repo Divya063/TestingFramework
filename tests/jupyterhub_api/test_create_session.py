@@ -55,16 +55,17 @@ def get_args():
 
 
 class CreateSession:
-    def __init__(self, port, users, token, params):
+    def __init__(self, port, users, token, params, verify):
         self.port = port
         self.users = users
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name = "Session_creation_test"
         self.exit = 0
+        self.verify = verify
         self.token = token
         self.data = params
         self.ref_timestamp = int(time.time())
-        self.session = Session(self.port, users, token, params)
+        self.session = Session(self.port, users, token, params, verify)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log_params()
@@ -150,7 +151,7 @@ class CreateSession:
                                       headers={
                                                 'Authorization': 'token %s' % self.token,
                                                 },
-                                                verify=False
+                                                verify= self.verify
                                                 )
                     if (r.status_code == 200):
                         status = r.json()
@@ -187,7 +188,7 @@ class CreateSession:
 if __name__ == "__main__":
     args = get_args()
     print(args.json)
-    test_session = CreateSession(args.port, args.users, args.token, args.json)
+    test_session = CreateSession(args.port, args.users, args.token, args.json, False)
     (test_session.exit_code())
 
 

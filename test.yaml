@@ -13,6 +13,7 @@ tests:
   jupyterhub_api:
     check_api:
       port: '443'
+      TLS : False
     create_session:
       port: '443'
       users: ['user2']

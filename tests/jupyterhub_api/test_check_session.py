@@ -39,11 +39,12 @@ def get_args():
 
 
 class CheckSession:
-    def __init__(self, port, users, token):
+    def __init__(self, port, users, token, verify):
         self.users = users
         self.port = port
         self.exit =0
         self.token = token
+        self.verify = verify
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name= "Check_Sessions"
         self.ref_timestamp = int(time.time())
@@ -98,7 +99,7 @@ class CheckSession:
                                         headers={
                                             'Authorization': 'token %s' % self.token,
                                         },
-                                        verify=False
+                                        verify= self.verify
                                         )
 
                 except requests.exceptions.RequestException as e:
@@ -129,7 +130,7 @@ class CheckSession:
 
 if __name__ == "__main__":
     args = get_args()
-    test_active_session = CheckSession(args.port, args.users, args.token)
+    test_active_session = CheckSession(args.port, args.users, args.token, False)
     print(test_active_session.exit_code())
 
 

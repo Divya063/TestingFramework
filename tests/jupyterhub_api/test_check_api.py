@@ -26,9 +26,10 @@ def get_args():
 
 
 class CheckAPI:
-    def __init__(self, port):
+    def __init__(self, port, verify):
         self.port = port
         self.exit =0
+        self.verify = verify
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name= "WebReachable"
         self.ref_timestamp = int(time.time())
@@ -43,7 +44,7 @@ class CheckAPI:
 
     def check_api(self):
         try:
-            r = requests.get(self.main_url, verify=False)
+            r = requests.get(self.main_url, verify= self.verify)
 
         except requests.exceptions.RequestException as e:
             self.log.write("error", str(e))
@@ -66,7 +67,7 @@ class CheckAPI:
 
 if __name__ == "__main__":
     args = get_args()
-    test_web_reachable = CheckAPI(args.port)
+    test_web_reachable = CheckAPI(args.port, False)
     (test_web_reachable.exit_code())
 
 
