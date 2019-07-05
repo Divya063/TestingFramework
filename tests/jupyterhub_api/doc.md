@@ -48,7 +48,7 @@ On successful execution response code should be *200*.
    checks if session can be created successfully or not.
    - parameters : 
      - params : This data needs to be passed to create a user container
-     - timedelay : In the process of creating sesions, first the required user's server is requested which is  validated by the response code *202*, a server is created consequently, which needs to repond within 30s, otherwise the server
+     - timedelay : In the process of creating sessions, first the required user's server is requested which is  validated by the response code *202*, a server is created consequently, which needs to repond within 30s, otherwise the server
       will be obliterated. The wait time is maximum 30s, if the server didn't respond within stipulated time, response code *500* will be received.<br>
       Example :    
       `TimeoutError: Server at http://172.18.0.15:8888/user/user0/ didn't respond in 30 seconds`
@@ -57,8 +57,10 @@ On successful execution response code should be *200*.
 
    ---
    **warning** <br>
-   Before creating servers/sessions make sure you have created users as each server is created for one particular user <br>
-   code :
+   Before creating servers/sessions make sure you have created users as each server is created for one particular user. <br>
+   - Using curl :
+   `curl -XPOST -v -k https://localhost:443/hub/api/users/user2 -H "Authorization: token {token from yaml file}"`
+   - Python code :
    ```python
        def check_create_users(self):
 
