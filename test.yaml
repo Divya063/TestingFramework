@@ -17,20 +17,24 @@ tests:
     create_session:
       port: '443'
       users: ['user2']
-      token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
+      token: ''
       params:
+        TLS: False
         LCG-rel: "LCG_95a"
         platform: "x86_64-centos7-gcc7-opt"
         scriptenv: "none"
         ncores: 2
         memory: 8589934592
         spark-cluster: "none"
+      TLS: False
+      timedelay: 30 #Max
+      path: '/srv/jupyterhub'
     check_session:
       port: '443'
       users: ['user2']
-      token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
+      TLS: False
     stop_session:
       port: '443'
       users: ['user2']
-      token: '3b74b3cbfe4afddd7632ccc32fefcf4777c08fc413176dcddf0d8fd50407b120'
+      TLS: False
 
