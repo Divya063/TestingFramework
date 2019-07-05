@@ -1,4 +1,4 @@
-Jupyterhub API tests
+#Jupyterhub API tests
 
 To run all the tests use `python3 run.py --test jupyterhub-api --configfile test.yaml`
 
@@ -39,7 +39,7 @@ Parameters for the test is present in test.yaml which is as follows:
 1. **check_api** 
     - Test file : test_check_api.py"
     - Use case :  check hub's sanity by making a GET request to "https://localhost:443/hub/api/".
-On successful execution response code should be 200.
+On successful execution response code should be *200*.
     - To run this test explicity use - `python3 test_check_api.py --port 443`
     
 2. **create_session** 
@@ -48,8 +48,8 @@ On successful execution response code should be 200.
    checks if session can be created successfully or not.
    - parameters : 
      - params : This data needs to be passed to create a user container
-     - timedelay : In the process of creating sesions, first the required user's server is requested which is  validated by the response code 202, a server is created consequently, which needs to repond within 30s, otherwise the server
-      will be obliterated. The wait time is maximum 30s, if the server didn't respond within stipulated time, response code 500 will be received.<br>
+     - timedelay : In the process of creating sesions, first the required user's server is requested which is  validated by the response code *202*, a server is created consequently, which needs to repond within 30s, otherwise the server
+      will be obliterated. The wait time is maximum 30s, if the server didn't respond within stipulated time, response code *500* will be received.<br>
       Example :    
       `TimeoutError: Server at http://172.18.0.15:8888/user/user0/ didn't respond in 30 seconds`
     - To run the test explicitly use following command:
