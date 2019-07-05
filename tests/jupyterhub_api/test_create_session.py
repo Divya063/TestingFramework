@@ -208,7 +208,7 @@ if __name__ == "__main__":
     args = get_args()
     print(args.json)
     params = json.loads(args.json)
-    test_session = CreateSession(args.port, args.users, args.path, params, args.delay, verify =False)
+    test_session = CreateSession(args.port, args.users, args.path, params, int(args.delay), verify =False)
     (test_session.exit_code())
 
 
