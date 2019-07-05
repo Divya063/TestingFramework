@@ -1,4 +1,4 @@
-#Jupyterhub API tests
+<h2>Jupyterhub API tests</h2>
 
 To run all the tests use `python3 run.py --test jupyterhub-api --configfile test.yaml`
 
