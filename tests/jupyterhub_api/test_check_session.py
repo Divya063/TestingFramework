@@ -2,11 +2,11 @@
 Test if a session is running
 
 To run the test use the following command:
-python3 test_check_session.py --port 443 --users user1 --token {token-value}
+python3 test_check_session.py --port 443 --users user1
 
 For multiple users
 
-python3 test_check_session.py --port 443 --users user0 user1 user2 --token {token-value}
+python3 test_check_session.py --port 443 --users user0 user1 user2
 
 """
 
@@ -17,6 +17,7 @@ import os
 import docker
 import sys
 sys.path.append("..")
+import yaml
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 import argparse
@@ -31,19 +32,16 @@ def get_args():
     parser.add_argument( "--users", nargs='+', dest="users",
                         required  = True,
                         help='list of users')
-    parser.add_argument("--token", dest="token",
-                        required=True,
-                        help = 'Enter token value')
     args = parser.parse_args()
     return args
 
 
 class CheckSession:
-    def __init__(self, port, users, token, verify):
+    def __init__(self, port, users, verify):
         self.users = users
         self.port = port
         self.exit =0
-        self.token = token
+        self.token = ""
         self.verify = verify
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name= "Check_Sessions"
@@ -56,6 +54,29 @@ class CheckSession:
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
+        self.get_tokens()
+
+    def get_tokens(self):
+        """
+        Get token from yaml file
+        """
+        """
+        script_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+        print(script_path)
+        path_list = script_path.split(os.sep)
+        script_directory = path_list[0:len(path_list) - 1]
+        path = "/".join(script_directory) + "/" + 'test.yaml'
+        """
+        path = os.path.join('/', 'TestingFramework/test.yaml')
+        if os.path.exists(path):
+            with open(path) as f:
+                tasks = yaml.safe_load(f)
+                #print(tasks)
+
+            test_jupyterhub = tasks['tests']['jupyterhub_api']
+            self.token = test_jupyterhub['create_session']['token']
+            print(self.token)
+
 
     def check_session(self):
 
@@ -116,7 +137,7 @@ class CheckSession:
                             self.log.write("error", user + " server is not present ")
                             self.exit |= 1
                     else:
-                        self.log.write("error", r)
+                        self.log.write("error", (r.content).decode('utf-8'))
                         self.exit |= 1
 
             return self.exit
@@ -130,7 +151,7 @@ class CheckSession:
 
 if __name__ == "__main__":
     args = get_args()
-    test_active_session = CheckSession(args.port, args.users, args.token, False)
+    test_active_session = CheckSession(args.port, args.users, verify=False)
     print(test_active_session.exit_code())
 
 

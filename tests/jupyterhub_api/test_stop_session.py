@@ -3,18 +3,17 @@
 Test to stop the session
 
 To run the test use the following command:
-python3 test_stop_session.py --port 443 --users user1 --token {token-value}
+python3 test_stop_session.py --port 443 --users user1
 
 For multiple users
 
-python3 test_stop_session.py --port 443 --users user0 user1 user2 --token {token-value}
+python3 test_stop_session.py --port 443 --users user0 user1 user2
 
 """
 import json
 import requests
 import subprocess
 import os
-from SessionUtils import CreateSession
 import time
 import argparse
 import sys
@@ -23,6 +22,7 @@ import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import yaml
 
 
 def get_args():
@@ -33,32 +33,46 @@ def get_args():
     parser.add_argument( "--users", nargs='+', dest="users",
                         required  = True,
                         help='list of users')
-    parser.add_argument("--token", dest="token",
-                        required=True,
-                        help='Enter token value')
 
     args = parser.parse_args()
     return args
 
 class StopSession:
-    def __init__(self, port, users, token, verify):
+    def __init__(self, port, users, verify):
         self.port = port
         self.users = users
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name ="Stop_Session"
         self.exit = 0
         self.verify = verify
-        self.token = token
+        self.token = ""
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder,
                                        self.ref_test_name + "_" + time.strftime("%Y-%m-%d_%H:%M:%S") + LOG_EXTENSION))
         self.log_params()
+        self.get_tokens()
 
     def log_params(self):
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
+
+
+    def get_tokens(self):
+        """
+        Get token from yaml file
+        """
+        path = os.path.join('/', 'TestingFramework/test.yaml')
+        #path = "/".join(script_directory) + "/" + 'test.yaml'
+        if os.path.exists(path):
+            with open(path) as f:
+                tasks = yaml.safe_load(f)
+                #print(tasks)
+
+            test_jupyterhub = tasks['tests']['jupyterhub_api']
+            self.token = test_jupyterhub['create_session']['token']
+            #print(self.token)
 
 
     def stop_session(self):
@@ -92,5 +106,5 @@ class StopSession:
 
 if __name__ == "__main__":
     args = get_args()
-    test_stop_session = StopSession(args.port, args.users, args.token, False)
+    test_stop_session = StopSession(args.port, args.users, verify = False)
     (test_stop_session.exit_code())
