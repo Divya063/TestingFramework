@@ -102,6 +102,8 @@ def main():
     validator(tasks)
 
     if (args.user_mode):
+        if(args.session == None):
+            raise Exception("session argument needed")
         for test in args.test:
             if test == "storage":
                 storage_user_container(args.session)
@@ -125,8 +127,13 @@ def main():
 
 
     else:
+        #From host
         for test in args.test:
             if test == "storage":
+                if (args.path == None):
+                    raise Exception("path argument needed")
+                test_storage = tasks['tests']['storage']
+                test_storage['statFile']['filepath'] =  args.path
                 run_storage(tasks)
 
             if test == "jupyterhub-api":
