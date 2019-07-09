@@ -120,6 +120,9 @@ def main():
                 user_container(args.session)
                 command = "docker exec -it" + " " + "jupyter-" + args.session + " " + "python3 run_container.py --test " + test
                 os.system(command)
+                command1 = "docker cp jupyter-" + args.session + ":/logs ."
+                os.system(command1)
+
 
     else:
         for test in args.test:
