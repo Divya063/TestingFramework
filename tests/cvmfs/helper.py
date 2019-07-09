@@ -3,9 +3,9 @@ import glob
 from test_mount import Mount
 from tests.cvmfs.test_throughput import Throughput
 from test_ttfb import TTFB
-from test_config_probe import ConfigProbe
-from test_config_stat import ConfigStat
-from test_config_status import ConfigStatus
+#from test_config_probe import ConfigProbe
+#from test_config_stat import ConfigStat
+#from test_config_status import ConfigStatus
 
 
 
@@ -30,14 +30,14 @@ def run_cvmfs(tasks):
     test_throughput = Throughput(num_of_packages, repo_path, packages_path)
     exit_code |= test_throughput.exit_code()
     # test cvmfs_config probe
-    test_config_probe = ConfigProbe()
-    exit_code |= test_config_probe.exit_code()
+    #test_config_probe = ConfigProbe()
+    #exit_code |= test_config_probe.exit_code()
     # test cvmfs_config stat
-    test_config_stat = ConfigStat()
-    exit_code |= test_config_stat.exit_code()
+    #test_config_stat = ConfigStat()
+    #exit_code |= test_config_stat.exit_code()
     # test cvmfs_config status
-    test_config_status = ConfigStatus()
-    exit_code |= test_config_status.exit_code()
+    #test_config_status = ConfigStatus()
+    #exit_code |= test_config_status.exit_code()
 
 
     return exit_code
