@@ -28,6 +28,7 @@ class Session:
         size = len(command)
 
         self.token = command[size - 2]
+        os.chdir(owd)
         print("token is  " + self.token)
         """
         get back to old directory
