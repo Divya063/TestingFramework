@@ -4,25 +4,25 @@
 
 There are two testing modes:
  - From the host machine (default)
- - From User-container - To run the test from user container use the flag "-u" and pass the 
- session name as --session {name}, e.g- --session user2
+ - From User-container - To run the test from user container use the flag `-u` and pass the 
+ session name as `--session {name}`, e.g- `--session user2`
  
-To run multiple tests use the command - `python3 run.py --test [test-name1] [test-name2] --configfile [path of yaml file]`
+To run multiple tests use the command - `python3 run.py --test [test-name1] [test-name2] --configfile [path of yaml file]` <br>
 ##Storage
-<hr>
+
 - To run test for storage from host machine use the following command:
 
 ```bash
 $python3 run.py --test storage --configfile test.yaml --path {path to the user directory}
 ```
-e.g -(python3 run.py --test storage --configfile test.yaml --path /eos/user/u/user2)
+e.g (python3 run.py --test storage --configfile test.yaml --path /eos/user/u/user2)
 
 - To run the test from user container use the command given below (there is no need to provide path argument as it will
 be already set in test.yaml file.)<br>
 `python3 run.py -u --session user2 --test storage --configfile test.yaml`
 
 ##CVMFS
-<hr>
+
 - To run test for cvmfs from host machine use the following command:
 
 ```bash
