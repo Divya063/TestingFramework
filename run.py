@@ -3,8 +3,13 @@ import glob
 import os
 import sys
 import yaml
+import docker
+import subprocess
 
 from tests.storage.helper import run_storage
+from tests.jupyterhub_api.helper import run_jupyterhub_api
+from helper import storage_user_container, jupyterhub_container, user_container
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
@@ -13,12 +18,22 @@ def get_args():
                         required=False,
                         help='name of the test you want to run')
     parser.add_argument('-c', '--configfile',
-                        required = True,
+                        required = False,
                         help='load config file')
+
+    parser.add_argument("-u", "--user_mode", action='store_true')
+
+    parser.add_argument('-s', '--session',
+                        required=False,
+                        help= 'session name')
+
+    parser.add_argument('-p', '--path',
+                        required= False,
+                        help='user path')
     args = parser.parse_args()
     return args
 
-
+client = docker.client.from_env()
 def get_config(cfg):
     if os.path.exists(cfg):
         with open(cfg, 'r') as stream:
@@ -84,11 +99,34 @@ def main():
     tasks = get_config(yaml_path)
    # Validates YAML File
     validator(tasks)
-    for test in args.test:
-        if test == "storage":
-            #passes the parameters loaded from yaml file to helper function
-            run_storage(tasks)
-            cleanup()
+
+    if (args.user_mode):
+        for test in args.test:
+            if test == "storage":
+                storage_user_container(args.session)
+                command = "sudo docker exec -it -u "+args.session+" -w /scratch/" + args.session + " " + "jupyter-" + args.session + " " + "python3 run_container.py --test " + test
+                # client.containers.get("jupyter-user2").exec_run(cmd = ["python3", "run_container.py"], user = "user2", stdin=False, workdir= "/scratch/user2/", stream = True, stdout=True)
+                os.system(command)
+                command1 = "docker cp jupyter-"+ args.session + ":/scratch/"+args.session + "/logs ."
+                os.system(command1)
+            if test == "jupyterhub-api":
+                jupyterhub_container(args.session)
+                command = "docker exec -it" + " " + "jupyterhub"+ " " + "python3 run_container.py --test " + test
+                os.system(command)
+                command1 = "docker cp jupyterhub:/logs ."
+                os.system(command1)
+            if test == "cvmfs":
+                user_container(args.session)
+                command = "docker exec -it" + " " + "jupyter-" + args.session + " " + "python3 run_container.py --test " + test
+                os.system(command)
+
+    else:
+        for test in args.test:
+            if test == "storage":
+                run_storage(tasks)
+
+            if test == "jupyterhub-api":
+                run_jupyterhub_api(tasks)
 
 if __name__ == "__main__":
     main()
