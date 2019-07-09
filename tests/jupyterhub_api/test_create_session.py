@@ -94,33 +94,6 @@ class CreateSession:
        else:
            self.log.write("info", "Successfully created token " + str(self.token))
 
-    def check_create_users(self):
-
-        """
-        Inside container
-        port = 443
-        Ouside container
-        port = 8443
-        """
-        self.log.write("info", "creating users..")
-        print(self.users)
-        for user in self.users:
-            global r
-            try:
-                r = self.session.create_users(user)
-            except Exception as err:
-                self.exit |= 1
-                self.log.write("error", str(err))
-                self.log.write("error", str(r))
-            else:
-                if r.status_code == 201:
-                    self.log.write("info", user + " successfully created")
-                else:
-                    self.log.write("error", (r.content).decode('utf-8'))
-                    self.exit |= 1
-        self.log.write("info", "Exit code " + str(self.exit))
-
-        return self.exit
 
     def check_create_server(self):
 
@@ -197,7 +170,6 @@ class CreateSession:
 
     def exit_code(self):
         self.create_token()
-        self.exit |= self.check_create_users()
         self.exit |= self.check_create_server()
 
         self.log.write("info", "overall exit code" + str(self.exit))
