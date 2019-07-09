@@ -83,7 +83,6 @@ def validator(tasks):
                         check_input_validity(param)
 
 
-
 def cleanup():
     """
     delete the created files
@@ -149,6 +148,9 @@ def main():
                 run_cvmfs(tasks)
 
 
+
+        if test == "CVMFS":
+            run_cvmfs(tasks)
 
 if __name__ == "__main__":
     main()
