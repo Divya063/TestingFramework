@@ -63,7 +63,7 @@ class StopSession:
         """
         Get token from yaml file
         """
-        path = os.path.join('/', 'TestingFramework/test.yaml')
+        path = os.path.join('/', 'test.yaml')
         #path = "/".join(script_directory) + "/" + 'test.yaml'
         if os.path.exists(path):
             with open(path) as f:
