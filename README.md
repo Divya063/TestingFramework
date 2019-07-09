@@ -8,20 +8,43 @@ There are two testing modes:
  session name as `--session {name}`, e.g- `--session user2`
  
 To run multiple tests use the command - `python3 run.py --test [test-name1] [test-name2] --configfile [path of yaml file]` <br>
-##Storage
+<h3>Storage</h3>
 
 - To run test for storage from host machine use the following command:
 
 ```bash
 $python3 run.py --test storage --configfile test.yaml --path {path to the user directory}
 ```
-e.g (python3 run.py --test storage --configfile test.yaml --path /eos/user/u/user2)
+e.g (`python3 run.py --test storage --configfile test.yaml --path /eos/user/u/user2`)
 
 - To run the test from user container use the command given below (there is no need to provide path argument as it will
 be already set in test.yaml file.)<br>
 `python3 run.py -u --session user2 --test storage --configfile test.yaml`
 
-##CVMFS
+**Parameters**
+```yaml
+storage:
+    throughput: 
+      fileNumber: 10
+      fileSize: 1M
+    checksum:
+      fileNumber: 10
+      fileSize: 1M
+    statFile:
+      filepath: "eos/user/u/user2/"
+```
+    
+1. throughput:
+    - Test file : test_throughput.py
+    - Use case : Benchmark read-write performance and compute the read and write throughput.
+    - To run this test explicity use - `python3 test_throughput.py --num 10 --file-size 1M --dest /eos/user/u/user2`
+    
+2. checksum : 
+    - Test file : test_checksum.py
+    - Use case : Calculates the checksum
+    - To run this test explicity use - `python3 test_checksum.py --num 10 --file-size 1M --dest /eos/user/u/user2`
+
+<h3>CVMFS</h3>
 
 - To run test for cvmfs from host machine use the following command:
 
@@ -33,10 +56,37 @@ e.g -(python3 run.py --test CVMFS --configfile test.yaml
 - To run the test from user container use the command given below.<br>
 `python3 run.py -u --session user2 --test CVMFS --configfile test.yaml`
 
-##Jupyterhub API
+**Parameters**
 
+```yaml
+cvmfs:
+    mount:
+      repoName: 'sft.cern.ch'
+      repoPath: 'cvmfs/sft.cern.ch/'
+    ttfb:
+      repoPath: 'cvmfs/sft.cern.ch/'
+      filePath: 'cvmfs/sft.cern.ch/lcg/lastUpdate'
+    throughput:
+      num: 2 #Number of packages you want to read
+      repoPath: 'cvmfs/sft.cern.ch/'
+      filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
+```
+1. mount : 
+    - Test file : test_mount.py
+    - Use case : Checks if cvmfs folder is mounted or not
+    - To run this test explicity use - `python3 test_mount.py --repo sft.cern.ch --path cvmfs/sft.cern.ch/`
+2. ttfb:
+    - Test file : test_ttfb.py
+    - Use case : Evaluates the time needed to get the first byte (TTFB) of a file known to exist (lastUpdate).
+    - To run this test explicity use - `python3 test_ttfb.py ---repo sft.cern.ch --path cvmfs/sft.cern.ch/lcg/lastUpdate`
+    
+3. throughput:
+    - Test file : test_throughput.py
+    - Use case : Benchmark performance when reading from the repository and compute the read throughput.
+    - To run this test explicity use - `python3 test_throughput.py --num 2 --repo_path cvmfs/sft.cern.ch --path cvmfs/sft.cern.ch/lcg/releases/`
 
-- To run all the tests from host use `python3 run.py --test jupyterhub-api --configfile test.yaml`
+<h3>Jupyterhub API</h3>
+
 - To run the tests from user container use `python3 run.py -u --session {session-name} --test jupyterhub-api --configfile test.yaml`.
 e.g - `python3 run.py -u --session user2 --test jupyterhub-api --configfile test.yaml`
 
