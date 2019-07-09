@@ -4,7 +4,7 @@ import os
 import sys
 import yaml
 
-from tests.storage.helper import run_eos
+from tests.storage.helper import run_storage
 from tests.cvmfs.helper import run_cvmfs
 
 def get_args():
@@ -85,9 +85,9 @@ def main():
    # Validates YAML File
     validator(tasks)
     for test in args.test:
-        if test == "EOS":
+        if test == "storage":
             #passes the parameters loaded from yaml file to helper function
-            run_eos(tasks)
+            run_storage(tasks)
             cleanup()
 
         if test == "CVMFS":
