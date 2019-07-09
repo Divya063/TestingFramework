@@ -34,7 +34,7 @@ class Session:
         get back to old directory
         """
 
-        path = os.path.join('/', 'TestingFramework/test.yaml')
+        path = os.path.join('/', 'test.yaml')
         print(path)
         if os.path.exists(path):
             with open(path) as f:
