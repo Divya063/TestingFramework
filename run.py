@@ -110,6 +110,7 @@ def main():
                 Run the file run_container.py
                 """
                 command = "sudo docker exec -it -u "+args.session+" -w /scratch/" + args.session + " " + "jupyter-" + args.session + " " + "python3 run_container.py --test " + test
+                #using docker API
                 # client.containers.get("jupyter-user2").exec_run(cmd = ["python3", "run_container.py"], user = "user2", stdin=False, workdir= "/scratch/user2/", stream = True, stdout=True)
                 os.system(command)
                 command1 = "docker cp jupyter-"+ args.session + ":/scratch/"+args.session + "/logs ."
