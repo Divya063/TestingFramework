@@ -3,7 +3,6 @@ import glob
 import os
 import sys
 import yaml
-import docker
 import subprocess
 
 from tests.storage.helper import run_storage
@@ -34,7 +33,7 @@ def get_args():
     args = parser.parse_args()
     return args
 
-client = docker.client.from_env()
+#client = docker.client.from_env()
 def get_config(cfg):
     if os.path.exists(cfg):
         with open(cfg, 'r') as stream:
@@ -107,10 +106,16 @@ def main():
         for test in args.test:
             if test == "storage":
                 storage_user_container(args.session)
+                """
+                Run the file run_container.py
+                """
                 command = "sudo docker exec -it -u "+args.session+" -w /scratch/" + args.session + " " + "jupyter-" + args.session + " " + "python3 run_container.py --test " + test
                 # client.containers.get("jupyter-user2").exec_run(cmd = ["python3", "run_container.py"], user = "user2", stdin=False, workdir= "/scratch/user2/", stream = True, stdout=True)
                 os.system(command)
                 command1 = "docker cp jupyter-"+ args.session + ":/scratch/"+args.session + "/logs ."
+                """
+                copy log folder
+                """
                 os.system(command1)
             if test == "jupyterhub-api":
                 jupyterhub_container(args.session)
