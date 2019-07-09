@@ -67,7 +67,7 @@ class CheckSession:
         script_directory = path_list[0:len(path_list) - 1]
         path = "/".join(script_directory) + "/" + 'test.yaml'
         """
-        path = os.path.join('/', 'TestingFramework/test.yaml')
+        path = os.path.join('/', 'test.yaml')
         if os.path.exists(path):
             with open(path) as f:
                 tasks = yaml.safe_load(f)
@@ -75,7 +75,7 @@ class CheckSession:
 
             test_jupyterhub = tasks['tests']['jupyterhub_api']
             self.token = test_jupyterhub['create_session']['token']
-            print(self.token)
+            #print(self.token)
 
 
     def check_session(self):
