@@ -8,6 +8,7 @@ import subprocess
 
 from tests.storage.helper import run_storage
 from tests.jupyterhub_api.helper import run_jupyterhub_api
+from tests.cvmfs.helper import run_cvmfs
 from helper import storage_user_container, jupyterhub_container, user_container
 
 
@@ -115,7 +116,7 @@ def main():
                 os.system(command)
                 command1 = "docker cp jupyterhub:/logs ."
                 os.system(command1)
-            if test == "cvmfs":
+            if test == "CVMFS":
                 user_container(args.session)
                 command = "docker exec -it" + " " + "jupyter-" + args.session + " " + "python3 run_container.py --test " + test
                 os.system(command)
@@ -127,6 +128,11 @@ def main():
 
             if test == "jupyterhub-api":
                 run_jupyterhub_api(tasks)
+
+            if test == "CVMFS":
+                run_cvmfs(tasks)
+
+
 
 if __name__ == "__main__":
     main()
