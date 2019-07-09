@@ -48,7 +48,7 @@ class Session:
             except Exception as e:
                 raise Exception
 
-            print(test_jupyterhub['create_session']['token'])
+            #print(test_jupyterhub['create_session']['token'])
 
 
         else:
@@ -56,23 +56,6 @@ class Session:
             sys.exit()
         return self.token, command
 
-    def create_users(self, user):
-
-        """
-        Inside container
-        port = 443
-
-        Ouside container
-        port = 8443
-        """
-
-        r = requests.post(self.main_url + 'users/%s' % user,
-                          headers = {
-                              'Authorization': 'token %s' % self.token,
-                          },
-                          verify= self.verify
-                          )
-        return r
 
     def create_server(self, user):
 
