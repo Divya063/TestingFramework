@@ -8,6 +8,7 @@ tests:
       fileNumber: 10
       fileSize: 1M
     statFile:
+      filepath-host: " "
       filepath: "eos/user/u/user2/"
   cvmfs:
     mount:
