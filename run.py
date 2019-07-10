@@ -138,7 +138,7 @@ def main():
                 if (args.path == None):
                     raise Exception("path argument needed")
                 test_storage = tasks['tests']['storage']
-                test_storage['statFile']['filepath'] =  args.path
+                test_storage['statFile']['filepath-host'] =  args.path
                 run_storage(tasks)
 
             if test == "jupyterhub-api":
@@ -147,10 +147,6 @@ def main():
             if test == "CVMFS":
                 run_cvmfs(tasks)
 
-
-
-        if test == "CVMFS":
-            run_cvmfs(tasks)
 
 if __name__ == "__main__":
     main()
