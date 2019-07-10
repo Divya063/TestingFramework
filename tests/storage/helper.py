@@ -2,6 +2,9 @@ import os
 import glob
 from test_throughput import Throughput
 from test_checksum import Checksum
+from test_write import Write
+from test_exists import Exists
+from test_delete import Delete
 
 
 def run_storage(tasks):
@@ -19,5 +22,18 @@ def run_storage(tasks):
     size = test_storage['checksum']['fileSize']
     test_integrity= Checksum(number_of_files, size, file_path)
     exit_code |= test_integrity.exit_code()
+
+    file_size = test_storage['write']['fileSize']
+    test_write = Write(file_size, file_path)
+    exit_code |= test_write.exit_code()
+
+    file_name = test_storage['delete']['fileName']
+    test_delete = Delete(file_name, file_path)
+    exit_code |= test_delete.exit_code()
+
+    file_name1 = test_storage['exists']['fileName']
+    test_exists = Exists(file_name1, file_path)
+    exit_code |= test_exists.exit_code()
+
     return exit_code
 

@@ -1,6 +1,12 @@
 # Add the new parameters [here](tests/)
 tests:
   storage:
+    write:
+      fileSize: 1M
+    delete:
+      fileName: '0.txt'
+    exists:
+      fileName: '0.txt'
     throughput: 
       fileNumber: 10
       fileSize: 1M
