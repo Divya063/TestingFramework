@@ -6,7 +6,7 @@ import yaml
 
 from tests.storage.helper import run_storage
 from tests.jupyterhub_api.helper import run_jupyterhub_api
-
+from tests.cvmfs.helper import run_cvmfs
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
@@ -70,7 +70,6 @@ def validator(tasks):
                         check_input_validity(param)
 
 
-
 def cleanup():
     """
     delete the created files
@@ -94,6 +93,8 @@ def main():
 
         if test == "jupyterhub-api":
             run_jupyterhub_api(tasks)
+        if test == "CVMFS":
+            run_cvmfs(tasks)
 
 if __name__ == "__main__":
     main()
