@@ -69,3 +69,26 @@ class Session:
                           )
         return r
 
+class Tokens:
+    def __init__(self):
+        pass
+
+    def get_tokens(self):
+        """
+        Get token from yaml file
+        """
+        path = os.path.join('/', 'test.yaml')
+        # path = "/".join(script_directory) + "/" + 'test.yaml'
+        if os.path.exists(path):
+            with open(path) as f:
+                tasks = yaml.safe_load(f)
+                # print(tasks)
+
+            test_jupyterhub = tasks['tests']['jupyterhub_api']
+            self.token = test_jupyterhub['create_session']['token']
+        else:
+            raise Exception
+
+        return self.token
+
+

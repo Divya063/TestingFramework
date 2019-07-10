@@ -21,6 +21,7 @@ import yaml
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 import argparse
+from SessionUtils import Tokens
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -46,6 +47,9 @@ class CheckSession:
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name= "Check_Sessions"
         self.ref_timestamp = int(time.time())
+        self.session = Tokens()
+        self.token = self.session.get_tokens()
+        print(self.token)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log_params()
@@ -54,28 +58,6 @@ class CheckSession:
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
-        self.get_tokens()
-
-    def get_tokens(self):
-        """
-        Get token from yaml file
-        """
-        """
-        script_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-        print(script_path)
-        path_list = script_path.split(os.sep)
-        script_directory = path_list[0:len(path_list) - 1]
-        path = "/".join(script_directory) + "/" + 'test.yaml'
-        """
-        path = os.path.join('/', 'test.yaml')
-        if os.path.exists(path):
-            with open(path) as f:
-                tasks = yaml.safe_load(f)
-                #print(tasks)
-
-            test_jupyterhub = tasks['tests']['jupyterhub_api']
-            self.token = test_jupyterhub['create_session']['token']
-            #print(self.token)
 
 
     def check_session(self):

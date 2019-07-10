@@ -20,6 +20,7 @@ import sys
 sys.path.append("..")
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from SessionUtils import Tokens
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import yaml
@@ -45,13 +46,14 @@ class StopSession:
         self.ref_test_name ="Stop_Session"
         self.exit = 0
         self.verify = verify
-        self.token = ""
+        self.session = Tokens()
+        self.token = self.session.get_tokens()
+        print(self.token)
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder,
                                        self.ref_test_name + "_" + time.strftime("%Y-%m-%d_%H:%M:%S") + LOG_EXTENSION))
         self.log_params()
-        self.get_tokens()
 
     def log_params(self):
         self.log.write("parameters", "Test name: " + self.ref_test_name)
