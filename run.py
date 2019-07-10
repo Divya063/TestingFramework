@@ -139,7 +139,7 @@ def main():
                     raise Exception("path argument needed")
                 test_storage = tasks['tests']['storage']
                 test_storage['statFile']['filepath-host'] =  args.path
-                run_storage(tasks)
+                run_storage(tasks, host=True)
 
             if test == "jupyterhub-api":
                 run_jupyterhub_api(tasks)
