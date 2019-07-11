@@ -1,5 +1,7 @@
 import os
 import glob
+from test_mount_sanity import MountSanity
+from test_mount import Mount
 from test_throughput import Throughput
 from test_checksum import Checksum
 from test_write import Write
@@ -7,15 +9,29 @@ from test_exists import Exists
 from test_delete import Delete
 
 
+
+
 def run_storage(tasks):
     """
      Helper function for running storage test suite
     """
+    exit_code = 0
+
     test_storage = tasks['tests']['storage']
+    time = test_storage['mount_sanity']['timeout']
+    test_mount_sanity = MountSanity(time)
+    try:
+        exit_code |= test_mount_sanity.exit_code()
+    except Exception as err:
+        print(err)
+
+    test_mount = Mount()
+    exit_code |= test_mount.exit_code()
+
     file_path = test_storage['statFile']['filepath']
     number_of_files = test_storage['throughput']['fileNumber']
     size = test_storage['throughput']['fileSize']
-    exit_code = 0
+
     test_io = Throughput(number_of_files, size, file_path)
     exit_code |= test_io.exit_code()
     number_of_files = test_storage['checksum']['fileNumber']
