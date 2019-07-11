@@ -1,6 +1,8 @@
 # Add the new parameters [here](tests/)
 tests:
   storage:
+    mount_sanity:
+      timeout: 8
     write:
       fileSize: 1M
     delete:
