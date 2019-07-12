@@ -6,8 +6,8 @@ import yaml
 import subprocess
 
 from tests.storage.helper import run_storage
-# from tests.jupyterhub_api.helper import run_jupyterhub_api
-# from tests.cvmfs.helper import run_cvmfs
+from tests.jupyterhub_api.helper import run_jupyterhub_api
+from tests.cvmfs.helper import run_cvmfs
 from helper import cp_helper
 
 
@@ -94,7 +94,7 @@ def cleanup():
 
 def docker_exec(container_name,  arg, user = None, working_dir=None):
     if(working_dir != None and user != None):
-        cmd = "sudo docker exec -it " + "-u "+ user+ " -w "+ working_dir + ""+ container_name + " python3 run_container.py --test " + arg
+        cmd = "sudo docker exec -it " + "-u "+ user+ " -w "+ working_dir + " "+ container_name + " python3 run_container.py --test " + arg
     else:
         cmd = "sudo docker exec -it " + container_name + " python3 run_container.py --test "+ arg
     os.system(cmd)
@@ -107,7 +107,6 @@ def docker_cp_container(container_name, path, user = None):
         cmd = "docker cp " + container_name + path + user + "/logs ."
     else:
         cmd = "docker cp " + container_name + path + "logs ."
-
     os.system(cmd)
 
 
