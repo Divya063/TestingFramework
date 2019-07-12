@@ -32,7 +32,7 @@ def main():
     tasks = get_config('test.yaml')
     args = get_args()
     if(args.test[0]=="storage"):
-        run_storage(tasks)
+        run_storage(tasks, host = False)
     if (args.test[0]) == "jupyterhub-api":
         run_jupyterhub_api(tasks)
 

@@ -83,7 +83,6 @@ def validator(tasks):
                         check_input_validity(param)
 
 
-
 def cleanup():
     """
     delete the created files
@@ -131,6 +130,7 @@ def main():
                 docker_exec(container_name, test, user= args.session, working_dir= dir)
                 docker_cp_container(container_name, ":/scratch/", args.session)
 
+
             if test == "jupyterhub-api":
                 cp_helper(args.session, test)
                 container_name = "jupyterhub"
@@ -155,7 +155,6 @@ def main():
 
             if test == "CVMFS":
                 run_cvmfs(tasks)
-
 
 
 if __name__ == "__main__":

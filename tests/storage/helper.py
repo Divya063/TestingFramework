@@ -4,12 +4,16 @@ from test_throughput import Throughput
 from test_checksum import Checksum
 
 
-def run_storage(tasks):
+def run_storage(tasks, host):
     """
      Helper function for running storage test suite
     """
     test_storage = tasks['tests']['storage']
-    file_path = test_storage['statFile']['filepath']
+    if host:
+        file_path = test_storage['statFile']['filepath-host']
+    else:
+        file_path = test_storage['statFile']['filepath']
+        
     number_of_files = test_storage['throughput']['fileNumber']
     size = test_storage['throughput']['fileSize']
     exit_code = 0

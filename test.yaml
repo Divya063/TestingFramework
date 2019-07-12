@@ -8,7 +8,19 @@ tests:
       fileNumber: 10
       fileSize: 1M
     statFile:
+      filepath-host: " "
       filepath: "eos/user/u/user2/"
+  cvmfs:
+    mount:
+      repoName: 'sft.cern.ch'
+      repoPath: 'cvmfs/sft.cern.ch/'
+    ttfb:
+      repoPath: 'cvmfs/sft.cern.ch/'
+      filePath: 'cvmfs/sft.cern.ch/lcg/lastUpdate'
+    throughput:
+      num: 2 #Number of packages
+      repoPath: 'cvmfs/sft.cern.ch/'
+      filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
 
 #  eos:
 #    mountedFilesystem:
