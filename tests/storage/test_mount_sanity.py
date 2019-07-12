@@ -34,7 +34,7 @@ class MountSanity:
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
 
     def quit_function(self, fn_name):
-        print('{0} took too long'.format(fn_name), file=sys.stderr)
+        self.log.write("error", '{0} took too long'.format(fn_name))
         self.exit = 1
         sys.stderr.flush()  # Python 3 stderr is likely buffered.
         thread.interrupt_main()  # raises KeyboardInterrupt if function is taking too long
