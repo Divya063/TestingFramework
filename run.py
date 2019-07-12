@@ -3,13 +3,12 @@ import glob
 import os
 import sys
 import yaml
-import docker
 import subprocess
 
 from tests.storage.helper import run_storage
-from tests.jupyterhub_api.helper import run_jupyterhub_api
-from tests.cvmfs.helper import run_cvmfs
-from helper import storage_user_container, jupyterhub_container, user_container
+# from tests.jupyterhub_api.helper import run_jupyterhub_api
+# from tests.cvmfs.helper import run_cvmfs
+from helper import cp_helper
 
 
 def get_args():
@@ -34,7 +33,7 @@ def get_args():
     args = parser.parse_args()
     return args
 
-client = docker.client.from_env()
+
 def get_config(cfg):
     if os.path.exists(cfg):
         with open(cfg, 'r') as stream:
@@ -94,6 +93,26 @@ def cleanup():
     for f in filelist:
         os.remove(f)
 
+def docker_exec(container_name,  arg, user = None, working_dir=None):
+    if(working_dir != None and user != None):
+        cmd = "sudo docker exec -it " + "-u "+ user+ " -w "+ working_dir + ""+ container_name + " python3 run_container.py --test " + arg
+    else:
+        cmd = "sudo docker exec -it " + container_name + " python3 run_container.py --test "+ arg
+    os.system(cmd)
+
+
+
+
+def docker_cp_container(container_name, path, user = None):
+    if(user!=None):
+        cmd = "docker cp " + container_name + path + user + "/logs ."
+    else:
+        cmd = "docker cp " + container_name + path + "logs ."
+
+    os.system(cmd)
+
+
+
 def main():
     args = get_args()
     yaml_path= os.path.join(os.getcwd(), args.configfile)
@@ -106,34 +125,29 @@ def main():
             raise Exception("session argument needed")
         for test in args.test:
             if test == "storage":
-                storage_user_container(args.session)
-                command = "sudo docker exec -it -u "+args.session+" -w /scratch/" + args.session + " " + "jupyter-" + args.session + " " + "python3 run_container.py --test " + test
-                # client.containers.get("jupyter-user2").exec_run(cmd = ["python3", "run_container.py"], user = "user2", stdin=False, workdir= "/scratch/user2/", stream = True, stdout=True)
-                os.system(command)
-                command1 = "docker cp jupyter-"+ args.session + ":/scratch/"+args.session + "/logs ."
-                os.system(command1)
-            if test == "jupyterhub-api":
-                jupyterhub_container(args.session)
-                command = "docker exec -it" + " " + "jupyterhub"+ " " + "python3 run_container.py --test " + test
-                os.system(command)
-                command1 = "docker cp jupyterhub:/logs ."
-                os.system(command1)
-            if test == "CVMFS":
-                user_container(args.session)
-                command = "docker exec -it" + " " + "jupyter-" + args.session + " " + "python3 run_container.py --test " + test
-                os.system(command)
-                command1 = "docker cp jupyter-" + args.session + ":/logs ."
-                os.system(command1)
+                cp_helper(args.session, test)
+                dir = "/scratch/" + args.session
+                container_name = "jupyter-" + args.session
+                docker_exec(container_name, test, user= args.session, working_dir= dir)
+                docker_cp_container(container_name, ":/scratch/", args.session)
 
+            if test == "jupyterhub-api":
+                cp_helper(args.session, test)
+                container_name = "jupyterhub"
+                docker_exec(container_name, test)
+                docker_cp_container(container_name, ":/")
+
+
+            if test == "CVMFS":
+                cp_helper(args.session, test)
+                container_name = "jupyter-" + args.session
+                docker_exec(container_name, test)
+                docker_cp_container(container_name, ":/")
 
     else:
         #From host
         for test in args.test:
             if test == "storage":
-                if (args.path == None):
-                    raise Exception("path argument needed")
-                test_storage = tasks['tests']['storage']
-                test_storage['statFile']['filepath'] =  args.path
                 run_storage(tasks)
 
             if test == "jupyterhub-api":

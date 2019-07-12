@@ -5,44 +5,34 @@ Copies files and folders to relevant containers
 import subprocess
 import os
 
-
-def storage_user_container(name):
-    try:
-        cmd1 = "docker cp run.py "+ "jupyter-" + name + ":/scratch/" + name + "/run.py"
-        os.system(cmd1)
-        cmd2 = "docker cp test.yaml "+ "jupyter-"+ name + ":/scratch/" + name + "/test.yaml"
-        os.system(cmd2)
-        cmd3 = "docker cp tests/. " + "jupyter-" +name + ":/scratch/" + name+ "/tests"
-        os.system(cmd3)
-        cmd4 = "docker cp run_container.py " + "jupyter-" + name + ":/scratch/" + name + "/run_container.py"
-        os.system(cmd4)
-    except Exception as exc:
-        raise Exception
+def cp_helper(name, test_name):
+    container_name = "jupyter-"+ name
+    if test_name == "storage":
+        dest= "scratch/" + name +"/"
+        docker_cp_host(container_name, dest)
+    elif test_name == "jupyterhub-api":
+        container_name = "jupyterhub"
+        docker_cp_host(container_name, "")
+    else:
+        docker_cp_host(container_name, "")
 
 
-def user_container(name):
-    try:
-        cmd1 = "docker cp run.py "+ "jupyter-" + name + ":/run.py"
-        os.system(cmd1)
-        cmd2 = "docker cp test.yaml "+ "jupyter-"+ name + ":/test.yaml"
-        os.system(cmd2)
-        cmd3 = "docker cp tests/. " + "jupyter-" +name + ":/tests"
-        os.system(cmd3)
-        cmd4 = "docker cp run_container.py " + "jupyter-" + name + ":/run_container.py"
-        os.system(cmd4)
-    except Exception as exc:
-        raise Exception
 
-def jupyterhub_container(name):
-    try:
-        cmd1 = "docker cp run.py "+ "jupyterhub" + ":/run.py"
-        os.system(cmd1)
-        cmd2 = "docker cp test.yaml "+ "jupyterhub" + ":/test.yaml"
-        os.system(cmd2)
-        cmd3 = "docker cp tests/. " + "jupyterhub" + ":/tests"
-        os.system(cmd3)
-        cmd4 = "docker cp run_container.py " + "jupyterhub" + ":/run_container.py"
-        os.system(cmd4)
-    except Exception as exc:
-        raise Exception
+
+def docker_cp_host(container_name, dest):
+    file_list = ['run.py', 'test.yaml', 'run_container.py']
+    folder_list = ['tests']
+    for file in file_list:
+        try:
+            cmd = "docker cp " + file + " " + container_name+ ":/" + dest + file
+            os.system(cmd)
+        except Exception as exc:
+            raise Exception
+    for folder in folder_list:
+        try:
+            cmd = "docker cp " + folder +"/." " " + container_name + ":/" + dest + folder
+            os.system(cmd)
+        except Exception as exc:
+            raise Exception
+
 
