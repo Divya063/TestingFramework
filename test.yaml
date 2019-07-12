@@ -28,7 +28,7 @@ tests:
     create_session:
       port: '443'
       users: ['user2']
-      token: ''
+      token: 'b718a866d9da492cac45c5724b3d132c'
       params:
         TLS: False
         LCG-rel: "LCG_95a"
@@ -39,7 +39,6 @@ tests:
         spark-cluster: "none"
       TLS: False
       timedelay: 30 #Max
-      path: '/srv/jupyterhub'
     check_session:
       port: '443'
       users: ['user2']

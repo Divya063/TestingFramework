@@ -21,7 +21,7 @@ import yaml
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 import argparse
-from SessionUtils import Tokens
+from SessionUtils import Session
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -42,14 +42,12 @@ class CheckSession:
         self.users = users
         self.port = port
         self.exit =0
-        self.token = ""
         self.verify = verify
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name= "Check_Sessions"
         self.ref_timestamp = int(time.time())
-        self.session = Tokens()
+        self.session = Session()
         self.token = self.session.get_tokens()
-        print(self.token)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log_params()
@@ -111,7 +109,6 @@ class CheckSession:
                 else:
                     if (r.status_code == 200):
                         status = r.json()
-                        print(status)
                         server_status = status['server']
                         if(server_status!= None):
                             self.log.write("info", user + " server is present at " + server_status)
@@ -134,6 +131,6 @@ class CheckSession:
 if __name__ == "__main__":
     args = get_args()
     test_active_session = CheckSession(args.port, args.users, verify=False)
-    print(test_active_session.exit_code())
+    (test_active_session.exit_code())
 
 

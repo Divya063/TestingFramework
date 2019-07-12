@@ -31,7 +31,7 @@ class CheckAPI:
         self.exit =0
         self.verify = verify
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
-        self.ref_test_name= "WebReachable"
+        self.ref_test_name= "APIReachable"
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))

@@ -35,9 +35,6 @@ def get_args():
     parser.add_argument("--port", dest="port", type=int,
                         required = True,
                         )
-    parser.add_argument("--path", dest="path",
-                        required=True,
-                        help='path of jupyterhub config file')
 
     parser.add_argument( "--users", nargs='+', dest="users",
                         required  = True,
@@ -54,19 +51,18 @@ def get_args():
 
 
 class CreateSession:
-    def __init__(self, port, users, path, params, delay, verify):
+    def __init__(self, port, users, params, delay, verify):
         self.port = port
         self.users = users
         self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
         self.ref_test_name = "Session_creation_test"
         self.exit = 0
         self.verify = verify
-        self.path = path
-        self.token = ""
         self.delay = delay
         self.data = params
         self.ref_timestamp = int(time.time())
-        self.session = Session(self.port, users, path, params, verify)
+        self.session = Session()
+        self.token = self.session.get_tokens()
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log_params()
@@ -77,31 +73,13 @@ class CreateSession:
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
 
 
-    def create_token(self):
-       """
-        Create token and store it in yaml file
-
-       """
-
-       self.log.write("info", "creating tokens..")
-       #print("creating tokens..")
-       global command
-       try:
-           self.token, command = self.session.create_load_token()
-       except subprocess.CalledProcessError as err:
-           self.log.write("error", str(err))
-           self.exit |= 1
-       else:
-           self.log.write("info", "Successfully created token " + str(self.token))
-
-
     def check_create_server(self):
 
         self.log.write("info", "creating servers..")
         for user in self.users:
             global r
             try:
-                r = self.session.create_server(user)
+                r = self.session.create_server(self.port, user, self.data, self.verify)
             except requests.exceptions.RequestException as e:
                 self.exit |= 1
                 self.log.write("error", "status code " + str(r.status_code) + " " + str(e))
@@ -169,7 +147,6 @@ class CreateSession:
 
 
     def exit_code(self):
-        self.create_token()
         self.exit |= self.check_create_server()
 
         self.log.write("info", "overall exit code" + str(self.exit))
@@ -178,9 +155,8 @@ class CreateSession:
 
 if __name__ == "__main__":
     args = get_args()
-    print(args.json)
     params = json.loads(args.json)
-    test_session = CreateSession(args.port, args.users, args.path, params, int(args.delay), verify =False)
+    test_session = CreateSession(args.port, args.users, params, int(args.delay), verify =False)
     (test_session.exit_code())
 
 

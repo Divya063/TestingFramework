@@ -30,11 +30,10 @@ def run_jupyterhub_api(tasks):
     """
     session_port = test_jupyterhub['create_session']['port']
     session_users = test_jupyterhub['create_session']['users']
-    session_path = test_jupyterhub['create_session']['path']
     session_params= test_jupyterhub['create_session']['params']
     session_delay = test_jupyterhub['create_session']['timedelay']
     session_TLS = test_jupyterhub['create_session']['TLS']
-    test_create_session = CreateSession(session_port, session_users, session_path, session_params, session_delay, session_TLS)
+    test_create_session = CreateSession(session_port, session_users, session_params, session_delay, session_TLS)
     exit_code |= test_create_session.exit_code()
     """
     Check if the session is active

@@ -20,7 +20,7 @@ import sys
 sys.path.append("..")
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from SessionUtils import Tokens
+from SessionUtils import Session
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import yaml
@@ -46,9 +46,8 @@ class StopSession:
         self.ref_test_name ="Stop_Session"
         self.exit = 0
         self.verify = verify
-        self.session = Tokens()
+        self.session = Session()
         self.token = self.session.get_tokens()
-        print(self.token)
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder,
@@ -59,23 +58,6 @@ class StopSession:
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
-
-
-    def get_tokens(self):
-        """
-        Get token from yaml file
-        """
-        path = os.path.join('/', 'test.yaml')
-        #path = "/".join(script_directory) + "/" + 'test.yaml'
-        if os.path.exists(path):
-            with open(path) as f:
-                tasks = yaml.safe_load(f)
-                #print(tasks)
-
-            test_jupyterhub = tasks['tests']['jupyterhub_api']
-            self.token = test_jupyterhub['create_session']['token']
-            #print(self.token)
-
 
     def stop_session(self):
         self.log.write("info", "Terminating the sessions")
