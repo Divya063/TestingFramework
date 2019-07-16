@@ -13,9 +13,9 @@ To run multiple tests use the command - `python3 run.py --test [test-name1] [tes
 - To run test for storage from host machine use the following command:
 
 ```bash
-$python3 run.py --test storage --configfile test.yaml --path {path to the user directory}
+$python3 run.py --test storage --configfile test.yaml 
 ```
-e.g (`python3 run.py --test storage --configfile test.yaml --path eos/user/u/user2`)
+e.g (`python3 run.py --test storage --configfile test.yaml 
 
 - To run the test from user container use the command given below (there is no need to provide path argument as it will
 be already set in test.yaml file.)<br>
