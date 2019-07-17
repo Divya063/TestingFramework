@@ -25,10 +25,12 @@ tests:
     check_api:
       port: '443'
       TLS : False
+      base_path: ""
     create_session:
       port: '443'
       users: ['user2']
       token: 'b718a866d9da492cac45c5724b3d132c'
+      base_path: ""
       params:
         TLS: False
         LCG-rel: "LCG_95a"
@@ -42,9 +44,11 @@ tests:
     check_session:
       port: '443'
       users: ['user2']
+      base_path: ""
       TLS: False
     stop_session:
       port: '443'
       users: ['user2']
+      base_path: ""
       TLS: False
 

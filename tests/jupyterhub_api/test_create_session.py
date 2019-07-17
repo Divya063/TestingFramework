@@ -1,19 +1,3 @@
-"""
-Create a session
-"""
-
-"""
-To run the test run the following command:
-
- python3 test_create_session.py --port 443 --users user2 --path /srv/jupyterhub --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}'
-
-
-For multiple users
-
-python3 test_create_session.py --port 443 --users user0 user1 user2 --path /srv/jupyterhub 
---token {token value} --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}'
-"""
-
 
 import json
 import requests
@@ -22,8 +6,7 @@ import os
 import argparse
 import sys
 sys.path.append("..")
-from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from SessionUtils import Session
+from SessionUtils import Test, JupyterhubTest
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import json
@@ -46,40 +29,45 @@ def get_args():
     parser.add_argument("--json", dest="json",
                          required=True,
                          help = 'json data')
+
+    parser.add_argument("--base_path", dest="base",
+                        required=False,
+                        help='base path')
     args = parser.parse_args()
     return args
 
 
-class CreateSession:
-    def __init__(self, port, users, params, delay, verify):
-        self.port = port
-        self.users = users
-        self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
+class CreateSession(JupyterhubTest):
+    """
+    Create a session
+
+    To run the test run the following command:
+
+     python3 test_create_session.py --port 443 --users user3 --delay 30 --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}'
+
+
+    For multiple users
+
+    python3 test_create_session.py --port 443 --users user0 user1 user2 --delay 30 --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}'
+
+    """
+    def __init__(self, port, users, params, delay, base_path, verify):
+        JupyterhubTest.__init__(self, port, base_path, verify)
         self.ref_test_name = "Session_creation_test"
+        super().log_params()
         self.exit = 0
-        self.verify = verify
-        self.delay = delay
         self.data = params
-        self.ref_timestamp = int(time.time())
-        self.session = Session()
-        self.token = self.session.get_tokens()
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
-        self.log_params()
-
-    def log_params(self):
-        self.log.write("parameters", "Test name: " + self.ref_test_name)
-        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
-        self.log.write("parameters", "Logger folder: " + self.logger_folder)
+        self.users = users
+        self.delay = delay
 
 
-    def check_create_server(self):
+    def check_create_session(self):
 
         self.log.write("info", "creating servers..")
+        r = ""
         for user in self.users:
-            global r
             try:
-                r = self.session.create_server(self.port, user, self.data, self.verify)
+                r = super().api_calls("post", user, data = self.data, endpoint ="/server")
             except requests.exceptions.RequestException as e:
                 self.exit |= 1
                 self.log.write("error", "status code " + str(r.status_code) + " " + str(e))
@@ -116,12 +104,7 @@ class CreateSession:
                     """
                     
                     
-                    r = requests.get(self.main_url + 'users/%s' % user,
-                                      headers={
-                                                'Authorization': 'token %s' % self.token,
-                                                },
-                                                verify= self.verify
-                                                )
+                    r = super().api_calls("get", user, endpoint = "")
                     if (r.status_code == 200):
                         status = r.json()
                         #print(status)
@@ -147,7 +130,7 @@ class CreateSession:
 
 
     def exit_code(self):
-        self.exit |= self.check_create_server()
+        self.exit |= self.check_create_session()
 
         self.log.write("info", "overall exit code" + str(self.exit))
         return self.exit
@@ -156,7 +139,7 @@ class CreateSession:
 if __name__ == "__main__":
     args = get_args()
     params = json.loads(args.json)
-    test_session = CreateSession(args.port, args.users, params, int(args.delay), verify =False)
+    test_session = CreateSession(args.port, args.users, params, int(args.delay), args.base, verify =False)
     (test_session.exit_code())
 
 

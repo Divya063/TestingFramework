@@ -1,14 +1,3 @@
-"""
-Test if a session is running
-
-To run the test use the following command:
-python3 test_check_session.py --port 443 --users user1
-
-For multiple users
-
-python3 test_check_session.py --port 443 --users user0 user1 user2
-
-"""
 
 import json
 import requests
@@ -21,7 +10,7 @@ import yaml
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 import argparse
-from SessionUtils import Session
+from SessionUtils import Test, JupyterhubTest
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -33,51 +22,52 @@ def get_args():
     parser.add_argument( "--users", nargs='+', dest="users",
                         required  = True,
                         help='list of users')
+
+    parser.add_argument("--base_path", dest="base",
+                        required=False,
+                        help='base path')
+
     args = parser.parse_args()
     return args
 
 
-class CheckSession:
-    def __init__(self, port, users, verify):
-        self.users = users
-        self.port = port
-        self.exit =0
-        self.verify = verify
-        self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
-        self.ref_test_name= "Check_Sessions"
-        self.ref_timestamp = int(time.time())
-        self.session = Session()
-        self.token = self.session.get_tokens()
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
-        self.log_params()
+class CheckSession(JupyterhubTest):
+    """
+    Test if a session is running
 
-    def log_params(self):
-        self.log.write("parameters", "Test name: " + self.ref_test_name)
-        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
-        self.log.write("parameters", "Logger folder: " + self.logger_folder)
+    To run the test use the following command:
+    python3 test_check_session.py --port 443 --users user1 --base_path ""
+
+    For multiple users
+
+    python3 test_check_session.py --port 443 --users user0 user1 user2 --base_path ""
+
+    """
+    def __init__(self, port, users, base_path, verify):
+        JupyterhubTest.__init__(self, port, base_path, verify)
+        self.ref_test_name= "Check_Sessions"
+        self.users = users
+        super().log_params()
+        self.exit=0
+
+
+    def check_container(self, user):
+        """
+
+        Checks if a container is running
+        """
+        s = subprocess.check_output('docker ps', shell=True)
+        container_name = "jupyter-" + user
+        if (s.decode("utf-8").find(container_name) == -1):
+            self.exit|=1
+            return 1
+
+
 
 
     def check_session(self):
 
             """
-            One method could be:
-            check if user container is up and running
-
-            s = subprocess.check_output('docker ps', shell=True)
-            sessions_not_running = set()
-            for user in self.user:
-                container_name = "jupyterhub_api-" + user
-            if(s.decode("utf-8").find(container_name) == -1):
-                sessions_not_running.add(user)
-                self.exit|=1
-
-            Second method:
-
-            Submit a post request to /hub/api/users/{username}/server which will in return
-            result in 400 status code(conflict) as the server is already running
-
-            third method:
             Submit a  get request to  https://localhost:443/hub/api/users/user1, this will return the information
             of particular user in json format, check the value of the field 'server' if it is null server is not active
 
@@ -92,16 +82,9 @@ class CheckSession:
 
 
             """
-            global r
-            #self.token = '787fc9a32e1d477daa2be4202031bb28'
             for user in self.users:
                 try:
-                    r = requests.get(self.main_url + 'users/%s' % user,
-                                        headers={
-                                            'Authorization': 'token %s' % self.token,
-                                        },
-                                        verify= self.verify
-                                        )
+                    r = super().api_calls("get", user, endpoint ="")
 
                 except requests.exceptions.RequestException as e:
                     self.log.write("error", str(e))
@@ -110,7 +93,9 @@ class CheckSession:
                     if (r.status_code == 200):
                         status = r.json()
                         server_status = status['server']
-                        if(server_status!= None):
+                        check_container = self.check_container(user)
+                        self.log.write("info", "exit code : check_container " + str(check_container))
+                        if(server_status!= None and check_container!=1):
                             self.log.write("info", user + " server is present at " + server_status)
                         else:
                             self.log.write("error", user + " server is not present ")
@@ -130,7 +115,7 @@ class CheckSession:
 
 if __name__ == "__main__":
     args = get_args()
-    test_active_session = CheckSession(args.port, args.users, verify=False)
+    test_active_session = CheckSession(args.port, args.users, args.base, verify=False)
     (test_active_session.exit_code())
 
 

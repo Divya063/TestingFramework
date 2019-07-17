@@ -4,13 +4,42 @@ import requests
 import json
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import yaml
+import time
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-class Session:
+from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 
+
+class Test:
+    """
+    Implements logs
+    """
     def __init__(self):
+        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
+        self.ref_test_name = ""
+        self.ref_timestamp = int(time.time())
+        self.log = Logger(os.path.join(self.logger_folder,
+                                       self.ref_test_name + "_" + time.strftime("%Y-%m-%d_%H:%M:%S") + LOG_EXTENSION))
+
+
+    def log_params(self):
+        self.log.write("parameters", "Test name: " + self.ref_test_name)
+        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
+        self.log.write("parameters", "Logger folder: " + self.logger_folder)
+
+class JupyterhubTest(Test):
+    """
+
+    Implements everything required to call Jupyterhub API
+    """
+
+    def __init__(self, port, base_path, verify):
+        Test.__init__(self)
         self.exit = 0
         self.token = ""
+        self.port = port
+        self.verify = verify
+        self.base_path = base_path
         self.get_tokens()
 
     def get_tokens(self):
@@ -28,20 +57,48 @@ class Session:
         else:
             raise Exception
 
-        return self.token
 
-    def create_server(self, port, user, data, verify):
-        main_url = "https://localhost:" + str(port) + "/hub/api/"
+    def api_calls(self, method,user, data = None,  endpoint=""):
+        if (self.base_path != None):
+            main_url = "https://localhost:" + str(self.port) + "/" + self.base_path + "/hub/api/"
+        else:
+            main_url = "https://localhost:" + str(self.port) + "/hub/api/"
 
+        if user!="":
+            api_url = main_url + 'users/%s' %user + endpoint
+        else:
+            api_url = main_url
+        print(api_url)
+        r = ""
+        try:
+            if(method == "post"):
+                r = requests.post(api_url,
+                                  headers={
+                                      'Authorization': 'token %s' % self.token,
+                                  },
+                                  json= data,
+                                  verify=self.verify
+                                  )
+            elif(method == "get"):
+                r = requests.get(api_url,
+                                  headers={
+                                      'Authorization': 'token %s' % self.token,
+                                  },
+                                  verify=self.verify
+                                  )
+            elif(method == "delete"):
+                r = requests.delete(api_url,
+                                 headers={
+                                     'Authorization': 'token %s' % self.token,
+                                 },
+                                 verify=self.verify
+                                 )
+        except requests.exceptions.RequestException:
+            r.raise_for_status()
 
-        r = requests.post(main_url + 'users/%s' % user + "/server",
-                          headers={
-                              'Authorization': 'token %s' % self.token,
-                          },
-                          json= data,
-                          verify= verify
-                          )
-        return r
+        else:
+            return r
+
 
 
 

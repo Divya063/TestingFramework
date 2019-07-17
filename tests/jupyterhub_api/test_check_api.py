@@ -1,6 +1,4 @@
-"""
-Test if a api is reachable
-"""
+
 
 import json
 import requests
@@ -11,6 +9,7 @@ import sys
 sys.path.append("..")
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from SessionUtils import Test, JupyterhubTest
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -21,30 +20,29 @@ def get_args():
     parser.add_argument("--port", dest="port", type=int,
                         required = True,
                         )
+    parser.add_argument("--base_path", dest="base",
+                        required=False,
+                        help='base path')
+
     args = parser.parse_args()
     return args
 
 
-class CheckAPI:
-    def __init__(self, port, verify):
-        self.port = port
-        self.exit =0
-        self.verify = verify
-        self.main_url = "https://localhost:" + str(self.port) + "/hub/api/"
-        self.ref_test_name= "APIReachable"
-        self.ref_timestamp = int(time.time())
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
-        self.log_params()
+class CheckAPI(JupyterhubTest):
+    """
+    Test if a api is reachable
 
-    def log_params(self):
-        self.log.write("parameters", "Test name: " + self.ref_test_name)
-        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
-        self.log.write("parameters", "Logger folder: " + self.logger_folder)
+    """
+    def __init__(self, port, base_path, verify):
+        JupyterhubTest.__init__(self, port, base_path,  verify)
+        self.ref_test_name = "APIReachable"
+        super().log_params()
+        self.exit = 0
+
 
     def check_api(self):
         try:
-            r = requests.get(self.main_url, verify= self.verify)
+            r = super().api_calls("get", "")
 
         except requests.exceptions.RequestException as e:
             self.log.write("error", str(e))
@@ -62,12 +60,12 @@ class CheckAPI:
 
     def exit_code(self):
         self.exit |= self.check_api()
-        self.log.write("info", "overall exit code " + str(self.exit) )
+        self.log.write("info", "overall exit code " + str(self.exit))
         return self.exit
 
 if __name__ == "__main__":
     args = get_args()
-    test_web_reachable = CheckAPI(args.port, False)
+    test_web_reachable = CheckAPI(args.port, args.base, False)
     (test_web_reachable.exit_code())
 
 
