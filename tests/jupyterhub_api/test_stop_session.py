@@ -56,7 +56,6 @@ class StopSession(JupyterhubTest):
 
     def stop_session(self):
         self.log.write("info", "Terminating the sessions")
-        global r
         for user in self.users:
             try:
                 r = super().api_calls("delete", user, endpoint ="/server")
