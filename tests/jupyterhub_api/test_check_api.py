@@ -42,7 +42,6 @@ class CheckAPI(JupyterhubTest):
         param={}
         param['test_name'] = "APIReachable"
         JupyterhubTest.__init__(self, port, token, base_path,  verify, **param)
-        super().log_params()
 
 
     def check_api(self):
