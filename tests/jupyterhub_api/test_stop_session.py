@@ -23,6 +23,9 @@ def get_args():
     parser.add_argument( "--users", nargs='+', dest="users",
                         required  = True,
                         help='list of users')
+    parser.add_argument("--token", dest="token",
+                        required=False,
+                        help='token')
     parser.add_argument("--base_path", dest="base",
                         required=False,
                         help='base path')
@@ -44,12 +47,11 @@ class StopSession(JupyterhubTest):
 
     """
 
-    def __init__(self, port, users, base_path, verify):
-        JupyterhubTest.__init__(self, port, base_path, verify)
-        self.ref_test_name = "Check_Sessions"
+    def __init__(self, port, token, users, base_path, verify):
+        param={}
+        param['test_name'] = 'Stop_Session'
+        JupyterhubTest.__init__(self, port, token, base_path, verify, **param)
         self.users = users
-        super().log_params()
-        self.exit = 0
 
 
     def stop_session(self):
@@ -57,18 +59,18 @@ class StopSession(JupyterhubTest):
         global r
         for user in self.users:
             try:
-                r = super().api_calls("delete", user, endpoint ="users/server")
+                r = super().api_calls("delete", user, endpoint ="/server")
 
             except requests.exceptions.RequestException as e:
                 self.log.write("error", str(e))
-                self.exit |= 1
+                self.exit = 1
 
             else:
                 if (r.status_code == 204):
                     self.log.write("info", user + " server was removed")
                 else:
                     self.log.write("error", user + " server was not removed")
-                    self.exit |= 1
+                    self.exit = 1
 
         return self.exit
 
@@ -79,5 +81,5 @@ class StopSession(JupyterhubTest):
 
 if __name__ == "__main__":
     args = get_args()
-    test_stop_session = StopSession(args.port, args.users, args.base, verify = False)
+    test_stop_session = StopSession(args.port, args.token, args.users, args.base, verify = False)
     (test_stop_session.exit_code())

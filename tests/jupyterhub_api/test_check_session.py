@@ -23,6 +23,10 @@ def get_args():
                         required  = True,
                         help='list of users')
 
+    parser.add_argument("--token", dest="token",
+                        required=False,
+                        help='token')
+
     parser.add_argument("--base_path", dest="base",
                         required=False,
                         help='base path')
@@ -43,12 +47,11 @@ class CheckSession(JupyterhubTest):
     python3 test_check_session.py --port 443 --users user0 user1 user2 --base_path ""
 
     """
-    def __init__(self, port, users, base_path, verify):
-        JupyterhubTest.__init__(self, port, base_path, verify)
-        self.ref_test_name= "Check_Sessions"
+    def __init__(self, port, token, users, base_path, verify):
+        param = {}
+        param['test_name'] = "Check_Sessions"
+        JupyterhubTest.__init__(self, port, token, base_path, verify, **param)
         self.users = users
-        super().log_params()
-        self.exit=0
 
 
     def check_container(self, user):
@@ -88,7 +91,7 @@ class CheckSession(JupyterhubTest):
 
                 except requests.exceptions.RequestException as e:
                     self.log.write("error", str(e))
-                    self.exit |= 1
+                    self.exit = 1
                 else:
                     if (r.status_code == 200):
                         status = r.json()
@@ -99,23 +102,23 @@ class CheckSession(JupyterhubTest):
                             self.log.write("info", user + " server is present at " + server_status)
                         else:
                             self.log.write("error", user + " server is not present ")
-                            self.exit |= 1
+                            self.exit = 1
                     else:
                         self.log.write("error", (r.content).decode('utf-8'))
-                        self.exit |= 1
+                        self.exit = 1
 
             return self.exit
 
 
 
     def exit_code(self):
-        self.exit |= self.check_session()
+        self.exit = self.check_session()
 
         return self.exit
 
 if __name__ == "__main__":
     args = get_args()
-    test_active_session = CheckSession(args.port, args.users, args.base, verify=False)
+    test_active_session = CheckSession(args.port, args.token, args.users, args.base, verify=False)
     (test_active_session.exit_code())
 
 

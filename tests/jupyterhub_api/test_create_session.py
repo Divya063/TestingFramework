@@ -6,7 +6,7 @@ import os
 import argparse
 import sys
 sys.path.append("..")
-from SessionUtils import Test, JupyterhubTest
+from SessionUtils import  JupyterhubTest
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import json
@@ -30,10 +30,15 @@ def get_args():
                          required=True,
                          help = 'json data')
 
+    parser.add_argument("--token", dest = "token",
+                        required= False,
+                        help='token')
+
     parser.add_argument("--base_path", dest="base",
                         required=False,
                         help='base path')
     args = parser.parse_args()
+
     return args
 
 
@@ -51,12 +56,11 @@ class CreateSession(JupyterhubTest):
     python3 test_create_session.py --port 443 --users user0 user1 user2 --delay 30 --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}'
 
     """
-    def __init__(self, port, users, params, delay, base_path, verify):
-        JupyterhubTest.__init__(self, port, base_path, verify)
-        self.ref_test_name = "Session_creation_test"
-        super().log_params()
-        self.exit = 0
-        self.data = params
+    def __init__(self, port, token, users, data, delay,  base_path, verify):
+        param = {}
+        param['test_name'] = 'Session_Creation_test'
+        JupyterhubTest.__init__(self, port,  token, base_path, verify, **param)
+        self.data = data
         self.users = users
         self.delay = delay
 
@@ -69,7 +73,7 @@ class CreateSession(JupyterhubTest):
             try:
                 r = super().api_calls("post", user, data = self.data, endpoint ="/server")
             except requests.exceptions.RequestException as e:
-                self.exit |= 1
+                self.exit = 1
                 self.log.write("error", "status code " + str(r.status_code) + " " + str(e))
 
             else:
@@ -139,7 +143,7 @@ class CreateSession(JupyterhubTest):
 if __name__ == "__main__":
     args = get_args()
     params = json.loads(args.json)
-    test_session = CreateSession(args.port, args.users, params, int(args.delay), args.base, verify =False)
+    test_session = CreateSession(args.port, args.token, args.users, params, int(args.delay), args.base, verify =False)
     (test_session.exit_code())
 
 

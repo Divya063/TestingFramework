@@ -20,6 +20,11 @@ def get_args():
     parser.add_argument("--port", dest="port", type=int,
                         required = True,
                         )
+
+    parser.add_argument("--token", dest="token",
+                        required=False,
+                        help='token')
+
     parser.add_argument("--base_path", dest="base",
                         required=False,
                         help='base path')
@@ -33,11 +38,11 @@ class CheckAPI(JupyterhubTest):
     Test if a api is reachable
 
     """
-    def __init__(self, port, base_path, verify):
-        JupyterhubTest.__init__(self, port, base_path,  verify)
-        self.ref_test_name = "APIReachable"
+    def __init__(self, port, token, base_path, verify):
+        param={}
+        param['test_name'] = "APIReachable"
+        JupyterhubTest.__init__(self, port, token, base_path,  verify, **param)
         super().log_params()
-        self.exit = 0
 
 
     def check_api(self):
@@ -46,26 +51,26 @@ class CheckAPI(JupyterhubTest):
 
         except requests.exceptions.RequestException as e:
             self.log.write("error", str(e))
-            self.exit |= 1
+            self.exit = 1
         else:
             if(r.status_code ==200):
                 self.log.write("info", "API is reachable")
             else:
                 self.log.write("error", "API is not reachable")
-                self.exit |= 1
+                self.exit = 1
         return self.exit
 
 
 
 
     def exit_code(self):
-        self.exit |= self.check_api()
+        self.exit = self.check_api()
         self.log.write("info", "overall exit code " + str(self.exit))
         return self.exit
 
 if __name__ == "__main__":
     args = get_args()
-    test_web_reachable = CheckAPI(args.port, args.base, False)
+    test_web_reachable = CheckAPI(args.port, args.token,  args.base, False)
     (test_web_reachable.exit_code())
 
 
