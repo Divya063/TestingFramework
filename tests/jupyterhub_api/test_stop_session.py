@@ -67,6 +67,7 @@ class StopSession(JupyterhubTest):
             else:
                 if (r.status_code == 204):
                     self.log.write("info", user + " server was removed")
+                    self.exit = 0
                 else:
                     self.log.write("error", user + " server was not removed")
                     self.exit = 1

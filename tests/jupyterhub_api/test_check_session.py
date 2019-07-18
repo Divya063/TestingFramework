@@ -99,6 +99,7 @@ class CheckSession(JupyterhubTest):
                         check_container = self.check_container(user)
                         self.log.write("info", "exit code : check_container " + str(check_container))
                         if(server_status!= None and check_container!=1):
+                            self.exit =0
                             self.log.write("info", user + " server is present at " + server_status)
                         else:
                             self.log.write("error", user + " server is not present ")

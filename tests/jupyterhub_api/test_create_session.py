@@ -114,6 +114,7 @@ class CreateSession(JupyterhubTest):
                         #print(status)
                         server_status = status['server']
                         if(server_status!= None):
+                            self.exit = 0
                             self.log.write("info", user + " server successfully created " + server_status)
                         else:
                             self.log.write("error", user + " server was not created ")
@@ -124,6 +125,7 @@ class CreateSession(JupyterhubTest):
                     Sometimes servers are created without any wait time
                     """
                     self.log.write("info", "Successfully created the" + user + " server")
+                    self.exit =0
 
                 else:
                     self.log.write("error", user + " server was not created")
