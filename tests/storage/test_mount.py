@@ -2,27 +2,18 @@ import threading
 import subprocess
 import time
 import sys
+sys.path.append("..")
 import _thread as thread
 import os
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from test_main import Test
 import argparse
 
-class Mount:
+class Mount(Test):
     def __init__(self):
-        self.exit = 0
-        self.ref_timestamp = int(time.time())
-        self.ref_test_name = 'mount'
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
-        self.log.write("info", self.ref_test_name + " Tests starting...")
-        self.log.write("info", time.strftime("%c"))
-        self.log_params()
-
-    def log_params(self):
-        self.log.write("parameters", "Test name: " + self.ref_test_name)
-        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
-        self.log.write("parameters", "Logger folder: " + self.logger_folder)
-
+        params = {}
+        params['test_name'] = "mount"
+        Test.__init__(self, **params)
 
 
     def check_mount(self):

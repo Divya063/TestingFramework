@@ -4,6 +4,7 @@ from IOUtils import ReadWriteOp, ChecksumCal
 import sys
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from test_main import Test
 import time
 import argparse
 
@@ -21,36 +22,27 @@ def get_args():
     args = parser.parse_args()
     return args
 
-dictionary = {}
 extension = ".txt"
 
-class Checksum:
+class Checksum(Test):
     def __init__(self, number_of_files, input_size, dest_path):
         self.number_of_files = number_of_files
         self.input_size = input_size
         self.storage_path = dest_path
-        self.ref_test_name = 'checksum'
-        self.ref_timestamp = int(time.time())
         self.file_path = os.path.join("/", dest_path)
         #print(self.parentDirectory)
         #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         #print(self.file_path)
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.ops = ReadWriteOp()
         self.check = ChecksumCal()
         self.match = None
-        self.log.write("info", self.ref_test_name + " Tests starting...")
-        self.log.write("info", time.strftime("%c"))
-        self.exit = 0
+        params={}
+        params['test_name'] = "Checksum"
+        params['Number of files'] = self.number_of_files
+        params['File size'] = self.input_size
+        params['Typed output folder'] = self.file_path
+        Test.__init__(self, **params)
 
-    def log_params(self):
-        self.log.write("parameters", "Test name: " + self.ref_test_name)
-        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
-        self.log.write("parameters", "Number of files: " + str(self.number_of_files))
-        self.log.write("parameters", "File size: " + str(self.input_size))
-        self.log.write("parameters", "Typed output folder: " + self.file_path)
-        self.log.write("parameters", "Logger folder: " + self.logger_folder)
 
     def check_directory(self):
         if not (os.path.isdir(self.file_path)):
@@ -99,6 +91,7 @@ class Checksum:
             else:
                 self.log.write("consistency", "\t".join([file_name, self.match, hash_num, returned_hash]),
                                )
+                self.exit =0
 
         self.log.write("info", "Number of corrupted files "+ str(corrupted_files))
         self.log.write("info", "End of sanity check")

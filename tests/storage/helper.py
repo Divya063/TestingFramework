@@ -19,7 +19,8 @@ def run_storage(tasks):
 
     test_storage = tasks['tests']['storage']
     time = test_storage['mount_sanity']['timeout']
-    test_mount_sanity = MountSanity(time)
+    mount_points = test_storage['mount_sanity']['mountpoints']
+    test_mount_sanity = MountSanity(time, mount_points)
     try:
         exit_code |= test_mount_sanity.exit_code()
     except Exception as err:

@@ -3,6 +3,7 @@ tests:
   storage:
     mount_sanity:
       timeout: 8
+      mountpoints: ['user', 'user/u']
     write:
       fileSize: 1M
     delete:

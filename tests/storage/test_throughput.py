@@ -11,6 +11,7 @@ from IOUtils import ReadWriteOp
 import sys
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from test_main import Test
 from timer import StopWatch, Measure, Profiling
 import argparse
 
@@ -33,32 +34,23 @@ def get_args():
     return args
 
 
-class Throughput():
+class Throughput(Test):
 
     def __init__(self, number_of_files, input_size, dest_path):
         self.number_of_files = number_of_files
         self.exit = None
-        self.ref_timestamp = int(time.time())
         self.input_size = input_size
         self.storage_path = dest_path
-        self.ref_test_name = 'throughput'
         #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
         self.file_path= os.path.join("/", dest_path)
         #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.ops = ReadWriteOp()
-        self.log.write("info", self.ref_test_name + " Tests starting...")
-        self.log.write("info", time.strftime("%c"))
-        self.log_params()
-
-    def log_params(self):
-        self.log.write("parameters", "Test name: " + self.ref_test_name)
-        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
-        self.log.write("parameters", "Number of files: " + str(self.number_of_files))
-        self.log.write("parameters", "File size: " + str(self.input_size))
-        self.log.write("parameters", "Typed output folder: " + self.file_path)
-        self.log.write("parameters", "Logger folder: " + self.logger_folder)
+        params = {}
+        params['test_name'] = "Throughput"
+        params['Number of files'] = self.number_of_files
+        params['File size'] = self.input_size
+        params['Typed output folder'] = self.file_path
+        Test.__init__(self, **params)
 
     def check_directory(self):
 
