@@ -1,5 +1,4 @@
 import os
-import sys
 from IOUtils import ReadWriteOp, ChecksumCal
 import sys
 sys.path.append("..")
