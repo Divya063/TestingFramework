@@ -28,6 +28,20 @@ def run_jupyterhub_api(tasks):
         sys.exit()
 
     """
+    check if token is valid
+    """
+    port = test_jupyterhub['token']['port']
+    users = test_jupyterhub['token']['users']
+    TLS = test_jupyterhub['token']['TLS']
+    path = test_jupyterhub['token']['base_path']
+    test_token = CheckSession(port, session_token, users, path, TLS)
+    exit_code |= test_token.exit_code()
+    if (exit_code):
+        raise Exception("Token not valid..")
+        sys.exit()
+
+
+    """
     check if session is created successfully
     """
     session_port = test_jupyterhub['create_session']['port']
