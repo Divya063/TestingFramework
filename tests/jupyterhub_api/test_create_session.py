@@ -119,7 +119,7 @@ class CreateSession(JupyterhubTest):
                         else:
                             self.log.write("error", user + " server was not created ")
                             self.log.write("error", "status code " + str(r.status_code) + " " + (r.content).decode('utf-8'))
-                            self.exit |= 1
+                            self.exit = 1
                 elif r.status_code == 201:
                     """
                     Sometimes servers are created without any wait time
@@ -130,7 +130,7 @@ class CreateSession(JupyterhubTest):
                 else:
                     self.log.write("error", user + " server was not created")
                     self.log.write("error", "status code " + str(r.status_code) + " " + (r.content).decode('utf-8'))
-                    self.exit |= 1
+                    self.exit = 1
 
         return self.exit
 

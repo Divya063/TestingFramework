@@ -75,7 +75,7 @@ class StopSession(JupyterhubTest):
         return self.exit
 
     def exit_code(self):
-        self.exit|=self.stop_session()
+        self.exit =self.stop_session()
         return self.exit
 
 
