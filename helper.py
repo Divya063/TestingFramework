@@ -6,7 +6,7 @@ import subprocess
 import os
 
 def cp_helper(name, test_name):
-    container_name = "jupyter-"+ name
+    container_name = "jupyter-" + name
     if test_name == "storage":
         dest= "scratch/" + name +"/"
         docker_cp_host(container_name, dest)
@@ -15,7 +15,6 @@ def cp_helper(name, test_name):
         docker_cp_host(container_name, "")
     else:
         docker_cp_host(container_name, "")
-
 
 
 

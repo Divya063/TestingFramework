@@ -10,7 +10,6 @@ from tests.jupyterhub_api.helper import run_jupyterhub_api
 from tests.cvmfs.helper import run_cvmfs
 from helper import cp_helper
 
-
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-t', '--test',
@@ -92,6 +91,10 @@ def cleanup():
     for f in filelist:
         os.remove(f)
 
+def container_name(username):
+    name = "jupyter-" + username
+    return name
+
 def docker_exec(container_name,  arg, user = None, working_dir=None):
     if(working_dir != None and user != None):
         cmd = "sudo docker exec -it " + "-u "+ user+ " -w "+ working_dir + " "+ container_name + " python3 run_container.py --test " + arg
@@ -111,6 +114,8 @@ def docker_cp_container(container_name, path, user = None):
 
 
 
+
+
 def main():
     args = get_args()
     yaml_path= os.path.join(os.getcwd(), args.configfile)
@@ -125,23 +130,23 @@ def main():
             if test == "storage":
                 cp_helper(args.session, test)
                 dir = "/scratch/" + args.session
-                container_name = "jupyter-" + args.session
-                docker_exec(container_name, test, user= args.session, working_dir= dir)
-                docker_cp_container(container_name, ":/scratch/", args.session)
+                container = container_name(args.session)
+                docker_exec(container, test, user= args.session, working_dir= dir)
+                docker_cp_container(container, ":/scratch/", args.session)
 
 
             if test == "jupyterhub-api":
                 cp_helper(args.session, test)
-                container_name = "jupyterhub"
-                docker_exec(container_name, test)
-                docker_cp_container(container_name, ":/")
+                container = "jupyterhub"
+                docker_exec(container, test)
+                docker_cp_container(container, ":/")
 
 
             if test == "CVMFS":
                 cp_helper(args.session, test)
-                container_name = "jupyter-" + args.session
-                docker_exec(container_name, test)
-                docker_cp_container(container_name, ":/")
+                container =  container_name(args.session)
+                docker_exec(container, test)
+                docker_cp_container(container, ":/")
 
     else:
         #From host
