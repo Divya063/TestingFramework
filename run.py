@@ -6,7 +6,7 @@ import yaml
 import subprocess
 
 from tests.storage.helper import run_storage
-from tests.jupyterhub_api.helper import run_jupyterhub_api
+#from tests.jupyterhub_api.helper import run_jupyterhub_api
 from tests.cvmfs.helper import run_cvmfs
 from helper import cp_helper
 
@@ -105,7 +105,7 @@ def docker_exec(container_name,  arg, user = None, working_dir=None):
 
 
 
-def docker_cp_container(container_name, path, user = None):
+def docker_cp_from_container(container_name, path, user = None):
     if(user!=None):
         cmd = "docker cp " + container_name + path + user + "/logs ."
     else:
@@ -132,21 +132,21 @@ def main():
                 dir = "/scratch/" + args.session
                 container = container_name(args.session)
                 docker_exec(container, test, user= args.session, working_dir= dir)
-                docker_cp_container(container, ":/scratch/", args.session)
+                docker_cp_from_container(container, ":/scratch/", args.session)
 
 
             if test == "jupyterhub-api":
                 cp_helper(args.session, test)
                 container = "jupyterhub"
                 docker_exec(container, test)
-                docker_cp_container(container, ":/")
+                docker_cp_from_container(container, ":/")
 
 
             if test == "CVMFS":
                 cp_helper(args.session, test)
                 container =  container_name(args.session)
                 docker_exec(container, test)
-                docker_cp_container(container, ":/")
+                docker_cp_from_container(container, ":/")
 
     else:
         #From host
