@@ -1,12 +1,5 @@
-import hashlib
 import os
-import glob
-import traceback
-import re
-import binascii
-import logging
 import time
-from pathlib import  Path
 from IOUtils import ReadWriteOp
 import sys
 sys.path.append("..")
@@ -14,7 +7,6 @@ from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from test_main import Test
 from timer import StopWatch, Measure, Profiling
 import argparse
-
 
 dictionary = {}
 extension = ".txt"
