@@ -36,6 +36,11 @@ def get_args():
 
 class Throughput(Test):
 
+    """
+
+    Return read and write throughput for a given number of files
+    """
+
     def __init__(self, number_of_files, input_size, dest_path):
         self.number_of_files = number_of_files
         self.exit = None

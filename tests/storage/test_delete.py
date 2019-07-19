@@ -28,6 +28,10 @@ def get_args():
 
 
 class Delete(Test):
+    """
+
+    Checks if a file gets deleted or not
+    """
 
     def __init__(self, file_name, dest_path):
         self.ref_timestamp = int(time.time())

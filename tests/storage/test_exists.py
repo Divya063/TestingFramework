@@ -29,6 +29,9 @@ def get_args():
 
 
 class Exists(Test):
+    """
+    Check whether a given file exists or not (in the given path)
+    """
 
     def __init__(self, file_name, dest_path):
         self.storage_path = dest_path

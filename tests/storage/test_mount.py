@@ -10,6 +10,9 @@ from test_main import Test
 import argparse
 
 class Mount(Test):
+    """
+    Checks for eos mount points
+    """
     def __init__(self):
         params = {}
         params['test_name'] = "mount"

@@ -25,6 +25,10 @@ def get_args():
 extension = ".txt"
 
 class Checksum(Test):
+    """
+
+     Calculates Checksum for a given number of files
+    """
     def __init__(self, number_of_files, input_size, dest_path):
         self.number_of_files = number_of_files
         self.input_size = input_size
