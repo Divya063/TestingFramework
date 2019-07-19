@@ -62,7 +62,7 @@ class CheckSession(JupyterhubTest):
         s = subprocess.check_output('docker ps', shell=True)
         container_name = "jupyter-" + user
         if (s.decode("utf-8").find(container_name) == -1):
-            self.exit|=1
+            self.exit = 1
             return 1
 
 
