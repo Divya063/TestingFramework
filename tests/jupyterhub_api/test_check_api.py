@@ -53,6 +53,7 @@ class CheckAPI(JupyterhubTest):
             self.exit = 1
         else:
             if(r.status_code ==200):
+                self.exit = 0
                 self.log.write("info", "API is reachable")
             else:
                 self.log.write("error", "API is not reachable")
