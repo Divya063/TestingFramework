@@ -4,7 +4,7 @@ from IOUtils import ReadWriteOp
 import sys
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from test_main import Test
+from Test import Test
 from timer import StopWatch, Measure, Profiling
 import argparse
 
@@ -35,19 +35,15 @@ class Throughput(Test):
 
     def __init__(self, number_of_files, input_size, dest_path):
         self.number_of_files = number_of_files
-        self.exit = None
         self.input_size = input_size
         self.storage_path = dest_path
-        #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
         self.file_path= os.path.join("/", dest_path)
-        #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
         self.ops = ReadWriteOp()
-        params = {}
-        params['test_name'] = "Throughput"
-        params['Number of files'] = self.number_of_files
-        params['File size'] = self.input_size
-        params['Typed output folder'] = self.file_path
-        Test.__init__(self, **params)
+        self.ref_test_name = "throughput"
+        self.params['number_files'] = self.number_of_files
+        self.params['file_size'] = self.input_size
+        self.params['output_folder'] = self.file_path
+        Test.__init__(self)
 
     def check_directory(self):
 

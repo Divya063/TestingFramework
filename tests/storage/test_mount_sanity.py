@@ -6,7 +6,7 @@ sys.path.append("..")
 import _thread as thread
 import os
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from test_main import Test
+from Test import Test
 import argparse
 
 def get_args():
@@ -30,9 +30,8 @@ class MountSanity(Test):
     def __init__(self, timeout, mount_points):
         self.mount_points = mount_points
         self.timeout = timeout
-        params = {}
-        params['test_name'] = "mount_sanity"
-        Test.__init__(self, **params)
+        self.ref_test_name = "mount_sanity"
+        Test.__init__(self)
 
 
     def quit_function(self, fn_name):

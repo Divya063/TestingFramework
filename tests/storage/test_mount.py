@@ -6,7 +6,7 @@ sys.path.append("..")
 import _thread as thread
 import os
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from test_main import Test
+from Test import Test
 import argparse
 
 class Mount(Test):
@@ -14,9 +14,8 @@ class Mount(Test):
     Checks for eos mount points
     """
     def __init__(self):
-        params = {}
-        params['test_name'] = "mount"
-        Test.__init__(self, **params)
+        self.ref_test_name = "mount"
+        Test.__init__(self)
 
 
     def check_mount(self):

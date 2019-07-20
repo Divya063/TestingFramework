@@ -37,7 +37,7 @@ def run_storage(tasks):
     exit_code |= test_io.exit_code()
     number_of_files = test_storage['checksum']['fileNumber']
     size = test_storage['checksum']['fileSize']
-    test_integrity= Checksum(number_of_files, size, file_path)
+    test_integrity = Checksum(number_of_files, size, file_path)
     exit_code |= test_integrity.exit_code()
 
     file_size = test_storage['write']['fileSize']

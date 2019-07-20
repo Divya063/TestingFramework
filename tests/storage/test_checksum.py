@@ -3,7 +3,7 @@ from IOUtils import ReadWriteOp, ChecksumCal
 import sys
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from test_main import Test
+from Test import Test
 import time
 import argparse
 
@@ -33,18 +33,14 @@ class Checksum(Test):
         self.input_size = input_size
         self.storage_path = dest_path
         self.file_path = os.path.join("/", dest_path)
-        #print(self.parentDirectory)
-        #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
-        #print(self.file_path)
         self.ops = ReadWriteOp()
         self.check = ChecksumCal()
         self.match = None
-        params={}
-        params['test_name'] = "Checksum"
-        params['Number of files'] = self.number_of_files
-        params['File size'] = self.input_size
-        params['Typed output folder'] = self.file_path
-        Test.__init__(self, **params)
+        self.ref_test_name = "Checksum"
+        self.params['number_files'] = self.number_of_files
+        self.params['file_size'] = self.input_size
+        self.params['output_folder'] = self.file_path
+        Test.__init__(self)
 
 
     def check_directory(self):

@@ -6,21 +6,22 @@ import re
 import binascii
 import logging
 import time
-from pathlib import  Path
+from pathlib import Path
 from IOUtils import ReadWriteOp
 import sys
+
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from test_main import Test
+from Test import Test
 import argparse
-
 
 extension = ".txt"
 
+
 def get_args():
-    parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument( "--file_size", dest="file_size",
-                        required = True,
+    parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("--file_size", dest="file_size",
+                        required=True,
                         help='Size of the files, eg - 1M FOR 1MB, 2K for 2KB')
     parser.add_argument("--dest", dest="path",
                         required=True,
@@ -39,16 +40,13 @@ class Write(Test):
         self.exit = 0
         self.input_size = input_size
         self.storage_path = dest_path
-        #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-        self.file_path= os.path.join("/", dest_path)
-        #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
+        self.file_path = os.path.join("/", dest_path)
         self.ops = ReadWriteOp()
-        params = {}
-        params['test_name'] = "write"
-        params['File size'] = self.input_size
-        params['Typed output folder'] = self.file_path
-        Test.__init__(self, **params)
-
+        self.ref_test_name = "write"
+        self.params['test_name'] = "write"
+        self.params['File size'] = self.input_size
+        self.params['Typed output folder'] = self.file_path
+        Test.__init__(self)
 
     def write_test(self, input_size):
         self.log.write("info", "Creating workload...")
@@ -60,18 +58,18 @@ class Write(Test):
             file_name = str(name) + extension
             dest = self.file_path + file_name
             try:
-                self.ops.plain_write(dest, content) #write function
+                self.ops.plain_write(dest, content)  # write function
             except Exception as err:
                 self.log.write("error", "Error while writing " + file_name)
-                self.log.write("error", file_name+ ": " + str(err))
-                self.exit |=1
+                self.log.write("error", file_name + ": " + str(err))
+                self.exit |= 1
 
             else:
                 size, fsize = self.ops.convert_size(input_size)
-                self.log.write("info", "File "+ file_name + " of size " + input_size + " successfully written",  val = "write")
+                self.log.write("info", "File " + file_name + " of size " + input_size + " successfully written",
+                               val="write")
         self.log.write("info", "End of write operations")
         return self.exit
-
 
     def exit_code(self):
         self.exit = self.write_test(self.input_size)
@@ -83,5 +81,3 @@ if __name__ == "__main__":
     args = get_args()
     test_write = Write(args.file_size, args.path)
     test_write.exit_code()
-
-

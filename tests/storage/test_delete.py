@@ -9,7 +9,7 @@ import sys
 sys.path.append("..")
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from test_main import Test
+from Test import Test
 import argparse
 
 
@@ -34,18 +34,15 @@ class Delete(Test):
     """
 
     def __init__(self, file_name, dest_path):
-        self.ref_timestamp = int(time.time())
         self.storage_path = dest_path
         self.file_name = file_name
-        #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
         self.root_file_path= os.path.join("/", dest_path)
         self.file_path = os.path.join(self.root_file_path, file_name)
-        #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
-        params = {}
-        params['test_name'] = "Delete"
-        params['File name'] = self.file_name
-        params['Typed output folder'] = self.file_path
-        Test.__init__(self, **params)
+        self.ref_test_name = "Delete"
+        self.params['test_name'] = "Delete"
+        self.params['File name'] = self.file_name
+        self.params['Typed output folder'] = self.file_path
+        Test.__init__(self)
 
 
     def delete_test(self):
