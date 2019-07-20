@@ -3,12 +3,12 @@ import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 
 class Test:
-    """
-    Implements logs
-    """
-    def __init__(self, **kwargs):
-        self.ref_test_name = kwargs.get('test_name')
-        self.kwargs = kwargs
+    """Implements logs"""
+
+    # store parameters
+    param = {}
+
+    def __init__(self):
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.ref_timestamp = int(time.time())
         self.log = Logger(os.path.join(self.logger_folder,
@@ -20,5 +20,5 @@ class Test:
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
-        for key, value in self.kwargs.items():
+        for key, value in self.param.items():
             self.log.write("parameters", "Param %s has value %s" % (key, value))
