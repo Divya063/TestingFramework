@@ -49,10 +49,9 @@ class MountSanity(Test):
         timer = threading.Timer(timeout, self.quit_function, args=['check_mount'])
         timer.start()
         old = os.getcwd()
-        for points in self.mount_points:
+        for point in self.mount_points:
             try:
                 os.chdir('/')
-                #time.sleep(8)
                 output = subprocess.check_output(
                     ['ls', '-l', '/eos/' + points], stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as exc:
