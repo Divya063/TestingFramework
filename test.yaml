@@ -21,13 +21,13 @@ tests:
       repoPath: 'cvmfs/sft.cern.ch/'
       filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
 
-#  eos:
-#    mountedFilesystem:
-#      fileSystemName: "eosuser"
-#  jupyterhub:
-#    webReachable:
-#      hostname: "swan.cern.ch"
-#      port: 443
-#      protocol: HTTPS
-#      ignoreTlsCertificate: True
-#  docker: daemonRuns
+output:
+  stdout : True
+  logfile:
+    logging: True
+    filepath : ""
+  grafana:
+    push : False
+    hostname: ''
+    port: '80'
+    namespace: 'swan.testingframework'
