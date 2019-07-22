@@ -1,19 +1,16 @@
 # Copies files and folders to relevant containers
-
-import subprocess
 import os
 
 
-def cp_helper(name, test_name):
-    container_name = "jupyter-" + name
+def cp_helper(name, test_name, container):
     if test_name == "storage":
         dest = "scratch/" + name + "/"
-        docker_cp_host(container_name, dest)
+        docker_cp_host(container, dest)
     elif test_name == "jupyterhub-api":
         container_name = "jupyterhub"
         docker_cp_host(container_name, "")
     else:
-        docker_cp_host(container_name, "")
+        docker_cp_host(container, "")
 
 
 def docker_cp_host(container_name, dest):

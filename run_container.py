@@ -5,9 +5,8 @@ import sys
 import yaml
 import subprocess
 
-"""
-run tests from user container
-"""
+# run tests from user container
+
 from tests.storage.helper import run_storage
 from tests.jupyterhub_api.helper import run_jupyterhub_api
 from tests.cvmfs.helper import run_cvmfs
