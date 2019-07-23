@@ -4,7 +4,9 @@ from IOUtils import ReadWriteOp
 import sys
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from timer import Profiling
+from grafana import Grafana
+from Test import Test
+from timer import StopWatch, Measure, Profiling
 import argparse
 
 dictionary = {}
@@ -25,32 +27,24 @@ def get_args():
     return args
 
 
-class Throughput():
+class Throughput(Test):
+
+    """
+    Return read and write throughput for a given number of files
+    """
 
     def __init__(self, number_of_files, input_size, dest_path):
         self.number_of_files = number_of_files
-        self.exit = None
-        self.ref_timestamp = int(time.time())
         self.input_size = input_size
+        self.fname = 'Throughput'
         self.storage_path = dest_path
-        self.ref_test_name = 'throughput'
-        #self.parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
         self.file_path= os.path.join("/", dest_path)
-        #self.file_path = os.path.join(self.parentDirectory, self.eos_path)
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.ops = ReadWriteOp()
-        self.log.write("info", self.ref_test_name + " Tests starting...")
-        self.log.write("info", time.strftime("%c"))
-        self.log_params()
-
-    def log_params(self):
-        self.log.write("parameters", "Test name: " + self.ref_test_name)
-        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
-        self.log.write("parameters", "Number of files: " + str(self.number_of_files))
-        self.log.write("parameters", "File size: " + str(self.input_size))
-        self.log.write("parameters", "Typed output folder: " + self.file_path)
-        self.log.write("parameters", "Logger folder: " + self.logger_folder)
+        self.ref_test_name = "throughput"
+        self.params['number_files'] = self.number_of_files
+        self.params['file_size'] = self.input_size
+        self.params['output_folder'] = self.file_path
+        Test.__init__(self)
 
     def check_directory(self):
 
@@ -84,11 +78,15 @@ class Throughput():
 
             except Exception as err:
                 self.log.write("error", "Error while writing " + file_name)
+                self.stats[self.fname].set_error(err)
                 self.log.write("error", file_name+ ": " + str(err))
                 self.exit |=1
 
             else:
+
                 size, fsize = self.ops.convert_size(input_size)
+                self.stats[self.fname].set_success()
+                self.stats[self.fname].set_performance(str("%.4f" % float(self.ops.set_performance(val[2], fsize))))
                 self.log.write("performance", "\t".join(
                     [file_name, str(input_size), str("%.8f" % float(val[2])), str("%.4f" % float(self.ops.set_performance(val[2], fsize))), str(val[0]), str(val[1])]), val = "write")
         stats = timer
@@ -98,7 +96,6 @@ class Throughput():
 
     def read_test(self, number_of_files):
         """
-
         :param number_of_files:
         :return: read throughput
         """
@@ -116,11 +113,14 @@ class Throughput():
                 measure.stop()
                 val = measure.val()
             except Exception as err:
+                self.stats[self.fname].set_error(err)
                 self.log.write("error", "Error while reading " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
                 self.exit|=1
             else:
                 size, fsize = self.ops.convert_size(self.input_size)
+                self.stats[self.fname].set_success()
+                self.stats[self.fname].set_performance(str("%.4f" % float(self.ops.set_performance(val[2], fsize))))
                 self.log.write("performance", "\t".join(
                     [file_name, str(self.input_size), str(("%.8f" % float(val[2]))), str(("%.4f" % float(self.ops.set_performance(val[2], fsize)))), str(val[0]),
                      str(val[1])]), val = "read")
@@ -141,6 +141,7 @@ class Throughput():
             if not read_t:
                 self.exit |=1
         self.log.write("info", "exit code: " + str(self.exit))
+        super().check_test_class(self.stats)
         return self.exit
 
 
@@ -148,5 +149,3 @@ if __name__ == "__main__":
     args = get_args()
     test_throughput = Throughput(args.number, args.file_size, args.path)
     test_throughput.exit_code()
-
-
