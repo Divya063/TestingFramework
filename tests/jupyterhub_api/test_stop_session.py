@@ -9,7 +9,7 @@ import sys
 sys.path.append("..")
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from jupyterhubtest import Test, JupyterhubTest
+from jupyterhubtest import JupyterhubTest
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
