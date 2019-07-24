@@ -38,11 +38,11 @@ class Throughput(Test):
         self.file_path = os.path.join("/", dest_path)
         self.ops = ReadWriteOp()
         self.ref_test_name = "throughput"
-        self.param = {}
-        self.param['number_files'] = self.number_of_files
-        self.param['file_size'] = self.input_size
-        self.param['output_folder'] = self.file_path
-        super().__init__(self, self.param)
+        self.params = {}
+        self.params['number_files'] = self.number_of_files
+        self.params['file_size'] = self.input_size
+        self.params['output_folder'] = self.file_path
+        super().__init__(self, self.params)
 
     def check_directory(self):
 

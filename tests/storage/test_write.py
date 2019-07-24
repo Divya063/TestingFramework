@@ -39,8 +39,10 @@ class Write(Test):
         self.file_path = os.path.join("/", dest_path)
         self.ops = ReadWriteOp()
         self.ref_test_name = "write"
-        self.param = {'file_size': self.input_size, 'output_folder': self.file_path}
-        super().__init__(self, self.param)
+        self.params = {}
+        self.params['file_size'] = self.input_size
+        self.params['output_folder'] =  self.file_path
+        super().__init__(self, self.params)
 
     def write_test(self, input_size):
         self.log.write("info", "Creating workload...")
