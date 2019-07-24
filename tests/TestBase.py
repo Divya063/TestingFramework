@@ -5,11 +5,9 @@ from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 class Test:
     """Implements logs"""
 
-    # store parameters
-    param = {}
-
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
+        self.param = kwargs
         self.ref_timestamp = int(time.time())
         self.log = Logger(os.path.join(self.logger_folder,
                                        self.ref_test_name + "_" + time.strftime("%Y-%m-%d_%H:%M:%S") + LOG_EXTENSION))
