@@ -31,10 +31,7 @@ def get_args():
 
 
 class Write(Test):
-    """
-
-    Writes to a file (of a given size) in the specified path
-    """
+    """Writes to a file (of a given size) in the specified path"""
 
     def __init__(self, input_size, dest_path):
         self.input_size = input_size

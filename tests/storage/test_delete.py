@@ -38,8 +38,8 @@ class Delete(Test):
         self.file_path = os.path.join(self.root_file_path, file_name)
         self.ref_test_name = "Delete"
         self.params = {}
-        self.params['File name'] = self.file_name
-        self.params['Typed output folder'] = self.file_path
+        self.params['file_name'] = self.file_name
+        self.params['file_path'] = self.file_path
         super().__init__(self, self.params)
 
     def delete_test(self):

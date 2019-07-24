@@ -30,9 +30,7 @@ def get_args():
 
 
 class Exists(Test):
-    """
-    Check whether a given file exists or not (in the given path)
-    """
+    """Check whether a given file exists or not (in the given path)"""
 
     def __init__(self, file_name, dest_path):
         self.storage_path = dest_path
@@ -41,8 +39,8 @@ class Exists(Test):
         self.file_path = os.path.join(self.root_file_path, file_name)
         self.ref_test_name = "file_exists"
         self.params = {}
-        self.params['File name'] = self.file_name
-        self.params['Typed output folder'] = self.file_path
+        self.params['file_name'] = self.file_name
+        self.params['output_folder'] = self.file_path
         super().__init__(self, self.params)
 
     def exist_test(self):

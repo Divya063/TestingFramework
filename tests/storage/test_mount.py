@@ -12,9 +12,7 @@ import argparse
 
 
 class Mount(Test):
-    """
-    Checks for eos mount points
-    """
+    """Checks for eos mount points"""
 
     def __init__(self):
         self.ref_test_name = "mount"
