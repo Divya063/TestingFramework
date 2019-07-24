@@ -6,19 +6,20 @@ import re
 import binascii
 import logging
 import sys
+
 sys.path.append("..")
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from Test import Test
+from TestBase import Test
 import argparse
-
 
 extension = ".txt"
 
+
 def get_args():
-    parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument( "--file_name", dest="file_name",
-                        required = True,
+    parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("--file_name", dest="file_name",
+                        required=True,
                         help='Name of the file')
     parser.add_argument("--dest", dest="path",
                         required=True,
@@ -28,22 +29,18 @@ def get_args():
 
 
 class Delete(Test):
-    """
-
-    Checks if a file gets deleted or not
-    """
+    """Checks if a file gets deleted or not"""
 
     def __init__(self, file_name, dest_path):
         self.storage_path = dest_path
         self.file_name = file_name
-        self.root_file_path= os.path.join("/", dest_path)
+        self.root_file_path = os.path.join("/", dest_path)
         self.file_path = os.path.join(self.root_file_path, file_name)
         self.ref_test_name = "Delete"
-        self.params['test_name'] = "Delete"
+        self.params = {}
         self.params['File name'] = self.file_name
         self.params['Typed output folder'] = self.file_path
-        Test.__init__(self)
-
+        super().__init__(self, self.params)
 
     def delete_test(self):
         try:
@@ -51,13 +48,12 @@ class Delete(Test):
             os.remove(self.file_path)
         except OSError as e:
             self.log.write("error", "Error: %s - %s." % (e.filename, e.strerror))
-            self.exit =1
+            self.exit = 1
         else:
-            self.log.write("info", "File "+ self.file_name + " successfully deleted",  val = "delete")
+            self.log.write("info", "File " + self.file_name + " successfully deleted", val="delete")
             self.exit = 0
         self.log.write("info", "End of delete operation")
         return self.exit
-
 
     def exit_code(self):
         self.exit = self.delete_test()
@@ -69,5 +65,3 @@ if __name__ == "__main__":
     args = get_args()
     test_delete = Delete(args.file_name, args.path)
     test_delete.exit_code()
-
-

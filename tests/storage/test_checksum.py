@@ -1,19 +1,21 @@
 import os
 from IOUtils import ReadWriteOp, ChecksumCal
 import sys
+
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from Test import Test
+from TestBase import Test
 import time
 import argparse
 
+
 def get_args():
-    parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--num", dest="number", type=int,
                         required=True,
                         help='Number of files to be generated')
-    parser.add_argument( "--file_size", dest="file_size",
-                        required = True,
+    parser.add_argument("--file_size", dest="file_size",
+                        required=True,
                         help='Size of the files, eg - 1M FOR 1MB, 2K for 2KB')
     parser.add_argument("--dest", dest="path",
                         required=True,
@@ -21,13 +23,13 @@ def get_args():
     args = parser.parse_args()
     return args
 
+
 extension = ".txt"
 
-class Checksum(Test):
-    """
 
-     Calculates Checksum for a given number of files
-    """
+class Checksum(Test):
+    """Calculates Checksum for a given number of files"""
+
     def __init__(self, number_of_files, input_size, dest_path):
         self.number_of_files = number_of_files
         self.input_size = input_size
@@ -37,11 +39,11 @@ class Checksum(Test):
         self.check = ChecksumCal()
         self.match = None
         self.ref_test_name = "Checksum"
+        self.params = {}
         self.params['number_files'] = self.number_of_files
         self.params['file_size'] = self.input_size
         self.params['output_folder'] = self.file_path
-        Test.__init__(self)
-
+        super().__init__(self, self.params)
 
     def check_directory(self):
         if not (os.path.isdir(self.file_path)):
@@ -51,7 +53,6 @@ class Checksum(Test):
             self.log.write("info", "eos directory exists, check passed...")
             self.exit = 0
         return self.exit
-
 
     def checksum_test(self, number_of_files, input_size):
         """
@@ -74,38 +75,37 @@ class Checksum(Test):
             try:
                 hash_num = self.check.calculate_hash(content)
                 self.ops.plain_write(dest, content)  # write function
-                data = self.ops.plain_read(dest) # read function
+                data = self.ops.plain_read(dest)  # read function
                 returned_hash = self.check.calculate_hash(data)
-                if(returned_hash != hash_num):
+                if returned_hash != hash_num:
                     self.match = "False"
                     self.log.write(file_name + "is corrupted")
-                    corrupted_files +=1
+                    corrupted_files += 1
+                    str.exit = 1
                 else:
                     self.match = "True"
             except Exception as err:
                 self.log.write("error",
                                "Unable to perform sanity check on " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
-                self.exit |= 1
+                self.exit = 1
             else:
                 self.log.write("consistency", "\t".join([file_name, self.match, hash_num, returned_hash]),
                                )
-                self.exit =0
+                self.exit = 0
 
-        self.log.write("info", "Number of corrupted files "+ str(corrupted_files))
+        self.log.write("info", "Number of corrupted files " + str(corrupted_files))
         self.log.write("info", "End of sanity check")
         return corrupted_files
 
-
     def exit_code(self):
-        if(self.checksum_test(self.number_of_files, self.input_size)>0):
-                self.exit|=1
+        if self.checksum_test(self.number_of_files, self.input_size) > 0:
+            self.exit = 1
         self.log.write("info", "exit code: " + str(self.exit))
         return self.exit
 
+
 if __name__ == "__main__":
     args = get_args()
-    test_integrity =  Checksum(args.number, args.file_size, args.path)
+    test_integrity = Checksum(args.number, args.file_size, args.path)
     test_integrity.exit_code()
-
-

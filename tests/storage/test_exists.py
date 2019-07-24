@@ -11,7 +11,7 @@ sys.path.append("..")
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 import argparse
-from Test import Test
+from TestBase import Test
 from pathlib import Path
 
 extension = ".txt"
@@ -40,10 +40,10 @@ class Exists(Test):
         self.root_file_path = os.path.join("/", dest_path)
         self.file_path = os.path.join(self.root_file_path, file_name)
         self.ref_test_name = "file_exists"
-        self.params['test_name'] = "file_exits"
+        self.params = {}
         self.params['File name'] = self.file_name
         self.params['Typed output folder'] = self.file_path
-        Test.__init__(self)
+        super().__init__(self, self.params)
 
     def exist_test(self):
         self.log.write("info", "Start of search operation")
@@ -58,7 +58,7 @@ class Exists(Test):
 
         except Exception as e:
             self.log.write("error", str(e))
-            self.exit |= 1
+            self.exit = 1
         return self.exit
 
     def exit_code(self):

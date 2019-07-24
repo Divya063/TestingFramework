@@ -12,7 +12,7 @@ import sys
 
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from Test import Test
+from TestBase import Test
 import argparse
 
 extension = ".txt"
@@ -37,16 +37,13 @@ class Write(Test):
     """
 
     def __init__(self, input_size, dest_path):
-        self.exit = 0
         self.input_size = input_size
         self.storage_path = dest_path
         self.file_path = os.path.join("/", dest_path)
         self.ops = ReadWriteOp()
         self.ref_test_name = "write"
-        self.params['test_name'] = "write"
-        self.params['File size'] = self.input_size
-        self.params['Typed output folder'] = self.file_path
-        Test.__init__(self)
+        self.param = {'file_size': self.input_size, 'output_folder': self.file_path}
+        super().__init__(self, self.param)
 
     def write_test(self, input_size):
         self.log.write("info", "Creating workload...")
@@ -62,9 +59,10 @@ class Write(Test):
             except Exception as err:
                 self.log.write("error", "Error while writing " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
-                self.exit |= 1
+                self.exit = 1
 
             else:
+                self.exit = 0
                 size, fsize = self.ops.convert_size(input_size)
                 self.log.write("info", "File " + file_name + " of size " + input_size + " successfully written",
                                val="write")

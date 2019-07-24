@@ -2,23 +2,26 @@ import threading
 import subprocess
 import time
 import sys
+
 sys.path.append("..")
 import _thread as thread
 import os
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from Test import Test
+from TestBase import Test
 import argparse
 
+
 def get_args():
-    parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--timeout", dest="timeout", type=int,
                         required=True,
-                        help = 'Timeout for the function')
+                        help='Timeout for the function')
     parser.add_argument("--mount_points", nargs='+', dest="mount_points", type=str,
                         required=True,
                         help='Mount Points')
     args = parser.parse_args()
     return args
+
 
 class MountSanity(Test):
     """
@@ -27,12 +30,12 @@ class MountSanity(Test):
     Command - python3 test_mount_sanity.py --timeout 5 --mount_points user user/u
 
     """
+
     def __init__(self, timeout, mount_points):
         self.mount_points = mount_points
         self.timeout = timeout
         self.ref_test_name = "mount_sanity"
-        Test.__init__(self)
-
+        super().__init__(self)
 
     def quit_function(self, fn_name):
         self.log.write("error", '{0} took too long'.format(fn_name))
@@ -53,7 +56,7 @@ class MountSanity(Test):
             try:
                 os.chdir('/')
                 output = subprocess.check_output(
-                    ['ls', '-l', '/eos/' + points], stderr=subprocess.STDOUT)
+                    ['ls', '-l', '/eos/' + point], stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as exc:
                 self.exit = 1
                 os.chdir(old)
@@ -62,16 +65,17 @@ class MountSanity(Test):
             finally:
                 timer.cancel()
                 os.chdir(old)
-            self.log.write("info", "mount point "+ points +" tested")
-            self.exit =0
+            self.log.write("info", "mount point " + point + " tested")
+            self.exit = 0
+            return self.exit
 
     def exit_code(self):
         self.exit = self.check_mount(self.timeout)
         self.log("overall exit code " + str(self.exit))
         return self.exit
 
+
 if __name__ == "__main__":
     args = get_args()
     test_mount_sanity = MountSanity(args.timeout, args.mount_points)
     test_mount_sanity.exit_code()
-
