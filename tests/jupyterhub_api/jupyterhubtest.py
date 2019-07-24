@@ -7,7 +7,7 @@ import yaml
 import sys
 
 sys.path.append("..")
-from Test import Test
+from TestBase import Test
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -15,8 +15,8 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 class JupyterhubTest(Test):
     """Implements everything required to call Jupyterhub API """
 
-    def __init__(self, port, token, base_path, verify):
-        Test.__init__(self)
+    def __init__(self, port, token, base_path, verify, **kwargs):
+        Test.__init__(self, **kwargs)
         self.token = token
         self.port = port
         self.verify = verify
