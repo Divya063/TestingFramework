@@ -72,7 +72,7 @@ class CreateSession(JupyterhubTest):
         r = ""
         for user in self.users:
             try:
-                r = super().call_api("post", user, data=self.data, endpoint="/server")
+                r = self.call_api("post", user, data=self.data, endpoint="/server")
             except requests.exceptions.RequestException as e:
                 self.log.write("error", "status code " + str(r.status_code) + " " + str(e))
                 return 1
