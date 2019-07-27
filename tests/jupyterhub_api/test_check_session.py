@@ -52,7 +52,7 @@ class CheckSession(JupyterhubTest):
 
     def __init__(self, port, token, users, base_path, verify):
         self.ref_test_name = "Check_Sessions"
-        JupyterhubTest.__init__(self, port, token, base_path, verify)
+        super().__init__(port, token, base_path, verify)
         self.users = users
 
     def check_container(self, user):
@@ -61,31 +61,29 @@ class CheckSession(JupyterhubTest):
         s = subprocess.check_output('docker ps', shell=True)
         container_name = "jupyter-" + user
         if s.decode("utf-8").find(container_name) == -1:
-            self.exit = 1
+            self.log.write("error", "Container is not running")
             return 1
 
     def check_session(self):
-        """
-        Submit a  get request to  https://localhost:443/hub/api/users/user1, this will return the information
-        of particular user in json format, check the value of the field 'server' if it is null server is not active
 
-        Example:
-            json of user having active server-
-            {"kind": "user", "name": "user1", "admin": false, "groups": [], "server": "/user/user1/", "pending": null,
-            }
-
-            json of user have non-active server -
-            {"kind": "user", "name": "user3", "admin": false, "groups": [], "server": null, "pending": null}
-
-        """
+        # Submit a  get request to  https://localhost:443/hub/api/users/user1, this will return the information
+        # of particular user in json format, check the value of the field 'server' if it is null server is not active
+        #
+        # Example:
+        #     json of user having active server-
+        #     {"kind": "user", "name": "user1", "admin": false, "groups": [], "server": "/user/user1/", "pending": null,
+        #     }
+        #
+        #     json of user have non-active server -
+        #     {"kind": "user", "name": "user3", "admin": false, "groups": [], "server": null, "pending": null}
 
         for user in self.users:
             try:
-                r = super().call_api("get", user, endpoint="")
+                r = self.call_api("get", user)
 
             except requests.exceptions.RequestException as e:
                 self.log.write("error", str(e))
-                self.exit = 1
+                return 1
             else:
                 if r.status_code == 200:
                     status = r.json()
@@ -93,19 +91,18 @@ class CheckSession(JupyterhubTest):
                     check_container = self.check_container(user)
                     self.log.write("info", "exit code : check_container " + str(check_container))
                     if server_status and check_container != 1:
-                        self.exit = 0
                         self.log.write("info", user + " server is present at " + server_status)
+                        return 0
                     else:
                         self.log.write("error", user + " server is not present ")
-                        self.exit = 1
+                        return 1
                 else:
                     self.log.write("error", r.content.decode('utf-8'))
-                    self.exit = 1
-
-        return self.exit
+                    return 1
 
     def exit_code(self):
         self.exit = self.check_session()
+        self.log.write("info", "exit code %s" % self.exit)
 
         return self.exit
 

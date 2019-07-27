@@ -16,7 +16,7 @@ class JupyterhubTest(Test):
     """Implements everything required to call Jupyterhub API """
 
     def __init__(self, port, token, base_path, verify, **kwargs):
-        Test.__init__(self, **kwargs)
+        super().__init__(**kwargs)
         self.token = token
         self.port = port
         self.verify = verify

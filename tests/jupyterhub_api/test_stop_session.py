@@ -49,32 +49,31 @@ class StopSession(JupyterhubTest):
 
     def __init__(self, port, token, users, base_path, verify):
         self.ref_test_name = 'Stop_Session'
-        JupyterhubTest.__init__(self, port, token, base_path, verify)
+        super().__init__(port, token, base_path, verify)
         self.users = users
 
     def stop_session(self):
         self.log.write("info", "Terminating the sessions")
         for user in self.users:
             try:
-                r = super().call_api("delete", user, endpoint="/server")
+                r = self.call_api("delete", user, endpoint="/server")
 
             except requests.exceptions.RequestException as e:
                 self.log.write("error", str(e))
-                self.exit = 1
+                return 1
 
             else:
                 if r.status_code == 204:
                     self.log.write("info", user + " server was removed")
-                    self.exit = 0
+                    return 0
                 else:
                     self.log.write("error", user + " server was not removed")
                     self.log.write("error", r.content.decode('utf-8'))
-                    self.exit = 1
-
-        return self.exit
+                    return 1
 
     def exit_code(self):
         self.exit = self.stop_session()
+        self.log.write("info", "exit code %s" % self.exit)
         return self.exit
 
 

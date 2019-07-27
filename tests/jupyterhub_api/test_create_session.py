@@ -61,7 +61,7 @@ class CreateSession(JupyterhubTest):
 
     def __init__(self, port, token, users, data, delay, base_path, verify):
         self.ref_test_name = 'Session_Creation_test'
-        JupyterhubTest.__init__(self, port, token, base_path, verify)
+        super().__init__(port, token, base_path, verify)
         self.data = data
         self.users = users
         self.delay = delay
@@ -74,65 +74,58 @@ class CreateSession(JupyterhubTest):
             try:
                 r = super().call_api("post", user, data=self.data, endpoint="/server")
             except requests.exceptions.RequestException as e:
-                self.exit = 1
                 self.log.write("error", "status code " + str(r.status_code) + " " + str(e))
+                return 1
 
             else:
                 if r.status_code == 202:
                     self.log.write("info", "Successfully requested the server")
-                    """
-                     After requesting a server it needs to respond within 30 seconds otherwise there will be 
-                     Timeout Error
-                     Example:
-        
-                     TimeoutError: Server at http://172.18.0.15:8888/user/user0/ didn't respond in 30 seconds
-                     So, even after a successful request a server may not be created
-                     
-                     maximum delay should not be more than 30s
-                     
-                    """
+
+                    #  After requesting a server it needs to respond within 30 seconds otherwise there will be
+                    #  Timeout Error
+                    #  Example:
+                    #
+                    #  TimeoutError: Server at http://172.18.0.15:8888/user/user0/ didn't respond in 30 seconds
+                    #  So, even after a successful request a server may not be created
+                    #
+                    #  maximum delay should not be more than 30s
 
                     time.sleep(self.delay)
 
-                    """
-                    Submit a  get request to  https://localhost:443/hub/api/users/user1, this will return the information
-                    of particular user in json format, check the value of the field 'server' if it is null, server is not active
+                    # Submit a  get request to  https://localhost:443/hub/api/users/user1, this will return the
+                    # information of particular user in json format, check the value of the field 'server' if it is
+                    # null, server is not active
+                    #
+                    # Example:
+                    #
+                    # json of user having active server- {"kind": "user", "name": "user1", "admin": false, "groups":
+                    # [], "server": "/user/user1/", "pending": null, }
+                    #
+                    # json of user have non-active server -
+                    # {"kind": "user", "name": "user3", "admin": false, "groups": [], "server": null, "pending": null}
 
-                    Example:
-
-                    json of user having active server-
-                    {"kind": "user", "name": "user1", "admin": false, "groups": [], "server": "/user/user1/", "pending": null,
-                    }
-
-                    json of user have non-active server -
-                    {"kind": "user", "name": "user3", "admin": false, "groups": [], "server": null, "pending": null}
-
-                    """
-
-                    r = super().call_api("get", user, endpoint="")
+                    r = self.call_api("get", user)
                     if r.status_code == 200:
                         status = r.json()
                         server_status = status['server']
                         if server_status:
-                            self.exit = 0
                             self.log.write("info", user + " server successfully created " + server_status)
+                            return 0
                         else:
                             self.log.write("error", user + " server was not created ")
                             self.log.write("error",
                                            "status code " + str(r.status_code) + " " + r.content.decode('utf-8'))
-                            self.exit = 1
+                            return 1
                 elif r.status_code == 201:
                     # Sometimes servers are created without any wait time
 
                     self.log.write("info", "Successfully created the" + user + " server")
-                    self.exit = 0
+                    return 0
 
                 else:
                     self.log.write("error", user + " server was not created")
                     self.log.write("error", "status code " + str(r.status_code) + " " + r.content.decode('utf-8'))
-                    self.exit = 1
-
-        return self.exit
+                    return 1
 
     def exit_code(self):
         self.exit = self.check_create_session()

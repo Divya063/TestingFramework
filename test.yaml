@@ -29,7 +29,7 @@ tests:
     create_session:
       port: '443'
       users: ['user2']
-      token: '1f38d8972d7040cd80e934044f1400d5'
+      token: 'b39639d589c44a2294b3dd1164607287'
       base_path: ""
       params:
         TLS: False

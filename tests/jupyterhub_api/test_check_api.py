@@ -37,23 +37,22 @@ class CheckAPI(JupyterhubTest):
 
     def __init__(self, port, token, base_path, verify):
         self.ref_test_name = "APIReachable"
-        JupyterhubTest.__init__(self, port, token, base_path, verify)
+        super().__init__(port, token, base_path, verify)
 
     def check_api(self):
         try:
-            r = super().call_api("get")
+            r = self.call_api("get")
 
         except requests.exceptions.RequestException as e:
             self.log.write("error", str(e))
-            self.exit = 1
+            return 1
         else:
             if r.status_code == 200:
-                self.exit = 0
                 self.log.write("info", "API is reachable")
+                return 0
             else:
                 self.log.write("error", "API is not reachable")
-                self.exit = 1
-        return self.exit
+                return 1
 
     def exit_code(self):
         self.exit = self.check_api()
