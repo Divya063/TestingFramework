@@ -13,7 +13,7 @@ class Database(Test):
     """Implements database connection"""
 
     def __init__(self, path, user, mode):
-        Test.__init__(self)
+        super().__init__()
         self.path = path
         self.user = user
         self.mode = mode
