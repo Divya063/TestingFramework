@@ -20,6 +20,24 @@ tests:
       num: 2 #Number of packages
       repoPath: 'cvmfs/sft.cern.ch/'
       filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
+  database:
+    token:
+      user: "user2"
+      table: "api_tokens"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
+    servers:
+      user: "user2"
+      table: "servers"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
+    spawners:
+      user: "user2"
+      table: "spawners"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
+
+
 
 #  eos:
 #    mountedFilesystem:

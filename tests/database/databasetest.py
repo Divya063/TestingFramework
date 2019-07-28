@@ -9,7 +9,7 @@ from TestBase import Test
 from logger import Logger
 
 
-class Database(Test):
+class DatabaseTest(Test):
     """Implements database connection"""
 
     def __init__(self, path, user, mode):

@@ -1,5 +1,5 @@
 import argparse
-from database import Database
+from databasetest import DatabaseTest
 import sys
 sys.path.append("..")
 
@@ -22,7 +22,7 @@ def get_args():
     return args
 
 
-class Spawners(Database):
+class Spawners(DatabaseTest):
     """
     Checks the status of "servers" table under two modes:
     1. When server of a particular user is active
@@ -44,10 +44,10 @@ class Spawners(Database):
         # format if mode is active - [(1,)]
         if result:
             self.log.write("info", "Server is active, %s" % result)
-            self.exit = 0 if mode else 1
+            self.exit = 0 if self.mode else 1
         else:
             self.log.write("info", "Server is not active, server_id field is none")
-            self.exit = 1 if mode else 0
+            self.exit = 1 if self.mode else 0
         return self.exit
 
     def exit_code(self):

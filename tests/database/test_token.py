@@ -1,7 +1,7 @@
 import argparse
 import sys
 sys.path.append("..")
-from database import Database
+from databasetest import DatabaseTest
 
 
 def get_args():
@@ -22,7 +22,7 @@ def get_args():
     return args
 
 
-class Token(Database):
+class Token(DatabaseTest):
     """
     Checks the status of "api_tokens" table under two modes:
     1. When server of a particular user is active
@@ -44,15 +44,15 @@ class Token(Database):
         user_id = result[0][0]
         server = result[0][1]
         if user_id:
-            self.log.write("Server is active")
+            self.log.write("info", "Server is active")
             server_address = 'Server at user/%s' % self.user
             if server == server_address:
                 self.log.write("info", server_address)
-                self.exit = 0 if mode else 1
+                self.exit = 0 if self.mode else 1
         else:
-            self.exit = 1 if mode else 0
+            self.exit = 1 if self.mode else 0
 
-        print(result[0][1])
+        return self.exit
 
     def exit_code(self):
         self.exit = self.check_token()
