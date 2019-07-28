@@ -28,13 +28,13 @@ class Servers(Database):
     1. When server of a particular user is active
     2. When server is removed or deleted
 
-    Command :  python3 test_token.py --path jupyterhub.sqlite -d --user user2 --table servers
+    Command :  python3 test_servers.py --path jupyterhub.sqlite -d --user user2 --table servers
     """
 
     def __init__(self, path, user, mode, table_name):
         self.ref_test_name = "test_servers"
         self.table_name = table_name
-        super().__init__(self, path, user, mode)
+        super().__init__(path, user, mode)
 
     def check_servers(self):
         command = 'select port, base_url from %s' % self.table_name

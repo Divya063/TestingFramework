@@ -1,4 +1,6 @@
 import argparse
+import sys
+sys.path.append("..")
 from database import Database
 
 
@@ -32,7 +34,7 @@ class Token(Database):
     def __init__(self, path, user, mode, table_name):
         self.ref_test_name = "test_token"
         self.table_name = table_name
-        super().__init__(self, path, user, mode)
+        super().__init__(path, user, mode)
 
     def check_token(self):
         command = 'select user_id, note from %s' % self.table_name
