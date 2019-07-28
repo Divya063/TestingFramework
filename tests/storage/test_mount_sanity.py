@@ -35,7 +35,7 @@ class MountSanity(Test):
         self.mount_points = mount_points
         self.timeout = timeout
         self.ref_test_name = "mount_sanity"
-        super().__init__(self)
+        super().__init__()
 
     def quit_function(self, fn_name):
         self.log.write("error", '{0} took too long'.format(fn_name))
@@ -45,9 +45,9 @@ class MountSanity(Test):
 
     def check_mount(self, timeout):
         self.log.write("info", "timeout set to " + str(timeout))
-        """
-        exit process if this function takes longer than "timeout" seconds
-        """
+
+        # exit process if this function takes longer than "timeout" seconds
+
         # will call the quit function, if execution is not completed within stipulated time frame
         timer = threading.Timer(timeout, self.quit_function, args=['check_mount'])
         timer.start()

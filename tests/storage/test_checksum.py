@@ -43,16 +43,15 @@ class Checksum(Test):
         self.params['number_files'] = self.number_of_files
         self.params['file_size'] = self.input_size
         self.params['output_folder'] = self.file_path
-        super().__init__(self, self.params)
+        super().__init__(self.params)
 
     def check_directory(self):
         if not (os.path.isdir(self.file_path)):
             self.log.write("error", "eos directory does not exist")
-            self.exit = 1
+            return 1
         else:
             self.log.write("info", "eos directory exists, check passed...")
-            self.exit = 0
-        return self.exit
+            return 0
 
     def checksum_test(self, number_of_files, input_size):
         """
@@ -81,26 +80,23 @@ class Checksum(Test):
                     self.match = "False"
                     self.log.write(file_name + "is corrupted")
                     corrupted_files += 1
-                    str.exit = 1
                 else:
                     self.match = "True"
             except Exception as err:
                 self.log.write("error",
                                "Unable to perform sanity check on " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
-                self.exit = 1
+                return 1
             else:
                 self.log.write("consistency", "\t".join([file_name, self.match, hash_num, returned_hash]),
                                )
-                self.exit = 0
 
         self.log.write("info", "Number of corrupted files " + str(corrupted_files))
         self.log.write("info", "End of sanity check")
         return corrupted_files
 
     def exit_code(self):
-        if self.checksum_test(self.number_of_files, self.input_size) > 0:
-            self.exit = 1
+        self.exit = 1 if self.checksum_test(self.number_of_files, self.input_size) > 0 else 0
         self.log.write("info", "exit code: " + str(self.exit))
         return self.exit
 

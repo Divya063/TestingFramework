@@ -42,17 +42,16 @@ class Throughput(Test):
         self.params['number_files'] = self.number_of_files
         self.params['file_size'] = self.input_size
         self.params['output_folder'] = self.file_path
-        super().__init__(self, self.params)
+        super().__init__(self.params)
 
     def check_directory(self):
 
         if not (os.path.isdir(self.file_path)):
             self.log.write("error", "eos directory does not exist")
-            self.exit = 1
+            return 1
         else:
             self.log.write("info", "eos directory exists, check passed...")
-            self.exit = 0
-        return self.exit
+            return 0
 
     def write_test(self, number_of_files, input_size):
         self.log.write("info", "Creating workload...")
@@ -69,26 +68,24 @@ class Throughput(Test):
             try:
                 measure = timer.stats.startMeasurement()
                 self.ops.plain_write(dest, content)  # write function
-                measure.stop()
+                measure.s1top()
                 # measure val returns start time, end time and total duration
                 val = measure.val()
 
             except Exception as err:
                 self.log.write("error", "Error while writing " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
-                self.exit = 1
+                return 1
 
             else:
-                self.exit = 0
                 size, fsize = self.ops.convert_size(input_size)
                 self.log.write("performance", "\t".join(
                     [file_name, str(input_size), str("%.8f" % float(val[2])),
                      str("%.4f" % float(self.ops.set_performance(val[2], fsize))), str(val[0]), str(val[1])]),
                                val="write")
-        stats = timer
-        self.log.write("info", str(stats), val="write")
-        self.log.write("info", "End of write operations")
-        return stats
+                stats = timer
+                self.log.write("info", str(stats), val="write")
+                return 0
 
     def read_test(self, number_of_files):
         """
@@ -112,18 +109,16 @@ class Throughput(Test):
             except Exception as err:
                 self.log.write("error", "Error while reading " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
-                self.exit = 1
+                return 1
             else:
-                self.exit = 0
                 size, fsize = self.ops.convert_size(self.input_size)
                 self.log.write("performance", "\t".join(
                     [file_name, str(self.input_size), str(("%.8f" % float(val[2]))),
                      str(("%.4f" % float(self.ops.set_performance(val[2], fsize)))), str(val[0]),
                      str(val[1])]), val="read")
-        stats = str(timer)
-        self.log.write("info", stats, val="read")
-        self.log.write("info", "End of read operations")
-        return stats
+                stats = str(timer)
+                self.log.write("info", stats, val="read")
+                return 0
 
     def exit_code(self):
         self.check_dir = self.check_directory()
@@ -132,10 +127,8 @@ class Throughput(Test):
         else:
             write_t = self.write_test(self.number_of_files, self.input_size)
             read_t = self.read_test(self.number_of_files)
-            if not write_t:
-                self.exit = 1
-            if not read_t:
-                self.exit = 1
+            self.exit |= write_t
+            self.exit |= read_t
         self.log.write("info", "exit code: " + str(self.exit))
         return self.exit
 

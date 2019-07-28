@@ -40,7 +40,7 @@ class Delete(Test):
         self.params = {}
         self.params['file_name'] = self.file_name
         self.params['file_path'] = self.file_path
-        super().__init__(self, self.params)
+        super().__init__(self.params)
 
     def delete_test(self):
         try:
@@ -48,12 +48,10 @@ class Delete(Test):
             os.remove(self.file_path)
         except OSError as e:
             self.log.write("error", "Error: %s - %s." % (e.filename, e.strerror))
-            self.exit = 1
+            return 1
         else:
             self.log.write("info", "File " + self.file_name + " successfully deleted", val="delete")
-            self.exit = 0
-        self.log.write("info", "End of delete operation")
-        return self.exit
+            return 0
 
     def exit_code(self):
         self.exit = self.delete_test()

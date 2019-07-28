@@ -16,7 +16,7 @@ class Mount(Test):
 
     def __init__(self):
         self.ref_test_name = "mount"
-        super().__init__(self)
+        super().__init__()
 
     def check_mount(self):
         olddir = os.getcwd()
@@ -25,12 +25,12 @@ class Mount(Test):
         second_command = subprocess.Popen(["grep", "eos"], stdin=first_command.stdout)
         if second_command:
             self.log.write("sanity", "eos mount points" + " exist")
-            self.exit = 0
+            os.chdir(olddir)
+            return 0
         else:
             self.log.write("error", "eos mount points" + " do not exist")
-            self.exit = 1
-        os.chdir(olddir)
-        return self.exit
+            return 1
+
 
     def exit_code(self):
         self.exit = self.check_mount()

@@ -41,8 +41,8 @@ class Write(Test):
         self.ref_test_name = "write"
         self.params = {}
         self.params['file_size'] = self.input_size
-        self.params['output_folder'] =  self.file_path
-        super().__init__(self, self.params)
+        self.params['output_folder'] = self.file_path
+        super().__init__(self.params)
 
     def write_test(self, input_size):
         self.log.write("info", "Creating workload...")
@@ -58,18 +58,17 @@ class Write(Test):
             except Exception as err:
                 self.log.write("error", "Error while writing " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
-                self.exit = 1
+                return 1
 
             else:
-                self.exit = 0
                 size, fsize = self.ops.convert_size(input_size)
                 self.log.write("info", "File " + file_name + " of size " + input_size + " successfully written",
                                val="write")
-        self.log.write("info", "End of write operations")
-        return self.exit
+                return 0
 
     def exit_code(self):
         self.exit = self.write_test(self.input_size)
+        self.log.write("info", "End of write operations")
         self.log.write("info", "exit code: " + str(self.exit))
         return self.exit
 
