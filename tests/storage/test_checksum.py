@@ -58,7 +58,7 @@ class Checksum(Test):
 
         :param number_of_files:
         :param input_size:
-        :return:
+        :return: Number of corrupted files
         """
         corrupted_files = 0
         self.log.write("info", "Creating workload...")
