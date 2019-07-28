@@ -39,7 +39,6 @@ class Spawners(DatabaseTest):
     def check_spawners(self):
         command = 'select server_id from %s' % self.table_name
         result = self.select_tasks(command)
-        print(result)
         # result format if mode is delete - [(None,)]
         # format if mode is active - [(1,)]
         if result:
@@ -52,6 +51,7 @@ class Spawners(DatabaseTest):
 
     def exit_code(self):
         self.exit = self.check_spawners()
+        self.log.write("info", "exit code %s" % self.exit)
         return self.exit
 
 

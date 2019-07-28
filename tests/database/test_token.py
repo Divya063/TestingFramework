@@ -56,6 +56,7 @@ class Token(DatabaseTest):
 
     def exit_code(self):
         self.exit = self.check_token()
+        self.log.write("info", "exit code %s" % self.exit)
         return self.exit
 
 

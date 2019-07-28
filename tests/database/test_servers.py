@@ -39,7 +39,6 @@ class Servers(DatabaseTest):
     def check_servers(self):
         command = 'select port, base_url from %s' % self.table_name
         result = self.select_tasks(command)
-        print(result)
         # result format if mode is delete - []
         # format if mode is active - [(8888, '/user/user2/')]
         if len(result) == 0:
@@ -53,6 +52,7 @@ class Servers(DatabaseTest):
 
     def exit_code(self):
         self.exit = self.check_servers()
+        self.log.write("info", "exit code %s" % self.exit)
         return self.exit
 
 
