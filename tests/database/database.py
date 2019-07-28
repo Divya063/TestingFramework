@@ -5,11 +5,12 @@ from sqlite3 import Error
 import sys
 
 sys.path.append("..")
-from Test import Test
+from TestBase import Test
+from logger import Logger
 
 
 class Database(Test):
-    """Implements logs"""
+    """Implements database connection"""
 
     def __init__(self, path, user, mode):
         Test.__init__(self)
@@ -42,7 +43,7 @@ class Database(Test):
         try:
             self.cur.execute(command)
         except Exception as e:
-            self.log.write(str(e))
+            self.log.write("error", str(e))
         else:
             rows = self.cur.fetchall()
             return rows

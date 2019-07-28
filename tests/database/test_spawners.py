@@ -1,5 +1,7 @@
 import argparse
 from database import Database
+import sys
+sys.path.append("..")
 
 
 def get_args():
@@ -20,45 +22,41 @@ def get_args():
     return args
 
 
-class Token(Database):
+class Spawners(Database):
     """
-    Checks the status of "api_tokens" table under two modes:
+    Checks the status of "servers" table under two modes:
     1. When server of a particular user is active
     2. When server is removed or deleted
 
-    Command :  python3 test_token.py --path jupyterhub.sqlite -d --user user2 --table api_tokens
+    Command :  python3 test_spawners.py --path jupyterhub.sqlite -d --user user2 --table spawners
     """
 
     def __init__(self, path, user, mode, table_name):
-        self.ref_test_name = "test_token"
+        self.ref_test_name = "test_spawners"
         self.table_name = table_name
-        super().__init__(self, path, user, mode)
+        super().__init__(path, user, mode)
 
-    def check_token(self):
-        command = 'select user_id, note from %s' % self.table_name
+    def check_spawners(self):
+        command = 'select server_id from %s' % self.table_name
         result = self.select_tasks(command)
-        # result format if mode is delete - [(None, 'generated at startup')]
-        # format if mode is active - [(1, 'Server at /user/user2/')]
-        user_id = result[0][0]
-        server = result[0][1]
-        if user_id:
-            self.log.write("Server is active")
-            server_address = 'Server at user/%s' % self.user
-            if server == server_address:
-                self.log.write("info", server_address)
-                self.exit = 0 if mode else 1
+        print(result)
+        # result format if mode is delete - [(None,)]
+        # format if mode is active - [(1,)]
+        if result:
+            self.log.write("info", "Server is active, %s" % result)
+            self.exit = 0 if mode else 1
         else:
+            self.log.write("info", "Server is not active, server_id field is none")
             self.exit = 1 if mode else 0
-
-        print(result[0][1])
+        return self.exit
 
     def exit_code(self):
-        self.exit = self.check_token()
+        self.exit = self.check_spawners()
         return self.exit
 
 
 if __name__ == "__main__":
     args = get_args()
     mode = 1 if args.active else 0 if args.delete else None
-    test_token = Token(args.path, args.user, mode, args.table)
-    test_token.exit_code()
+    test_spawners = Spawners(args.path, args.user, mode, args.table)
+    test_spawners.exit_code()
