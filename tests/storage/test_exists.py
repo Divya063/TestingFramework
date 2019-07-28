@@ -41,7 +41,7 @@ class Exists(Test):
         self.params = {}
         self.params['file_name'] = self.file_name
         self.params['output_folder'] = self.file_path
-        super().__init__(self.params)
+        super().__init__(**self.params)
 
     def exist_test(self):
         self.log.write("info", "Start of search operation")

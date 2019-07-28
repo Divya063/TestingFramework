@@ -40,7 +40,7 @@ class Delete(Test):
         self.params = {}
         self.params['file_name'] = self.file_name
         self.params['file_path'] = self.file_path
-        super().__init__(self.params)
+        super().__init__(**self.params)
 
     def delete_test(self):
         try:

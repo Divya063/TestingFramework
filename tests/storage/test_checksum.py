@@ -43,7 +43,7 @@ class Checksum(Test):
         self.params['number_files'] = self.number_of_files
         self.params['file_size'] = self.input_size
         self.params['output_folder'] = self.file_path
-        super().__init__(self.params)
+        super().__init__(**self.params)
 
     def check_directory(self):
         if not (os.path.isdir(self.file_path)):

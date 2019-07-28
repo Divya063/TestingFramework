@@ -42,7 +42,7 @@ class Throughput(Test):
         self.params['number_files'] = self.number_of_files
         self.params['file_size'] = self.input_size
         self.params['output_folder'] = self.file_path
-        super().__init__(self.params)
+        super().__init__(**self.params)
 
     def check_directory(self):
 
@@ -68,7 +68,7 @@ class Throughput(Test):
             try:
                 measure = timer.stats.startMeasurement()
                 self.ops.plain_write(dest, content)  # write function
-                measure.s1top()
+                measure.stop()
                 # measure val returns start time, end time and total duration
                 val = measure.val()
 
@@ -83,13 +83,13 @@ class Throughput(Test):
                     [file_name, str(input_size), str("%.8f" % float(val[2])),
                      str("%.4f" % float(self.ops.set_performance(val[2], fsize))), str(val[0]), str(val[1])]),
                                val="write")
-                stats = timer
-                self.log.write("info", str(stats), val="write")
-                return 0
+                self.exit =0
+        stats = timer
+        self.log.write("info", str(stats), val="write")
+        return self.exit
 
     def read_test(self, number_of_files):
         """
-
         :param number_of_files:
         :return: read throughput
         """
@@ -116,9 +116,11 @@ class Throughput(Test):
                     [file_name, str(self.input_size), str(("%.8f" % float(val[2]))),
                      str(("%.4f" % float(self.ops.set_performance(val[2], fsize)))), str(val[0]),
                      str(val[1])]), val="read")
-                stats = str(timer)
-                self.log.write("info", stats, val="read")
-                return 0
+                self.exit = 0
+
+        stats = str(timer)
+        self.log.write("info", stats, val="read")
+        return self.exit
 
     def exit_code(self):
         self.check_dir = self.check_directory()
@@ -127,7 +129,7 @@ class Throughput(Test):
         else:
             write_t = self.write_test(self.number_of_files, self.input_size)
             read_t = self.read_test(self.number_of_files)
-            self.exit |= write_t
+            self.exit = write_t
             self.exit |= read_t
         self.log.write("info", "exit code: " + str(self.exit))
         return self.exit

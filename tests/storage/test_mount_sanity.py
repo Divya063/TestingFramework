@@ -56,22 +56,21 @@ class MountSanity(Test):
             try:
                 os.chdir('/')
                 output = subprocess.check_output(
-                    ['ls', '-l', '/eos/' + point], stderr=subprocess.STDOUT)
+                    ['ls', '-l', 'eos/' + point], stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as exc:
-                self.exit = 1
                 os.chdir(old)
-                self.log.write("parameters", "Test name: " + self.ref_test_name)
-                return
+                self.log.write("error", str(exc))
+                return 1
             finally:
                 timer.cancel()
                 os.chdir(old)
             self.log.write("info", "mount point " + point + " tested")
             self.exit = 0
-            return self.exit
+        return self.exit
 
     def exit_code(self):
         self.exit = self.check_mount(self.timeout)
-        self.log("overall exit code " + str(self.exit))
+        self.log.write("info", "overall exit code " + str(self.exit))
         return self.exit
 
 

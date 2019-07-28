@@ -34,6 +34,7 @@ class Mount(Test):
 
     def exit_code(self):
         self.exit = self.check_mount()
+        self.log.write("info", "overall exit code " + str(self.exit))
         return self.exit
 
 
