@@ -6,8 +6,8 @@ import re
 import binascii
 import time
 
-
 BYTES = 1024
+
 
 class ReadWriteOp:
 
@@ -36,7 +36,6 @@ class ReadWriteOp:
                 return "%3.1f %s" % (num, x)
             num /= BYTES
 
-
     def extract_digits(self, s):
         """
         this function separates digits and strings
@@ -47,7 +46,6 @@ class ReadWriteOp:
         digit = int(re.search(r'\d+', s).group(0))
         return digit, string[0]
 
-
     def convert_size(self, string):
         """
         this function calculates total bytes
@@ -56,7 +54,7 @@ class ReadWriteOp:
         units = ['K', 'M', 'G', 'T']
         requested_size, unit = self.extract_digits(string)
         # for conversion of lowercase to uppercase
-        if (unit.islower()):
+        if unit.islower():
             unit = unit.upper()
         byte = 1
         if unit in units:
@@ -65,7 +63,7 @@ class ReadWriteOp:
         return requested_size, byte
 
     def generate_payload(self, file_no, file_size):
-        payload=[]
+        payload = []
         size, bytes_required = self.convert_size(file_size)
         for data in range(file_no):
             content = os.urandom(size * bytes_required)
@@ -93,8 +91,6 @@ class ReadWriteOp:
         return self.throughput
 
 
-
-
 class ChecksumCal:
     def __init__(self):
         pass
@@ -112,6 +108,3 @@ class ChecksumCal:
             hasher.update(data)
 
         return hasher.hexdigest()
-
-
-
