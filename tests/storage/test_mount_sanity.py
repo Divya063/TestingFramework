@@ -40,11 +40,11 @@ class MountSanity(Test):
     def quit_function(self, fn_name):
         self.log.write("error", '{0} took too long'.format(fn_name))
         self.exit = 1
-        sys.stderr.flush()  # Python 3 stderr is likely buffered.
-        thread.interrupt_main()  # raises KeyboardInterrupt if function is taking too long
+        thread.exit()
 
     def check_mount(self, timeout):
         self.log.write("info", "timeout set to " + str(timeout))
+        self.exit = 0
 
         # exit process if this function takes longer than "timeout" seconds
 
@@ -60,16 +60,14 @@ class MountSanity(Test):
             except subprocess.CalledProcessError as exc:
                 os.chdir(old)
                 self.log.write("error", str(exc))
-                return 1
+                self.exit = 1
             finally:
                 timer.cancel()
                 os.chdir(old)
             self.log.write("info", "mount point " + point + " tested")
-            self.exit = 0
-        return self.exit
 
     def exit_code(self):
-        self.exit = self.check_mount(self.timeout)
+        self.check_mount(self.timeout)
         self.log.write("info", "overall exit code " + str(self.exit))
         return self.exit
 
