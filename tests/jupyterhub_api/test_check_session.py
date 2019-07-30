@@ -2,7 +2,6 @@ import json
 import requests
 import subprocess
 import os
-import docker
 import sys
 
 sys.path.append("..")

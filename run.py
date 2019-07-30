@@ -34,7 +34,6 @@ def get_args():
     return args
 
 
-
 def get_config(cfg):
     if os.path.exists(cfg):
         with open(cfg, 'r') as stream:
@@ -89,12 +88,13 @@ def cleanup():
         os.remove(f)
 
 
-def docker_exec(container_name, test_name, user=None, working_dir=None):
+def docker_exec(container_name, test_name, user=None, working_dir="/"):
     run_script = "python3 run_container.py --test"
     if working_dir and user:
         cmd = "sudo docker exec -it -u %s -w %s %s %s %s" % (user, working_dir, container_name, run_script, test_name)
     else:
-        cmd = "sudo docker exec -it %s %s %s" % (container_name, run_script, test_name)
+        cmd = "sudo docker exec -it -w %s %s %s %s" % (working_dir, container_name, run_script, test_name)
+    print(cmd)
     os.system(cmd)
 
 def main():
@@ -115,11 +115,11 @@ def main():
                 docker_exec(container, test_name, user=args.session, working_dir=dir_path)
                 docker_cp_from_container(container, ":/scratch/", args.session)
 
-            if test_name == "jupyterhub-api":
+            if test_name == "jupyterhub-api" or test_name == "database":
                 container_name = "jupyterhub"
                 docker_cp_host(container_name)
                 docker_exec(container_name, test_name)
-                docker_cp_from_container(container, ":/")
+                docker_cp_from_container(container_name, ":/")
 
             if test_name == "CVMFS":
                 docker_cp_host(container)
@@ -130,7 +130,9 @@ def main():
         # From host
         for test in args.test:
             if test == "storage":
+                # passes the parameters loaded from yaml file to helper function
                 run_storage(tasks)
+                cleanup()
 
             if test == "jupyterhub-api":
                 run_jupyterhub_api(tasks)
@@ -138,20 +140,9 @@ def main():
             if test == "CVMFS":
                 run_cvmfs(tasks)
 
-    for test in args.test:
-        if test == "storage":
-            # passes the parameters loaded from yaml file to helper function
-            run_storage(tasks)
-            cleanup()
+            if test == "database":
+                run_database(tasks)
 
-        if test == "jupyterhub-api":
-            run_jupyterhub_api(tasks)
-            
-        if test == "CVMFS":
-            run_cvmfs(tasks)
-
-        if test == "database":
-            run_database(tasks)
 
 if __name__ == "__main__":
     main()
