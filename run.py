@@ -6,10 +6,10 @@ import yaml
 import subprocess
 
 from tests.storage.helper import run_storage
-#from tests.jupyterhub_api.helper import run_jupyterhub_api
-from tests.cvmfs.helper import run_cvmfs
 from helper import docker_cp_host, docker_cp_from_container
-
+from tests.jupyterhub_api.helper import run_jupyterhub_api
+from tests.cvmfs.helper import run_cvmfs
+from tests.database.helper import run_database
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -45,10 +45,10 @@ def get_config(cfg):
 
 
 def check_test_exists(directory, test_name):
-    # Checks if mentioned tests exist in particular directory or not
-
-    directory_path = os.path.join(os.getcwd(), 'tests')  # name of directory under which test exists
-    if test_name != "statFile":
+    """Checks if mentioned tests exist in particular directory or not"""
+    lists = ["statFile"]
+    directory_path = os.path.join(os.getcwd(), 'tests') # name of directory under which test exists
+    if(test_name not in lists):
         test_file = "test_" + test_name + ".py"
         test_file_path = os.path.join(os.path.join(directory_path, directory), test_file)
         if not os.path.exists(test_file_path):
@@ -67,7 +67,6 @@ def check_input_validity(params):
         if key in string_val:
             if not type(value) == str:
                 raise Exception(key + " having value %s is not a string" % str(value))
-
 
 def validator(tasks):
     # To check validity of YAML File
@@ -106,7 +105,6 @@ def main():
     tasks = get_config(yaml_path)
     # Validates YAML File
     validator(tasks)
-
     if args.user_mode:
         if args.session == None:
             raise Exception("session argument needed")
@@ -140,6 +138,20 @@ def main():
             if test == "CVMFS":
                 run_cvmfs(tasks)
 
+    for test in args.test:
+        if test == "storage":
+            # passes the parameters loaded from yaml file to helper function
+            run_storage(tasks)
+            cleanup()
+
+        if test == "jupyterhub-api":
+            run_jupyterhub_api(tasks)
+            
+        if test == "CVMFS":
+            run_cvmfs(tasks)
+
+        if test == "database":
+            run_database(tasks)
 
 if __name__ == "__main__":
     main()

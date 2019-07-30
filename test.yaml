@@ -20,14 +20,49 @@ tests:
       num: 2 #Number of packages
       repoPath: 'cvmfs/sft.cern.ch/'
       filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
-
-#  eos:
-#    mountedFilesystem:
-#      fileSystemName: "eosuser"
-#  jupyterhub:
-#    webReachable:
-#      hostname: "swan.cern.ch"
-#      port: 443
-#      protocol: HTTPS
-#      ignoreTlsCertificate: True
-#  docker: daemonRuns
+  database:
+    token:
+      user: "user2"
+      table: "api_tokens"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
+    servers:
+      user: "user2"
+      table: "servers"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
+    spawners:
+      user: "user2"
+      table: "spawners"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
+  jupyterhub_api:
+    check_api:
+      port: '443'
+      TLS : False
+      base_path: ""
+    create_session:
+      port: '443'
+      users: ['user2']
+      token: 'b39639d589c44a2294b3dd1164607287'
+      base_path: ""
+      params:
+        TLS: False
+        LCG-rel: "LCG_95a"
+        platform: "x86_64-centos7-gcc7-opt"
+        scriptenv: "none"
+        ncores: 2
+        memory: 8589934592
+        spark-cluster: "none"
+      TLS: False
+      timedelay: 30 #Max
+    check_session:
+      port: '443'
+      users: ['user2']
+      base_path: ""
+      TLS: False
+    stop_session:
+      port: '443'
+      users: ['user2']
+      base_path: ""
+      TLS: False
