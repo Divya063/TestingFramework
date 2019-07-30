@@ -10,7 +10,7 @@ import subprocess
 from tests.storage.helper import run_storage
 from tests.jupyterhub_api.helper import run_jupyterhub_api
 from tests.cvmfs.helper import run_cvmfs
-
+from tests.database.helper import run_database
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -40,6 +40,8 @@ def main():
         run_jupyterhub_api(tasks)
     if (args.test[0]) == "CVMFS":
         run_cvmfs(tasks)
+    if (args.test[0]) == "database":
+        run_database(tasks)
 
 
 if __name__ == "__main__":
