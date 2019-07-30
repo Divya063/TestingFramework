@@ -6,9 +6,9 @@ import yaml
 import subprocess
 
 from tests.storage.helper import run_storage
-from tests.jupyterhub_api.helper import run_jupyterhub_api
+#from tests.jupyterhub_api.helper import run_jupyterhub_api
 from tests.cvmfs.helper import run_cvmfs
-from helper import cp_helper
+from helper import docker_cp_host, docker_cp_from_container
 
 
 def get_args():
@@ -90,20 +90,13 @@ def cleanup():
         os.remove(f)
 
 
-def docker_exec(container_name, arg, user=None, working_dir=None):
+def docker_exec(container_name, test_name, user=None, working_dir=None):
     run_script = "python3 run_container.py --test"
     if working_dir and user:
-        cmd = "sudo docker exec -it -u %s -w %s %s %s %s" % (user, working_dir, container_name, run_script, arg)
+        cmd = "sudo docker exec -it -u %s -w %s %s %s %s" % (user, working_dir, container_name, run_script, test_name)
     else:
-        cmd = "sudo docker exec -it %s %s %s" % (container_name, run_script, arg)
+        cmd = "sudo docker exec -it %s %s %s" % (container_name, run_script, test_name)
     os.system(cmd)
-
-
-def docker_cp_from_container(container_name, path, user=None):
-    container_command = "docker cp %s%s" % (container_name, path)
-    cmd = container_command + user + "/logs ." if user else container_command + "logs ."
-    os.system(cmd)
-
 
 def main():
     args = get_args()
@@ -117,22 +110,22 @@ def main():
     if args.user_mode:
         if args.session == None:
             raise Exception("session argument needed")
-        for test in args.test:
-            if test == "storage":
-                cp_helper(args.session, test, container)
-                dir = "/scratch/" + args.session
-                docker_exec(container, test, user=args.session, working_dir=dir)
+        for test_name in args.test:
+            if test_name == "storage":
+                dir_path = os.path.join("/", os.path.join("scratch", args.session))
+                docker_cp_host(container, dir_path)
+                docker_exec(container, test_name, user=args.session, working_dir=dir_path)
                 docker_cp_from_container(container, ":/scratch/", args.session)
 
-            if test == "jupyterhub-api":
-                cp_helper(args.session, test)
+            if test_name == "jupyterhub-api":
                 container_name = "jupyterhub"
-                docker_exec(container_name, test)
+                docker_cp_host(container_name)
+                docker_exec(container_name, test_name)
                 docker_cp_from_container(container, ":/")
 
-            if test == "CVMFS":
-                cp_helper(args.session, test, container)
-                docker_exec(container, test)
+            if test_name == "CVMFS":
+                docker_cp_host(container)
+                docker_exec(container, test_name)
                 docker_cp_from_container(container, ":/")
 
     else:

@@ -1,30 +1,32 @@
-# Copies files and folders to relevant containers
 import os
 
 
-def cp_helper(name, test_name, container):
-    if test_name == "storage":
-        dest = "scratch/" + name + "/"
-        docker_cp_host(container, dest)
-    elif test_name == "jupyterhub-api":
-        container_name = "jupyterhub"
-        docker_cp_host(container_name, "")
-    else:
-        docker_cp_host(container, "")
+def docker_cp_from_container(container_name, path, user=None):
+    """Copies log folders from container to host"""
+
+    container_command = "docker cp %s%s" % (container_name, path)
+    cmd = container_command + user + "/logs ." if user else container_command + "logs ."
+    os.system(cmd)
 
 
-def docker_cp_host(container_name, dest):
+def docker_cp_host(container_name, dest=""):
+    """Copies files and folders to relevant containers"""
+
     file_list = ['run.py', 'test.yaml', 'run_container.py']
     folder_list = ['tests']
     for file in file_list:
         try:
-            cmd = "docker cp %s %s:/%s%s" % (file, container_name, dest, file)
+            path_to_file = os.path.join(dest, file)
+            path = "%s:%s" % (container_name, path_to_file)
+            cmd = "docker cp %s %s" % (file, path)
             os.system(cmd)
         except Exception as exc:
             raise Exception
     for folder in folder_list:
         try:
-            cmd = "docker cp %s/. %s:/%s%s" % (folder, container_name, dest, folder)
+            path_to_folder = os.path.join(dest, folder)
+            path = "%s:%s" % (container_name, path_to_folder)
+            cmd = "docker cp %s/. %s" % (folder, path)
             os.system(cmd)
         except Exception as exc:
             raise Exception
