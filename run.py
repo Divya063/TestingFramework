@@ -6,10 +6,11 @@ import yaml
 import subprocess
 
 from tests.storage.helper import run_storage
-from helper import docker_cp_host, docker_cp_from_container
+from helper import docker_cp_to_container, docker_cp_from_container, docker_exec
 from tests.jupyterhub_api.helper import run_jupyterhub_api
 from tests.cvmfs.helper import run_cvmfs
 from tests.database.helper import run_database
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -46,8 +47,8 @@ def get_config(cfg):
 def check_test_exists(directory, test_name):
     """Checks if mentioned tests exist in particular directory or not"""
     lists = ["statFile"]
-    directory_path = os.path.join(os.getcwd(), 'tests') # name of directory under which test exists
-    if(test_name not in lists):
+    directory_path = os.path.join(os.getcwd(), 'tests')  # name of directory under which test exists
+    if (test_name not in lists):
         test_file = "test_" + test_name + ".py"
         test_file_path = os.path.join(os.path.join(directory_path, directory), test_file)
         if not os.path.exists(test_file_path):
@@ -66,6 +67,7 @@ def check_input_validity(params):
         if key in string_val:
             if not type(value) == str:
                 raise Exception(key + " having value %s is not a string" % str(value))
+
 
 def validator(tasks):
     # To check validity of YAML File
@@ -88,15 +90,6 @@ def cleanup():
         os.remove(f)
 
 
-def docker_exec(container_name, test_name, user=None, working_dir="/"):
-    run_script = "python3 run_container.py --test"
-    if working_dir and user:
-        cmd = "sudo docker exec -it -u %s -w %s %s %s %s" % (user, working_dir, container_name, run_script, test_name)
-    else:
-        cmd = "sudo docker exec -it -w %s %s %s %s" % (working_dir, container_name, run_script, test_name)
-    print(cmd)
-    os.system(cmd)
-
 def main():
     args = get_args()
     yaml_path = os.path.join(os.getcwd(), args.configfile)
@@ -111,18 +104,18 @@ def main():
         for test_name in args.test:
             if test_name == "storage":
                 dir_path = os.path.join("/", os.path.join("scratch", args.session))
-                docker_cp_host(container, dir_path)
+                docker_cp_to_container(container, dir_path)
                 docker_exec(container, test_name, user=args.session, working_dir=dir_path)
                 docker_cp_from_container(container, ":/scratch/", args.session)
 
             if test_name == "jupyterhub-api" or test_name == "database":
                 container_name = "jupyterhub"
-                docker_cp_host(container_name)
+                docker_cp_to_container(container_name)
                 docker_exec(container_name, test_name)
                 docker_cp_from_container(container_name, ":/")
 
             if test_name == "CVMFS":
-                docker_cp_host(container)
+                docker_cp_to_container(container)
                 docker_exec(container, test_name)
                 docker_cp_from_container(container, ":/")
 
