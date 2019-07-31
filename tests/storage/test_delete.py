@@ -13,14 +13,9 @@ from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 from TestBase import Test
 import argparse
 
-extension = ".txt"
-
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--file_name", dest="file_name",
-                        required=True,
-                        help='Name of the file')
     parser.add_argument("--dest", dest="path",
                         required=True,
                         help='Specify the path')
@@ -31,14 +26,10 @@ def get_args():
 class Delete(Test):
     """Checks if a file gets deleted or not"""
 
-    def __init__(self, file_name, dest_path):
-        self.storage_path = dest_path
-        self.file_name = file_name
-        self.root_file_path = os.path.join("/", dest_path)
-        self.file_path = os.path.join(self.root_file_path, file_name)
+    def __init__(self, file_path):
         self.ref_test_name = "Delete"
+        self.file_path = self.file_path
         self.params = {}
-        self.params['file_name'] = self.file_name
         self.params['file_path'] = self.file_path
         super().__init__(**self.params)
 
@@ -47,10 +38,10 @@ class Delete(Test):
             self.log.write("info", "Start of delete operation")
             os.remove(self.file_path)
         except OSError as e:
-            self.log.write("error", "Error: %s - %s." % (e.filename, e.strerror))
+            self.log.write("error", "Error: %s." % e.strerror)
             return 1
         else:
-            self.log.write("info", "File " + self.file_name + " successfully deleted", val="delete")
+            self.log.write("info", "File " + self.file_path + " successfully deleted", val="delete")
             return 0
 
     def exit_code(self):
@@ -61,5 +52,5 @@ class Delete(Test):
 
 if __name__ == "__main__":
     args = get_args()
-    test_delete = Delete(args.file_name, args.path)
+    test_delete = Delete(args.path)
     test_delete.exit_code()

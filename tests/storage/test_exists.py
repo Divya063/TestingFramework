@@ -14,14 +14,8 @@ import argparse
 from TestBase import Test
 from pathlib import Path
 
-extension = ".txt"
-
-
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--file_name", dest="file_name",
-                        required=True,
-                        help='Name of the file')
     parser.add_argument("--dest", dest="path",
                         required=True,
                         help='Specify the path')
@@ -32,15 +26,11 @@ def get_args():
 class Exists(Test):
     """Check whether a given file exists or not (in the given path)"""
 
-    def __init__(self, file_name, dest_path):
-        self.storage_path = dest_path
-        self.file_name = file_name
-        self.root_file_path = os.path.join("/", dest_path)
-        self.file_path = os.path.join(self.root_file_path, file_name)
+    def __init__(self, file_path):
+        self.file_path = file_path
         self.ref_test_name = "file_exists"
         self.params = {}
-        self.params['file_name'] = self.file_name
-        self.params['output_folder'] = self.file_path
+        self.params['file_path'] = self.file_path
         super().__init__(**self.params)
 
     def exist_test(self):
@@ -48,10 +38,10 @@ class Exists(Test):
         try:
             file = Path(self.file_path)
             if file.is_file():
-                self.log.write("info", "File " + self.file_name + " detected", val="search")
+                self.log.write("info", "File " + self.file_path + " detected", val="search")
                 return 0
             else:
-                self.log.write("info", "File " + self.file_name + " not detected", val="search")
+                self.log.write("info", "File " + self.file_path + " not detected", val="search")
                 return 1
 
         except Exception as e:
@@ -66,5 +56,5 @@ class Exists(Test):
 
 if __name__ == "__main__":
     args = get_args()
-    test_exists = Exists(args.file_name, args.path)
+    test_exists = Exists(args.path)
     test_exists.exit_code()
