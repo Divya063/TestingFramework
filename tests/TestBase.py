@@ -6,8 +6,8 @@ class Test:
     """Implements logs"""
 
     def __init__(self, **kwargs):
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.param = kwargs
+        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.ref_timestamp = int(time.time())
         self.log = Logger(os.path.join(self.logger_folder,
                                        self.ref_test_name + "_" + time.strftime("%Y-%m-%d_%H:%M:%S") + LOG_EXTENSION))
@@ -21,4 +21,3 @@ class Test:
         self.log.write("parameters", "Logger folder: " + self.logger_folder)
         for key, value in self.param.items():
             self.log.write("parameters", "Param %s has value %s" % (key, value))
-
