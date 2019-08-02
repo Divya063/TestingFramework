@@ -10,6 +10,7 @@ def run_storage(tasks):
     """
     test_storage = tasks['tests']['storage']
     file_path = test_storage['statFile']['filepath']
+        
     number_of_files = test_storage['throughput']['fileNumber']
     size = test_storage['throughput']['fileSize']
     exit_code = 0

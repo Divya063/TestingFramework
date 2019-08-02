@@ -36,9 +36,6 @@ tests:
       table: "spawners"
       mode: 1 #active mode
       path: "jupyterhub.sqlite"
-
-
-
   jupyterhub_api:
     check_api:
       port: '443'
@@ -69,4 +66,3 @@ tests:
       users: ['user2']
       base_path: ""
       TLS: False
-
