@@ -143,7 +143,7 @@ class Throughput(Test):
             self.exit = write_t
             self.exit |= read_t
         self.log.write("info", "exit code: " + str(self.exit))
-        super().check_test_class(self)
+        self.check_test_class(self)
         return self.exit
 
 
