@@ -17,6 +17,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("--hostname", dest="hostname", required=True)
     parser.add_argument("--port", dest="port", type=int,
                         required=True,
                         )
@@ -49,19 +50,11 @@ class CheckSession(JupyterhubTest):
 
     """
 
-    def __init__(self, port, token, users, base_path, verify):
+    def __init__(self, hostname, port, token, users, base_path, verify):
         self.ref_test_name = "Check_Sessions"
-        super().__init__(port, token, base_path, verify)
+        super().__init__(hostname, port, token, base_path, verify)
         self.users = users
 
-    def check_container(self, user):
-        """Checks if a container is running"""
-
-        s = subprocess.check_output('docker ps', shell=True)
-        container_name = "jupyter-" + user
-        if s.decode("utf-8").find(container_name) == -1:
-            self.log.write("error", "Container is not running")
-            return 1
 
     def check_session(self):
 
@@ -108,5 +101,5 @@ class CheckSession(JupyterhubTest):
 
 if __name__ == "__main__":
     args = get_args()
-    test_active_session = CheckSession(args.port, args.token, args.users, args.base, verify=False)
+    test_active_session = CheckSession(args.hostname, args.port, args.token, args.users, args.base, verify=False)
     (test_active_session.exit_code())
