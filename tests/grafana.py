@@ -1,9 +1,11 @@
+class Grafana():
+    """ Implements everything needed by grafana"""
 
-class Grafana:
     def __init__(self):
         self.success = None
         self.error = None
         self.emessage = None
+        self.time_taken = None
 
     def set_success(self):
         self.success = True
@@ -18,12 +20,15 @@ class Grafana:
     def set_performance(self, time):
         self.time_taken = time
 
-
     def make_stats_and_publish(self, test_class, monitoring_host, monitoring_port, to_grafana):
-        # Scroll the list of WriteOp to collect statistics
+        # Scroll the list  to collect statistic
+        statistic = []
+        for module in test_class.stats.values():
+            statistic.append(module.success)
+            statistic.append(module.time_taken)
+
         if to_grafana:
-            self.publish_on_grafana()
+            # logic for pushing to grafana goes here
+            print(statistic)
 
 
-    def publish_on_grafana(self):
-        pass

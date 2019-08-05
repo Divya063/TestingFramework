@@ -77,12 +77,11 @@ tests:
       TLS: False
      
 output:
-  stdout : True
   logfile:
     logging: True
-    filepath : ""
   grafana:
     push : False
     hostname: ''
     port: '80'
+    modules: ['Throughput']
     namespace: 'swan.testingframework'

@@ -2,15 +2,17 @@ import os
 import time
 import sys
 
-LOG_FOLDER      = "logs"
-LOG_EXTENSION   = ".log"
-LOG_DELIMITER   = "| "
+LOG_FOLDER = "logs"
+LOG_EXTENSION = ".log"
+LOG_DELIMITER = "| "
+
 
 class Logger():
     def __init__(self, fname, mode):
         self.terminal = sys.stdout
         self.mode = mode
-        #types of messages for logging
+        self.fopen_success = None
+        # types of messages for logging
         self.msg_type = {
             "parameters": "[PARAMS] ",
             "info": "[INFO] ",
@@ -25,9 +27,9 @@ class Logger():
         if mode:
             if not os.path.exists(log_folder):
                 try:
-                  os.makedirs(log_folder)
+                    os.makedirs(log_folder)
                 except PermissionError:
-                  self.terminal.write("[Logging] " + "Permission denied, cannot create directory" + "\n")      
+                    self.terminal.write("[Logging] " + "Permission denied, cannot create directory" + "\n")
             self.fname = fname
             self.fopen_success = 0
             try:

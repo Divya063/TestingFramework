@@ -13,7 +13,6 @@ from tests.cvmfs.helper import run_cvmfs
 from tests.database.helper import run_database
 
 
-
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-t', '--test',
@@ -75,7 +74,10 @@ def check_input_validity(params):
 def validator(tasks):
     # To check validity of YAML File
 
-    for test in tasks.values():
+    for key, test in tasks.items():
+        # Exclude output configuration (present in test.yaml) from validation
+        if key == "output":
+            continue
         for directory, component_test in test.items():  # storage
             if component_test:
                 for test_name, param in component_test.items():
@@ -95,9 +97,10 @@ def cleanup():
 def main():
     args = get_args()
     yaml_path = os.path.join(os.getcwd(), args.configfile)
-    # container name
-    container = "jupyter-" + args.session
     tasks = get_config(yaml_path)
+    # These parameters are needed by 'TestBase.py' file for output conf
+    #TODO
+    # Look for an efficient method to pass these parameters to the 'TestBase.py' file
     with open('tests/tasks.pkl', 'wb') as f:
         pickle.dump(tasks, f)
     # Validates YAML File
@@ -105,6 +108,8 @@ def main():
     if args.user_mode:
         if args.session == None:
             raise Exception("session argument needed")
+        # container name
+        container = "jupyter-" + args.session
         for test_name in args.test:
             if test_name == "storage":
                 dir_path = os.path.join("/", os.path.join("scratch", args.session))
