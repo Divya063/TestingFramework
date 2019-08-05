@@ -1,6 +1,15 @@
 # Add the new parameters [here](tests/)
 tests:
   storage:
+    mount_sanity:
+      timeout: 8
+      mountpoints: ['user/u/user2/']
+    write:
+      fileSize: 1M
+    delete:
+      fileName: '0.txt'
+    exists:
+      fileName: '0.txt'
     throughput: 
       fileNumber: 10
       fileSize: 1M
@@ -20,7 +29,22 @@ tests:
       num: 2 #Number of packages
       repoPath: 'cvmfs/sft.cern.ch/'
       filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
-
+  database:
+    token:
+      user: "user2"
+      table: "api_tokens"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
+    servers:
+      user: "user2"
+      table: "servers"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
+    spawners:
+      user: "user2"
+      table: "spawners"
+      mode: 1 #active mode
+      path: "jupyterhub.sqlite"
   jupyterhub_api:
     check_api:
       port: '443'
@@ -34,7 +58,7 @@ tests:
     create_session:
       port: '443'
       users: ['user2']
-      token: 'a729014dec014ee9893d9ff270efde02'
+      token: 'b39639d589c44a2294b3dd1164607287'
       base_path: ""
       params:
         TLS: False
@@ -56,4 +80,3 @@ tests:
       users: ['user2']
       base_path: ""
       TLS: False
-

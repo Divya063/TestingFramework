@@ -22,7 +22,11 @@ class Logger():
         # Make sure the output folder for logs is there
         log_folder = os.path.split(fname)[0]
         if (not os.path.exists(log_folder)):
-            os.makedirs(log_folder)
+            try:
+                os.makedirs(log_folder)
+            except PermissionError:
+                self.terminal.write("[Logging] " + "Permission denied, cannot create directory" + "\n")
+
         self.fname = fname
         self.fopen_success = 0
         try:
@@ -30,6 +34,9 @@ class Logger():
         except PermissionError:
             self.fopen_success = 1
             self.terminal.write("[Logging] " + "Permission denied" + "\n")
+        except Exception:
+            self.fopen_success = 1
+  
 
     def write(self, msg_type, msg, val=None):
         try:
