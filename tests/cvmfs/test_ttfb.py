@@ -27,7 +27,7 @@ def get_args():
     args = parser.parse_args()
     return args
 
-class TTFB:
+class Ttfb:
     def __init__(self, repo_path, path):
         self.exit = None
         #self.parent = os.path.join(os.getcwd(), os.pardir)
@@ -79,5 +79,5 @@ class TTFB:
 
 if __name__ == "__main__":
     args = get_args()
-    test_ttfb = TTFB(args.repo_name, args.path)
+    test_ttfb = Ttfb(args.repo_name, args.path)
     test_ttfb.exit_code()

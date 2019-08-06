@@ -32,7 +32,7 @@ def get_args():
     return args
 
 
-class CheckAPI(JupyterhubTest):
+class CheckApi(JupyterhubTest):
     """Test if an api is reachable"""
 
     def __init__(self, port, token, base_path, verify):
@@ -62,5 +62,5 @@ class CheckAPI(JupyterhubTest):
 
 if __name__ == "__main__":
     args = get_args()
-    test_web_reachable = CheckAPI(args.port, args.token, args.base, False)
+    test_web_reachable = CheckApi(args.port, args.token, args.base, False)
     (test_web_reachable.exit_code())

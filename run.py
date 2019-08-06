@@ -3,13 +3,11 @@ import glob
 import os
 import sys
 import yaml
+import importlib
 import subprocess
 
-from tests.storage.helper import run_storage
 from helper import docker_cp_to_container, docker_cp_from_container, docker_exec
-from tests.jupyterhub_api.helper import run_jupyterhub_api
-from tests.cvmfs.helper import run_cvmfs
-from tests.database.helper import run_database
+
 
 
 def get_args():
@@ -90,17 +88,40 @@ def cleanup():
         os.remove(f)
 
 
+def run_tests(tasks):
+    ignore_params = ['statFile']
+    for key, value in tasks.items():
+        if key == "output":
+            continue
+        for directory, test in value.items():
+            print(directory, test)
+            if test:
+                for test_name, param in test.items():
+                    print(test_name, param)
+                    if test_name in ignore_params:
+                        continue
+                    class_name = ""
+                    string_list = test_name.split("_")
+                    for string in string_list:
+                        class_name += string.capitalize()
+                    test_name = "test_%s" % test_name
+                    module_name = 'tests.%s.%s' % (directory, test_name)
+                    module = importlib.import_module(module_name)
+                    class_ = getattr(module, class_name)
+                    instance = class_(**param)
+                    instance.exit_code()
+
 def main():
     args = get_args()
     yaml_path = os.path.join(os.getcwd(), args.configfile)
-    # container name
-    container = "jupyter-" + args.session
     tasks = get_config(yaml_path)
     # Validates YAML File
     validator(tasks)
     if args.user_mode:
         if args.session == None:
             raise Exception("session argument needed")
+        # container name
+        container = "jupyter-" + args.session
         for test_name in args.test:
             if test_name == "storage":
                 dir_path = os.path.join("/", os.path.join("scratch", args.session))
@@ -124,7 +145,8 @@ def main():
         for test in args.test:
             if test == "storage":
                 # passes the parameters loaded from yaml file to helper function
-                run_storage(tasks)
+                #test_storage = tasks['tests']['storage']
+                run_tests(tasks)
                 cleanup()
 
             if test == "jupyterhub-api":

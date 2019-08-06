@@ -31,8 +31,8 @@ class MountSanity(Test):
 
     """
 
-    def __init__(self, timeout, mount_points):
-        self.mount_points = mount_points
+    def __init__(self, timeout, mountpoints):
+        self.mount_points = mountpoints
         self.timeout = timeout
         self.ref_test_name = "mount_sanity"
         super().__init__()

@@ -28,7 +28,6 @@ def get_config(cfg):
             return yaml.safe_load(stream)
     else:
         raise Exception("yaml file not present")
-        sys.exit()
 
 
 def main():
