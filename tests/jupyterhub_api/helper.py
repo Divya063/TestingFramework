@@ -26,8 +26,20 @@ def run_jupyterhub_api(tasks):
         raise Exception("API is not reachable..")
         sys.exit()
 
-    # Check if session is created successfully
+    # check if token is valid
+    
+    port = test_jupyterhub['token']['port']
+    users = test_jupyterhub['token']['users']
+    TLS = test_jupyterhub['token']['TLS']
+    path = test_jupyterhub['token']['base_path']
+    test_token = CheckSession(port, session_token, users, path, TLS)
+    exit_code |= test_token.exit_code()
+    if (exit_code):
+        raise Exception("Token not valid..")
+        sys.exit()
 
+    # Check if session is created successfully
+    
     session_port = test_jupyterhub['create_session']['port']
     session_users = test_jupyterhub['create_session']['users']
     session_params = test_jupyterhub['create_session']['params']

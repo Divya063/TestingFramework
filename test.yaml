@@ -47,10 +47,18 @@ tests:
       path: "jupyterhub.sqlite"
   jupyterhub_api:
     check_api:
+      hostname: 'localhost'
       port: '443'
       TLS : False
       base_path: ""
+    token:
+      hostname: 'localhost'
+      port: '443'
+      users: ['user2']
+      base_path: ""
+      TLS: False
     create_session:
+      hostname: 'localhost'
       port: '443'
       users: ['user2']
       token: 'b39639d589c44a2294b3dd1164607287'
@@ -66,11 +74,13 @@ tests:
       TLS: False
       timedelay: 30 #Max
     check_session:
+      hostname: 'localhost'
       port: '443'
       users: ['user2']
       base_path: ""
       TLS: False
     stop_session:
+      hostname: 'localhost'
       port: '443'
       users: ['user2']
       base_path: ""
