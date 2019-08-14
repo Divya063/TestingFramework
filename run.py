@@ -46,7 +46,7 @@ def check_test_exists(directory, test_name):
     """Checks if mentioned tests exist in particular directory or not"""
     lists = ["statFile"]
     directory_path = os.path.join(os.getcwd(), 'tests')  # name of directory under which test exists
-    if (test_name not in lists):
+    if test_name not in lists:
         test_file = "test_" + test_name + ".py"
         test_file_path = os.path.join(os.path.join(directory_path, directory), test_file)
         if not os.path.exists(test_file_path):
@@ -91,6 +91,7 @@ def cleanup():
 def run_tests(tasks):
     ignore_params = ['statFile']
     for key, value in tasks.items():
+        # skip output parameters present in yaml
         if key == "output":
             continue
         for directory, test in value.items():
@@ -106,6 +107,7 @@ def run_tests(tasks):
                         class_name += string.capitalize()
                     test_name = "test_%s" % test_name
                     module_name = 'tests.%s.%s' % (directory, test_name)
+                    # Dynamically import the class name
                     module = importlib.import_module(module_name)
                     class_ = getattr(module, class_name)
                     instance = class_(**param)
@@ -142,21 +144,7 @@ def main():
 
     else:
         # From host
-        for test in args.test:
-            if test == "storage":
-                # passes the parameters loaded from yaml file to helper function
-                #test_storage = tasks['tests']['storage']
-                run_tests(tasks)
-                cleanup()
-
-            if test == "jupyterhub-api":
-                run_jupyterhub_api(tasks)
-
-            if test == "CVMFS":
-                run_cvmfs(tasks)
-
-            if test == "database":
-                run_database(tasks)
+        run_tests(tasks)
 
 
 if __name__ == "__main__":

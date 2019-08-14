@@ -33,10 +33,10 @@ def get_args():
 class Write(Test):
     """Writes to a file (of a given size) in the specified path"""
 
-    def __init__(self, input_size, dest_path):
-        self.input_size = input_size
-        self.storage_path = dest_path
-        self.file_path = os.path.join("/", dest_path)
+    def __init__(self, fileSize, filepath):
+        self.input_size = fileSize
+        self.storage_path = filepath
+        self.file_path = os.path.join("/", filepath)
         self.ops = ReadWriteOp()
         self.ref_test_name = "write"
         self.params = {}

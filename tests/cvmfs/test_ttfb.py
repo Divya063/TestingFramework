@@ -28,13 +28,13 @@ def get_args():
     return args
 
 class Ttfb:
-    def __init__(self, repo_path, path):
+    def __init__(self, repoPath, filePath):
         self.exit = None
         #self.parent = os.path.join(os.getcwd(), os.pardir)
-        self.repo_path = os.path.join('/', repo_path)
-        self.path = os.path.join('/', path)
-        print(repo_path)
-        self.mount = Mount(repo_path, path)
+        self.repo_path = os.path.join('/', repoPath)
+        self.path = os.path.join('/', filePath)
+        print(repoPath)
+        self.mount = Mount(repoPath, filePath)
         self.ref_test_name = "Time_till_First_Byte"
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))

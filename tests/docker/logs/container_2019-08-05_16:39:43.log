@@ -1,0 +1,5 @@
+[INFO] 1565003383.6297| container Tests starting...
+[PARAMS] 1565003383.6298| Test name: container
+[PARAMS] 1565003383.6298| Test time: 1565003383
+[PARAMS] 1565003383.6298| Logger folder: /home/divya/TestingFramework/tests/docker/logs
+[INFO] 1565003383.8406| {'status': 'exec_create: bash -c ls -A ', 'id': '1199c3d90bd5ee5deac3a4ad87d15d6d3d5292764df39b1f3ca5d41bcd12838e', 'from': 'gitlab-registry.cern.ch/swan/docker-images/systemuser:v5.0.2', 'Type': 'container', 'Action': 'exec_create: bash -c ls -A ', 'Actor': {'ID': '1199c3d90bd5ee5deac3a4ad87d15d6d3d5292764df39b1f3ca5d41bcd12838e', 'Attributes': {'execID': '3b536456d9ab70697727c9a2b97c26b4a91f26a886c0c8f5ced9dd7fd9c40198', 'image': 'gitlab-registry.cern.ch/swan/docker-images/systemuser:v5.0.2', 'name': 'jupyter-user0'}}, 'scope': 'local', 'time': 1565003383, 'timeNano': 1565003383638583464}
