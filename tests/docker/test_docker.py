@@ -54,7 +54,7 @@ class Docker(Test):
         try:
             events = client.events(decode=True)
             # exec into container and run a command
-            output = client.containers.get(self.container_name).exec_run(cmd=["bi/ls", "-A"], workdir="/",
+            output = client.containers.get(self.container_name).exec_run(cmd=["bin/ls", "-A"], workdir="/",
                                                                          stdout=True)
         except Exception as exc:
             self.log.write("error", str(exc))
