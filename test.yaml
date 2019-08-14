@@ -85,3 +85,5 @@ tests:
       users: ['user2']
       base_path: ""
       TLS: False
+  docker:
+    container : 'jupyter-user2'
