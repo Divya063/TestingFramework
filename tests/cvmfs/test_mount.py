@@ -25,13 +25,12 @@ def get_args():
 
 
 class Mount:
-    def __init__(self, repo_name, repo_path):
-        self.repo_name = repo_name
-        self.repo_path = repo_path
+    def __init__(self, repoName, repoPath):
+        self.repo_name = repoName
+        self.repo_path = repoPath
         self.ref_test_name = "cvmfs_mount"
         #self.parent= os.path.join(os.getcwd(), os.pardir)
-        self.repo_path = os.path.join('/', repo_path)
-        print(repo_path)
+        self.repo_path = os.path.join('/', repoPath)
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
         self.log.write("info", "Tests starting...")

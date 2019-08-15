@@ -6,18 +6,22 @@ tests:
       mountpoints: ['user/u/user2/']
     write:
       fileSize: 1M
+      filepath: "eos/user/u/user2/0.txt"
     delete:
-      fileName: '0.txt'
+      filepath: "eos/user/u/user2/0.txt"
     exists:
-      fileName: '0.txt'
+      filepath: "eos/user/u/user2/0.txt"
     throughput: 
       fileNumber: 10
       fileSize: 1M
+      filepath: "eos/user/u/user2/"
     checksum:
       fileNumber: 10
       fileSize: 1M
-    statFile:
       filepath: "eos/user/u/user2/"
+
+#    statFile:
+#      filepath: "eos/user/u/user2/"
   cvmfs:
     mount:
       repoName: 'sft.cern.ch'
