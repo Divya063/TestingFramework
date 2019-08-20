@@ -30,15 +30,15 @@ def get_args():
     return args
 
 class Throughput:
-    def __init__(self, num_packages, repo_path, path):
-        self.number = num_packages
-        self.repo_path = repo_path
-        self.path = path
+    def __init__(self, num, repoPath, filePath):
+        self.number = num
+        self.repo_path = repoPath
+        self.path = filePath
         self.ref_test_name = "Throughput"
         self.exit = 0
-        self.repo_path = os.path.join('/', repo_path)
-        self.path = os.path.join('/', path)
-        self.mount = Mount(repo_path, path)
+        self.repo_path = os.path.join('/', repoPath)
+        self.path = os.path.join('/', filePath)
+        self.mount = Mount(repoPath, filePath)
         #print(repo_path)
         self.ref_timestamp = int(time.time())
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)

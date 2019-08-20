@@ -16,6 +16,8 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument("--hostname", dest="hostname", required=True)
     parser.add_argument("--port", dest="port", type=int,
                         required=True,
                         )
@@ -32,12 +34,12 @@ def get_args():
     return args
 
 
-class CheckAPI(JupyterhubTest):
+class CheckApi(JupyterhubTest):
     """Test if an api is reachable"""
 
-    def __init__(self, port, token, base_path, verify):
+    def __init__(self, hostname, port, token, base_path, verify):
         self.ref_test_name = "APIReachable"
-        super().__init__(port, token, base_path, verify)
+        super().__init__(hostname, port, token, base_path, verify)
 
     def check_api(self):
         try:
@@ -62,5 +64,5 @@ class CheckAPI(JupyterhubTest):
 
 if __name__ == "__main__":
     args = get_args()
-    test_web_reachable = CheckAPI(args.port, args.token, args.base, False)
+    test_web_reachable = CheckAPI(args.hostname, args.port, args.token, args.base, False)
     (test_web_reachable.exit_code())

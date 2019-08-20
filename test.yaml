@@ -6,18 +6,22 @@ tests:
       mountpoints: ['user/u/user2/']
     write:
       fileSize: 1M
+      filepath: "eos/user/u/user2/0.txt"
     delete:
-      fileName: '0.txt'
+      filepath: "eos/user/u/user2/0.txt"
     exists:
-      fileName: '0.txt'
+      filepath: "eos/user/u/user2/0.txt"
     throughput: 
       fileNumber: 10
       fileSize: 1M
+      filepath: "eos/user/u/user2/"
     checksum:
       fileNumber: 10
       fileSize: 1M
-    statFile:
       filepath: "eos/user/u/user2/"
+
+#    statFile:
+#      filepath: "eos/user/u/user2/"
   cvmfs:
     mount:
       repoName: 'sft.cern.ch'
@@ -47,10 +51,18 @@ tests:
       path: "jupyterhub.sqlite"
   jupyterhub_api:
     check_api:
+      hostname: 'localhost'
       port: '443'
       TLS : False
       base_path: ""
+    token:
+      hostname: 'localhost'
+      port: '443'
+      users: ['user2']
+      base_path: ""
+      TLS: False
     create_session:
+      hostname: 'localhost'
       port: '443'
       users: ['user2']
       token: 'b39639d589c44a2294b3dd1164607287'
@@ -66,16 +78,20 @@ tests:
       TLS: False
       timedelay: 30 #Max
     check_session:
+      hostname: 'localhost'
       port: '443'
       users: ['user2']
       base_path: ""
       TLS: False
     stop_session:
+      hostname: 'localhost'
       port: '443'
       users: ['user2']
       base_path: ""
       TLS: False
-     
+docker:
+    container : 'jupyter-user2'
+    
 output:
   logfile:
     logging: True
