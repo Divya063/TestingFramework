@@ -49,6 +49,10 @@ tests:
       table: "spawners"
       mode: 1 #active mode
       path: "jupyterhub.sqlite"
+  docker:
+    docker:
+      container_name: 'jupyter-user2'
+      timeout : 5
   jupyterhub_api:
     check_api:
       hostname: 'localhost'
@@ -89,5 +93,3 @@ tests:
       users: ['user2']
       base_path: ""
       TLS: False
-  docker:
-    container : 'jupyter-user2'

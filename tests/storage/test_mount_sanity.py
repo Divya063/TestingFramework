@@ -35,6 +35,8 @@ class MountSanity(Test):
         self.mount_points = mountpoints
         self.timeout = timeout
         self.ref_test_name = "mount_sanity"
+        # self.exit is needed in both the functions (quit_function and run_test)
+        self.exit = 0
         super().__init__()
 
     def quit_function(self, fn_name):
@@ -44,7 +46,6 @@ class MountSanity(Test):
 
     def check_mount(self, timeout):
         self.log.write("info", "timeout set to " + str(timeout))
-        self.exit = 0
 
         # exit process if this function takes longer than "timeout" seconds
 
@@ -61,14 +62,12 @@ class MountSanity(Test):
                 os.chdir(old)
                 self.log.write("error", str(exc))
                 self.exit = 1
+                return self.exit
             finally:
                 timer.cancel()
                 os.chdir(old)
             self.log.write("info", "mount point " + point + " tested")
-
-    def exit_code(self):
-        self.check_mount(self.timeout)
-        self.log.write("info", "overall exit code " + str(self.exit))
+        self.log.write("info", "exit code " + str(self.exit))
         return self.exit
 
 

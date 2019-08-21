@@ -36,28 +36,24 @@ class Servers(DatabaseTest):
         self.table_name = table_name
         super().__init__(path, user, mode)
 
-    def check_servers(self):
+    def run_test(self):
         command = 'select port, base_url from %s' % self.table_name
         result = self.select_tasks(command)
         # result format if mode is delete - []
         # format if mode is active - [(8888, '/user/user2/')]
         if len(result) == 0:
             self.log.write("info", "Server is not active, server table is empty")
-            self.exit = 1 if self.mode else 0
+            exit_code = 1 if self.mode else 0
         else:
             self.log.write("info", "Server is active, %s" % result)
-            self.exit = 0 if self.mode else 1
+            exit_code = 0 if self.mode else 1
 
-        return self.exit
-
-    def exit_code(self):
-        self.exit = self.check_servers()
-        self.log.write("info", "exit code %s" % self.exit)
-        return self.exit
+        self.log.write("info", "exit code %s" % exit_code)
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     mode = 1 if args.active else 0 if args.delete else None
     test_servers = Servers(args.path, args.user, mode, args.table)
-    test_servers.exit_code()
+    test_servers.run_test()

@@ -33,24 +33,22 @@ class Delete(Test):
         self.params['file_path'] = self.file_path
         super().__init__(**self.params)
 
-    def delete_test(self):
+    def run_test(self):
+        exit_code = 0
         try:
             self.log.write("info", "Start of delete operation")
             os.remove(self.file_path)
         except OSError as e:
             self.log.write("error", "Error: %s." % e.strerror)
-            return 1
+            exit_code = 1
         else:
             self.log.write("info", "File " + self.file_path + " successfully deleted", val="delete")
-            return 0
 
-    def exit_code(self):
-        self.exit = self.delete_test()
-        self.log.write("info", "exit code: " + str(self.exit))
-        return self.exit
+        self.log.write("info", "overall exit code " + str(exit_code))
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     test_delete = Delete(args.path)
-    test_delete.exit_code()
+    test_delete.run_test()
