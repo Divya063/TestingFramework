@@ -1,6 +1,6 @@
 
 
-#How to add new tests?
+# How to add new tests?
 
 - The structure which is should maintained while adding new tests is as follows:
 ```
