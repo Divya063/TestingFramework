@@ -1,6 +1,6 @@
 
 
-How to add new tests?
+#How to add new tests?
 
 - The structure which is should maintained while adding new tests is as follows:
 ```
@@ -31,7 +31,7 @@ Append the new parameters into the relevant list given in [check_input_validity 
 For instance, if the parameter type is string, append the parameter to the list `string_val`
 
 - While writing tests (which are meant to be run inside containers) for new components, make sure you register the test_name inside the main function present in [run.py](https://github.com/Divya063/TestingFramework/blob/c951f29802d90380a03b841c0f8752bcfe9cf737/run.py#L128) file
-  For instance, if test_name is "cernbox", add the following lines inside main function:
+  . For instance, if test_name is "cernbox", add the following lines inside main function:
   
   ```python
    if test_name == "cernbox":
