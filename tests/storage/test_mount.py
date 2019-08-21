@@ -12,11 +12,21 @@ import re
 import urllib
 import argparse
 
+def get_args():
+    parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("--mode", dest="mode", type=int,
+                        required=True,
+                        help='Specify the mode (e.g, 0 - host mode, 1 - sciencebox ')
+    args = parser.parse_args()
+    return args
+
+
 class Mount(Test):
     """Checks for eos mount points"""
 
-    def __init__(self):
+    def __init__(self, mode):
         self.ref_test_name = "mount"
+        self.mode = mode
         super().__init__()
 
     def check_mount(self):
@@ -38,19 +48,29 @@ class Mount(Test):
         result_docker = regex_docker_mount.findall(out)
         result_docker_second = regex_docker_mount_second.findall(out)
 
-        # Checks for result from host and sciencebox, if any of the result is true return true
-        exit_code = 1
+        # Two testing modes are there: 0 - host, 1 - sciencebox, if eos is mounted on host as well as sciencebox
+        # exit code will be zero, in case if mode is 1 (sciencebox) and eos is mounted only on host, exit
+        # code will be 1
+        exit_code_host = 1
+        exit_code_container = 1
+        exit_code = 0
         if result and result_host:
-            self.log.write("sanity", "eos mount points" + " exist on host")
-            exit_code = 0
+            self.log.write("sanity", "eos mount points exist on host")
+            exit_code_host = 0
         if result_docker or result_docker_second:
-            self.log.write("sanity", "[sciencebox] eos mount points" + " exist")
-            exit_code = 0
+            self.log.write("sanity", "[sciencebox] eos mount points exist")
+            exit_code_container = 0
+
+        if exit_code_container and self.mode == 1:
+            exit_code = 1
+            self.log.write("sanity", "eos mount points do not exist on sciencebox")
+        elif exit_code_host and self.mode == 0:
+            self.log.write("sanity", "eos mount points do not exist on host")
+            exit_code = 1
 
         os.chdir(olddir)
 
         if exit_code:
-            self.log.write("error", "eos mount points" + " do not exist")
             return 1
         return 0
 
@@ -61,5 +81,6 @@ class Mount(Test):
 
 
 if __name__ == "__main__":
-    test_mount = Mount()
+    args = get_args()
+    test_mount = Mount(args.mode)
     test_mount.exit_code()
