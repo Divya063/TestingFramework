@@ -17,23 +17,47 @@ be already set in test.yaml file.)<br>
 
 **Parameters**
 ```yaml
-storage:
+    mount_sanity:
+      timeout: 8
+      mountpoints: ['user/u/user2/']
+    mount:
+      user_mode : '0'
+    write:
+      fileSize: 1M
+      filepath: "eos/user/u/user2/0.txt"
+    delete:
+      filepath: "eos/user/u/user2/0.txt"
+    exists:
+      filepath: "eos/user/u/user2/0.txt"
     throughput: 
       fileNumber: 10
       fileSize: 1M
+      filepath: "eos/user/u/user2/"
     checksum:
       fileNumber: 10
       fileSize: 1M
-    statFile:
       filepath: "eos/user/u/user2/"
 ```
+1. mount_sanity:
+    - Test file : test_mount_sanity.py
+    - Use case : Given a list of mount points checks if a mount point is hanging
+    - To run this test explicitly use -  `python3 test_mount_sanity.py --timeout 5 --mount_points user user/u`
+
+2. mount:
+    - Test file : test_mount.py
+    - Use case : Checks if eos is mounted on host and sciencebox
+    - There are three testing modes:
+      - 0 : Host 
+      - 1 : sciencebox
+      - 2 : Both host and sciencebox
+    -  To run this test explicitly use - `python3 test_mount.py --mode 1`
     
-1. throughput:
+3. throughput:
     - Test file : test_throughput.py
     - Use case : Benchmark read-write performance and compute the read and write throughput.
     - To run this test explicity use - `python3 test_throughput.py --num 10 --file-size 1M --dest eos/user/u/user2`
     
-2. checksum : 
+4. checksum : 
     - Test file : test_checksum.py
     - Use case : Calculates the checksum
     - To run this test explicity use - `python3 test_checksum.py --num 10 --file-size 1M --dest eos/user/u/user2`
