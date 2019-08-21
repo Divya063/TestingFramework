@@ -16,6 +16,7 @@ import time
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("--hostname", dest="hostname", required=True)
     parser.add_argument("--port", dest="port", type=int,
                         required=True,
                         )
@@ -59,9 +60,9 @@ class CreateSession(JupyterhubTest):
 
     """
 
-    def __init__(self, port, token, users, data, delay, base_path, verify):
+    def __init__(self, hostname, port, token, users, data, delay, base_path, verify):
         self.ref_test_name = 'Session_Creation_test'
-        super().__init__(port, token, base_path, verify)
+        super().__init__(hostname, port, token, base_path, verify)
         self.data = data
         self.users = users
         self.delay = delay
@@ -136,5 +137,5 @@ class CreateSession(JupyterhubTest):
 if __name__ == "__main__":
     args = get_args()
     params = json.loads(args.json)
-    test_session = CreateSession(args.port, args.token, args.users, params, int(args.delay), args.base, verify=False)
+    test_session = CreateSession(args.hostname, args.port, args.token, args.users, params, int(args.delay), args.base, verify=False)
     (test_session.exit_code())

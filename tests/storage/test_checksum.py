@@ -31,11 +31,11 @@ extension = ".txt"
 class Checksum(Test):
     """Calculates Checksum for a given number of files"""
 
-    def __init__(self, number_of_files, input_size, dest_path):
-        self.number_of_files = number_of_files
-        self.input_size = input_size
-        self.storage_path = dest_path
-        self.file_path = os.path.join("/", dest_path)
+    def __init__(self, fileNumber, fileSize, filepath):
+        self.number_of_files = fileNumber
+        self.input_size = fileSize
+        self.storage_path = filepath
+        self.file_path = os.path.join("/", filepath)
         self.ops = ReadWriteOp()
         self.check = ChecksumCal()
         self.match = None

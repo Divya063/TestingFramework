@@ -26,8 +26,8 @@ def get_args():
 class Exists(Test):
     """Check whether a given file exists or not (in the given path)"""
 
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self, filepath):
+        self.file_path = filepath
         self.ref_test_name = "file_exists"
         self.params = {}
         self.params['file_path'] = self.file_path

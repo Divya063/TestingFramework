@@ -27,14 +27,14 @@ def get_args():
     args = parser.parse_args()
     return args
 
-class TTFB:
-    def __init__(self, repo_path, path):
+class Ttfb:
+    def __init__(self, repoPath, filePath):
         self.exit = None
         #self.parent = os.path.join(os.getcwd(), os.pardir)
-        self.repo_path = os.path.join('/', repo_path)
-        self.path = os.path.join('/', path)
-        print(repo_path)
-        self.mount = Mount(repo_path, path)
+        self.repo_path = os.path.join('/', repoPath)
+        self.path = os.path.join('/', filePath)
+        print(repoPath)
+        self.mount = Mount(repoPath, filePath)
         self.ref_test_name = "Time_till_First_Byte"
         self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
         self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
@@ -79,5 +79,5 @@ class TTFB:
 
 if __name__ == "__main__":
     args = get_args()
-    test_ttfb = TTFB(args.repo_name, args.path)
+    test_ttfb = Ttfb(args.repo_name, args.path)
     test_ttfb.exit_code()

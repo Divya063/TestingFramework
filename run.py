@@ -4,13 +4,11 @@ import os
 import sys
 import yaml
 import pickle
+import importlib
 import subprocess
 
-from tests.storage.helper import run_storage
 from helper import docker_cp_to_container, docker_cp_from_container, docker_exec
-from tests.jupyterhub_api.helper import run_jupyterhub_api
-from tests.cvmfs.helper import run_cvmfs
-from tests.database.helper import run_database
+
 
 
 def get_args():
@@ -49,7 +47,7 @@ def check_test_exists(directory, test_name):
     # Checks if mentioned tests exist in particular directory or not
     lists = ["statFile"]
     directory_path = os.path.join(os.getcwd(), 'tests')  # name of directory under which test exists
-    if (test_name not in lists):
+    if test_name not in lists:
         test_file = "test_" + test_name + ".py"
         test_file_path = os.path.join(os.path.join(directory_path, directory), test_file)
         if not os.path.exists(test_file_path):
@@ -94,6 +92,31 @@ def cleanup():
         os.remove(f)
 
 
+def run_tests(tasks):
+    ignore_params = ['statFile']
+    for key, value in tasks.items():
+        # skip output parameters present in yaml
+        if key == "output":
+            continue
+        for directory, test in value.items():
+            print(directory, test)
+            if test:
+                for test_name, param in test.items():
+                    print(test_name, param)
+                    if test_name in ignore_params:
+                        continue
+                    class_name = ""
+                    string_list = test_name.split("_")
+                    for string in string_list:
+                        class_name += string.capitalize()
+                    test_name = "test_%s" % test_name
+                    module_name = 'tests.%s.%s' % (directory, test_name)
+                    # Dynamically import the class name
+                    module = importlib.import_module(module_name)
+                    class_ = getattr(module, class_name)
+                    instance = class_(**param)
+                    instance.exit_code()
+
 def main():
     args = get_args()
     yaml_path = os.path.join(os.getcwd(), args.configfile)
@@ -130,20 +153,7 @@ def main():
 
     else:
         # From host
-        for test in args.test:
-            if test == "storage":
-                # passes the parameters loaded from yaml file to helper function
-                run_storage(tasks)
-                cleanup()
-
-            if test == "jupyterhub-api":
-                run_jupyterhub_api(tasks)
-
-            if test == "CVMFS":
-                run_cvmfs(tasks)
-
-            if test == "database":
-                run_database(tasks)
+        run_tests(tasks)
 
 
 if __name__ == "__main__":
