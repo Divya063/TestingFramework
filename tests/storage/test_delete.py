@@ -26,9 +26,9 @@ def get_args():
 class Delete(Test):
     """Checks if a file gets deleted or not"""
 
-    def __init__(self, filepath):
+    def __init__(self, filePath):
         self.ref_test_name = "Delete"
-        self.file_path = filepath
+        self.file_path = filePath
         self.params = {}
         self.params['file_path'] = self.file_path
         super().__init__(**self.params)

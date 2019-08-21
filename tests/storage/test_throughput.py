@@ -31,11 +31,11 @@ def get_args():
 class Throughput(Test):
     """Return read and write throughput for a given number of files"""
 
-    def __init__(self, fileNumber, fileSize, filepath):
+    def __init__(self, fileNumber, fileSize, filePath):
         self.number_of_files = fileNumber
         self.input_size = fileSize
-        self.storage_path = filepath
-        self.file_path = os.path.join("/", filepath)
+        self.storage_path = filePath
+        self.file_path = os.path.join("/", filePath)
         self.ops = ReadWriteOp()
         self.ref_test_name = "throughput"
         self.params = {}
