@@ -122,7 +122,7 @@ class Throughput(Test):
         self.log.write("info", stats, val="read")
         return self.exit
 
-    def exit_code(self):
+    def run_test(self):
         self.check_dir = self.check_directory()
         if self.check_dir == 1:
             self.exit = 1
@@ -138,4 +138,4 @@ class Throughput(Test):
 if __name__ == "__main__":
     args = get_args()
     test_throughput = Throughput(args.number, args.file_size, args.path)
-    test_throughput.exit_code()
+    test_throughput.run_test()

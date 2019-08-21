@@ -53,7 +53,7 @@ class Checksum(Test):
             self.log.write("info", "eos directory exists, check passed...")
             return 0
 
-    def checksum_test(self, number_of_files, input_size):
+    def run_test(self):
         """
 
         :param number_of_files:
@@ -62,7 +62,7 @@ class Checksum(Test):
         """
         corrupted_files = 0
         self.log.write("info", "Creating workload...")
-        payload = self.ops.generate_payload(number_of_files, input_size)
+        payload = self.ops.generate_payload(self.number_of_files, self.input_size)
         self.log.write("info", "Workload created")
         self.log.write("info", "Begin of sanity check")
         self.log.write("consistency", "\t".join(["file_name", "matching", "source_checksum", "disk_checksum"])
@@ -93,15 +93,11 @@ class Checksum(Test):
 
         self.log.write("info", "Number of corrupted files " + str(corrupted_files))
         self.log.write("info", "End of sanity check")
-        return corrupted_files
-
-    def exit_code(self):
-        self.exit = 1 if self.checksum_test(self.number_of_files, self.input_size) > 0 else 0
-        self.log.write("info", "exit code: " + str(self.exit))
-        return self.exit
+        exit_code = 1 if self.checksum_test(self.number_of_files, self.input_size) > 0 else 0
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     test_integrity = Checksum(args.number, args.file_size, args.path)
-    test_integrity.exit_code()
+    test_integrity.run_test()

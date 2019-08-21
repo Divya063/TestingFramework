@@ -111,7 +111,8 @@ def run_tests(tasks):
                     module = importlib.import_module(module_name)
                     class_ = getattr(module, class_name)
                     instance = class_(**param)
-                    instance.exit_code()
+                    instance.run_test()
+
 
 def main():
     args = get_args()

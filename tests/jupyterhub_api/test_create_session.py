@@ -67,16 +67,17 @@ class CreateSession(JupyterhubTest):
         self.users = users
         self.delay = delay
 
-    def check_create_session(self):
+    def run_test(self):
 
         self.log.write("info", "creating servers..")
+        exit_code = 0
         r = ""
         for user in self.users:
             try:
                 r = self.call_api("post", user, data=self.data, endpoint="/server")
             except requests.exceptions.RequestException as e:
                 self.log.write("error", "status code " + str(r.status_code) + " " + str(e))
-                return 1
+                exit_code = 1
 
             else:
                 if r.status_code == 202:
@@ -111,31 +112,29 @@ class CreateSession(JupyterhubTest):
                         server_status = status['server']
                         if server_status:
                             self.log.write("info", user + " server successfully created " + server_status)
-                            return 0
                         else:
                             self.log.write("error", user + " server was not created ")
                             self.log.write("error",
                                            "status code " + str(r.status_code) + " " + r.content.decode('utf-8'))
-                            return 1
+                            exit_code = 1
+
                 elif r.status_code == 201:
                     # Sometimes servers are created without any wait time
 
                     self.log.write("info", "Successfully created the" + user + " server")
-                    return 0
+                    self.log.write("info", "overall exit code" + str(exit_code))
 
                 else:
                     self.log.write("error", user + " server was not created")
                     self.log.write("error", "status code " + str(r.status_code) + " " + r.content.decode('utf-8'))
-                    return 1
+                    exit_code = 1
+        self.log.write("info", "overall exit code " + str(exit_code))
+        return exit_code
 
-    def exit_code(self):
-        self.exit = self.check_create_session()
-        self.log.write("info", "overall exit code" + str(self.exit))
-        return self.exit
 
 
 if __name__ == "__main__":
     args = get_args()
     params = json.loads(args.json)
     test_session = CreateSession(args.hostname, args.port, args.token, args.users, params, int(args.delay), args.base, verify=False)
-    (test_session.exit_code())
+    (test_session.run_test())

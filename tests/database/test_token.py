@@ -36,7 +36,8 @@ class Token(DatabaseTest):
         self.table_name = table_name
         super().__init__(path, user, mode)
 
-    def check_token(self):
+    def run_test(self):
+        exit_code = 0
         command = 'select user_id, note from %s' % self.table_name
         result = self.select_tasks(command)
         # result format if mode is delete - [(None, 'generated at startup')]
@@ -48,20 +49,16 @@ class Token(DatabaseTest):
             server_address = 'Server at user/%s' % self.user
             if server == server_address:
                 self.log.write("info", server_address)
-                self.exit = 0 if self.mode else 1
+                exit_code = 0 if self.mode else 1
         else:
-            self.exit = 1 if self.mode else 0
+            exit_code = 1 if self.mode else 0
 
-        return self.exit
-
-    def exit_code(self):
-        self.exit = self.check_token()
-        self.log.write("info", "exit code %s" % self.exit)
-        return self.exit
+        self.log.write("info", "exit code %s" % exit_code)
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     mode = 1 if args.active else 0 if args.delete else None
     test_token = Token(args.path, args.user, mode, args.table)
-    test_token.exit_code()
+    test_token.run_test()
