@@ -46,10 +46,9 @@ be already set in test.yaml file.)<br>
 2. mount:
     - Test file : test_mount.py
     - Use case : Checks if eos is mounted on host and sciencebox
-    - There are three testing modes:
+    - There are two testing modes:
       - 0 : Host 
       - 1 : sciencebox
-      - 2 : Both host and sciencebox
     -  To run this test explicitly use - `python3 test_mount.py --mode 1`
     
 3. throughput:
