@@ -41,7 +41,8 @@ class CheckApi(JupyterhubTest):
         self.ref_test_name = "APIReachable"
         super().__init__(hostname, port, token, base_path, verify)
 
-    def check_api(self):
+    def run_test(self):
+        exit_code = 0
         try:
             r = self.call_api("get")
 
@@ -51,18 +52,14 @@ class CheckApi(JupyterhubTest):
         else:
             if r.status_code == 200:
                 self.log.write("info", "API is reachable")
-                return 0
             else:
                 self.log.write("error", "API is not reachable")
-                return 1
-
-    def exit_code(self):
-        self.exit = self.check_api()
-        self.log.write("info", "overall exit code " + str(self.exit))
-        return self.exit
+                exit_code = 1
+        self.log.write("info", "overall exit code " + str(exit_code))
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
-    test_web_reachable = CheckAPI(args.hostname, args.port, args.token, args.base, False)
-    (test_web_reachable.exit_code())
+    test_web_reachable = CheckApi(args.hostname, args.port, args.token, args.base, False)
+    (test_web_reachable.run_test())

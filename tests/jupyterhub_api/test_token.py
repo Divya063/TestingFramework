@@ -57,16 +57,18 @@ class Token(JupyterhubTest):
         super().__init__(hostname, port, token, base_path, verify, **param)
         self.users = users
 
-    def check_user(self):
+    def run_test(self):
 
         # Submit a  get request to  https://localhost:443/hub/api/users/user{} to check if a token is valid or not
-
+        exit_code = 0
         for user in self.users:
             try:
                 r = self.api_calls("get", user)
 
             except requests.exceptions.RequestException as e:
                 self.log.write("error", str(e))
+                exit_code = 1
+                self.log.write("info", "overall exit code" + str(exit_code))
                 return 1
 
             else:
@@ -75,17 +77,13 @@ class Token(JupyterhubTest):
                     self.log.write("info", user + " info " + r.content.decode('utf-8'))
                 else:
                     self.log.write("error", r.content.decode('utf-8'))
-                    return 1
+                    exit_code = 1
 
-        return 0
-
-    def exit_code(self):
-        self.exit = self.check_user()
-
-        return self.exit
+        self.log.write("info", "overall exit code " + str(exit_code))
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     test_active_session = Token(args.hostname, args.port, args.token, args.users, args.base, verify=False)
-    (test_active_session.exit_code())
+    (test_active_session.run_test())

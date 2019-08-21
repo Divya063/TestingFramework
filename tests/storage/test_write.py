@@ -44,11 +44,12 @@ class Write(Test):
         self.params['output_folder'] = self.file_path
         super().__init__(**self.params)
 
-    def write_test(self, input_size):
+    def run_test(self):
         self.log.write("info", "Creating workload...")
-        payload = self.ops.generate_payload(1, input_size)
+        payload = self.ops.generate_payload(1, self.input_size)
         self.log.write("info", "Workload created")
         self.log.write("info", "Begin of write operations...")
+        exit_code = 0
         for files, content in enumerate(payload):
             name = files
             file_name = str(name) + extension
@@ -58,22 +59,19 @@ class Write(Test):
             except Exception as err:
                 self.log.write("error", "Error while writing " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
-                return 1
+                exit_code = 1
+
 
             else:
-                size, fsize = self.ops.convert_size(input_size)
-                self.log.write("info", "File " + file_name + " of size " + input_size + " successfully written",
+                size, fsize = self.ops.convert_size(self.input_size)
+                self.log.write("info", "File " + file_name + " of size " + self.input_size + " successfully written",
                                val="write")
-                return 0
 
-    def exit_code(self):
-        self.exit = self.write_test(self.input_size)
-        self.log.write("info", "End of write operations")
-        self.log.write("info", "exit code: " + str(self.exit))
-        return self.exit
+        self.log.write("info", "overall exit code " + str(exit_code))
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     test_write = Write(args.file_size, args.path)
-    test_write.exit_code()
+    test_write.run_test()
