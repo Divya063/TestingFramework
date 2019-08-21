@@ -10,7 +10,7 @@
  │       └── test_testname.py
 
  ```
-- All the tests should be self contained amd executable, and each test should have main function.
+- All the tests should be self contained amd executable, and each test should have a main function.
 - Make sure you inherit the parent class `Test` and import the `TestBase.py` file in every test file, this parent class
 implements the output configuration. 
 
