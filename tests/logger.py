@@ -8,9 +8,9 @@ LOG_DELIMITER = "| "
 
 
 class Logger():
-    def __init__(self, fname, mode):
+    def __init__(self, fname, output_mode):
         self.terminal = sys.stdout
-        self.mode = mode
+        self.output_mode = output_mode
         self.fopen_success = None
         # types of messages for logging
         self.msg_type = {
@@ -24,7 +24,7 @@ class Logger():
 
         # Make sure the output folder for logs is there
         log_folder = os.path.split(fname)[0]
-        if mode:
+        if output_mode:
             if not os.path.exists(log_folder):
                 try:
                     os.makedirs(log_folder)
@@ -48,7 +48,7 @@ class Logger():
         if val:
             message = type + "%.4f" % time.time() + " " + val + LOG_DELIMITER + msg + "\n"
         self.terminal.write(message)
-        if self.fopen_success != 1 and self.mode:
+        if self.fopen_success != 1 and self.output_mode:
             self.fout.write(message)
             self.fout.flush()
         self.terminal.flush()
