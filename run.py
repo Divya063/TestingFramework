@@ -55,18 +55,30 @@ def check_test_exists(directory, test_name):
 
 
 def check_input_validity(params):
-    """
-    Check the parameter type
-    """
-    string_val = ['filePath', 'fileSize', 'repoName', 'repoSize']
-    int_val = ['fileNumber', 'num']
+    # Checks the parameter type
+
+    string_val = ['filePath', 'fileSize', 'repoName', 'repoSize', 'repoPath', 'user', 'table', 'path', 'hostname',
+                  'port', 'hostname', 'base_path', 'token', 'LCG-rel', 'platform', 'scriptenv', 'spark-cluster',
+                  'container_name']
+    int_val = ['fileNumber', 'num', 'timeout', 'num', 'mode', 'ncores', 'memory']
+    list_type = ['mountpoints', 'users']
+    bool_type = ['TLS']
+
     for key, value in params.items():
         if key in int_val:
             if not type(value) == int:
                 raise Exception(key + " having value %s is not a integer" % str(value))
-        if key in string_val:
+        elif key in string_val:
             if not type(value) == str:
                 raise Exception(key + " having value %s is not a string" % str(value))
+
+        elif key in list_type:
+            if not type(value) == list:
+                raise Exception(key + " having value %s is not a list" % str(value))
+
+        elif key in bool_type:
+            if not type(value) == bool:
+                raise Exception(key + " having value %s is not a boolean value" % str(value))
 
 
 def validator(tasks):
@@ -102,7 +114,6 @@ def run_tests(tasks):
             print(directory, test)
             if test:
                 for test_name, param in test.items():
-                    print(test_name, param)
                     if test_name in ignore_params:
                         continue
                     class_name = ""
@@ -115,7 +126,8 @@ def run_tests(tasks):
                     module = importlib.import_module(module_name)
                     class_ = getattr(module, class_name)
                     instance = class_(**param)
-                    instance.exit_code()
+                    instance.run_test()
+
 
 def main():
     args = get_args()
