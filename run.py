@@ -3,6 +3,7 @@ import glob
 import os
 import sys
 import yaml
+import pickle
 import importlib
 import subprocess
 
@@ -17,7 +18,7 @@ def get_args():
                         required=False,
                         help='name of the test you want to run')
     parser.add_argument('-c', '--configfile',
-                        required=False,
+                        required=True,
                         help='load config file')
 
     parser.add_argument("-u", "--user_mode", action='store_true')
@@ -43,7 +44,7 @@ def get_config(cfg):
 
 
 def check_test_exists(directory, test_name):
-    """Checks if mentioned tests exist in particular directory or not"""
+    # Checks if mentioned tests exist in particular directory or not
     lists = ["statFile"]
     directory_path = os.path.join(os.getcwd(), 'tests')  # name of directory under which test exists
     if test_name not in lists:
@@ -83,7 +84,10 @@ def check_input_validity(params):
 def validator(tasks):
     # To check validity of YAML File
 
-    for test in tasks.values():
+    for key, test in tasks.items():
+        # Exclude output configuration (present in test.yaml) from validation
+        if key == "output":
+            continue
         for directory, component_test in test.items():  # storage
             if component_test:
                 for test_name, param in component_test.items():
@@ -94,7 +98,6 @@ def validator(tasks):
 
 def cleanup():
     # delete the created files
-
     filelist = glob.glob(os.path.join("", "*.txt"))
     print(filelist)
     for f in filelist:
@@ -130,6 +133,11 @@ def main():
     args = get_args()
     yaml_path = os.path.join(os.getcwd(), args.configfile)
     tasks = get_config(yaml_path)
+    # These parameters are needed by 'TestBase.py' file for output conf
+    #TODO
+    # Look for an efficient method to pass these parameters to the 'TestBase.py' file
+    with open('tests/tasks.pkl', 'wb') as f:
+        pickle.dump(tasks, f)
     # Validates YAML File
     validator(tasks)
     if args.user_mode:

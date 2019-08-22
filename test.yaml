@@ -93,3 +93,12 @@ tests:
       users: ['user2']
       base_path: ""
       TLS: False
+output:
+  logfile:
+    logging: True
+  grafana:
+    push : False
+    hostname: ''
+    port: '80'
+    modules: ['Throughput']
+    namespace: 'swan.testingframework'

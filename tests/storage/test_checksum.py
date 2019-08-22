@@ -4,6 +4,7 @@ import sys
 
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from grafana import Grafana
 from TestBase import Test
 import time
 import argparse
