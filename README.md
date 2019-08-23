@@ -233,26 +233,27 @@ On successful execution response code should be *200*.
 <h3>sqlite database</h3>
 
 - This test checks the consistency of the sqlite database present inside `srv/jupyterhub/` as jupyterhub.sqlite.
-
+- To run this test use 
+`python3 run.py -u --session user2 --test database --configfile test.yaml`
 Parameters:
 
 ```yaml
 database:
     token:
-      user: "user2"
-      table: "api_tokens"
-      mode: "active" #active mode
       path: "jupyterhub.sqlite"
+      user: "user2"
+      mode: "active" #active mode
+      table_name: "api_tokens"
     servers:
-      user: "user2"
-      table: "servers"
-      mode: "active" #active mode
       path: "jupyterhub.sqlite"
+      user: "user2"
+      mode: "active" #active mode
+      table_name: "servers"
     spawners:
-      user: "user2"
-      table: "spawners"
-      mode: "active" #active mode
       path: "jupyterhub.sqlite"
+      user: "user2"
+      mode: "active" #active mode
+      table_name: "spawners"
 ```
 Two modes are there:
 - active mode - When the server is active
@@ -280,6 +281,8 @@ Two modes are there:
 
        
 <h3>Container</h3>
+
+- To run this test use `python3 run.py --test user_docker --configfile test.yaml`
 
 Parameters:
 

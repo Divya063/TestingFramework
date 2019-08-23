@@ -167,10 +167,12 @@ def main():
                 docker_exec(container_name, test_name)
                 docker_cp_from_container(container_name, ":/")
 
-            if test_name == "CVMFS":
+            if test_name == "CVMFS" or test_name == "user_docker":
                 docker_cp_to_container(container)
                 docker_exec(container, test_name)
                 docker_cp_from_container(container, ":/")
+
+
 
     else:
         # From host
