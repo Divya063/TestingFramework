@@ -17,7 +17,7 @@ def get_args():
                         required=True,
                         help='Specify the table')
     parser.add_argument("-d", "--delete", action='store_true')
-    parser.add_argument("-c", "--active", action='store_true')
+    parser.add_argument("-a", "--active", action='store_true')
     args = parser.parse_args()
     return args
 
@@ -43,10 +43,10 @@ class Servers(DatabaseTest):
         # format if mode is active - [(8888, '/user/user2/')]
         if len(result) == 0:
             self.log.write("info", "Server is not active, server table is empty")
-            exit_code = 1 if self.mode else 0
+            exit_code = 1 if self.mode == "active" else 0
         else:
             self.log.write("info", "Server is active, %s" % result)
-            exit_code = 0 if self.mode else 1
+            exit_code = 0 if self.mode == "active" else 1
 
         self.log.write("info", "exit code %s" % exit_code)
         return exit_code
@@ -54,6 +54,6 @@ class Servers(DatabaseTest):
 
 if __name__ == "__main__":
     args = get_args()
-    mode = 1 if args.active else 0 if args.delete else None
+    mode = "active" if args.active else "delete" if args.delete else None
     test_servers = Servers(args.path, args.user, mode, args.table)
     test_servers.run_test()

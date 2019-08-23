@@ -39,17 +39,17 @@ tests:
     token:
       user: "user2"
       table: "api_tokens"
-      mode: 1 #active mode
+      mode: "active" #active mode
       path: "jupyterhub.sqlite"
     servers:
       user: "user2"
       table: "servers"
-      mode: 1 #active mode
+      mode: "active" #active mode
       path: "jupyterhub.sqlite"
     spawners:
       user: "user2"
       table: "spawners"
-      mode: 1 #active mode
+      mode: "active" #active mode
       path: "jupyterhub.sqlite"
 
   user_docker:

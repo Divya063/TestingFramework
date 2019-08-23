@@ -17,7 +17,7 @@ def get_args():
                         required=True,
                         help='Specify the table')
     parser.add_argument("-d", "--delete", action='store_true')
-    parser.add_argument("-c", "--active", action='store_true')
+    parser.add_argument("-a", "--active", action='store_true')
     args = parser.parse_args()
     return args
 
@@ -49,16 +49,15 @@ class Token(DatabaseTest):
             server_address = 'Server at user/%s' % self.user
             if server == server_address:
                 self.log.write("info", server_address)
-                exit_code = 0 if self.mode else 1
+                exit_code = 0 if self.mode == "active" else 1
         else:
-            exit_code = 1 if self.mode else 0
-
+            exit_code = 1 if self.mode == "active" else 0
         self.log.write("info", "exit code %s" % exit_code)
         return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
-    mode = 1 if args.active else 0 if args.delete else None
+    mode = "active" if args.active else "delete" if args.delete else None
     test_token = Token(args.path, args.user, mode, args.table)
     test_token.run_test()
