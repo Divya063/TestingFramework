@@ -44,13 +44,13 @@ class MountSanity(Test):
         self.exit = 1
         thread.exit()
 
-    def check_mount(self, timeout):
-        self.log.write("info", "timeout set to " + str(timeout))
+    def run_test(self):
+        self.log.write("info", "timeout set to " + str(self.timeout))
 
         # exit process if this function takes longer than "timeout" seconds
 
         # will call the quit function, if execution is not completed within stipulated time frame
-        timer = threading.Timer(timeout, self.quit_function, args=['check_mount'])
+        timer = threading.Timer(self.timeout, self.quit_function, args=['check_mount'])
         timer.start()
         old = os.getcwd()
         for point in self.mount_points:
@@ -74,4 +74,4 @@ class MountSanity(Test):
 if __name__ == "__main__":
     args = get_args()
     test_mount_sanity = MountSanity(args.timeout, args.mount_points)
-    test_mount_sanity.exit_code()
+    test_mount_sanity.run_test()

@@ -109,19 +109,21 @@ Parameters for the test is present in test.yaml which is as follows:
     check_api:
       hostname: 'localhost'
       port: '443'
-      TLS : False
+      token: ""
       base_path: ""
+      verify : False
     token:
       hostname: 'localhost'
       port: '443'
+      token: ""
       users: ['user2']
       base_path: ""
-      TLS: False
+      verify: False
     create_session:
       hostname: 'localhost'
       port: '443'
-      users: ['user2']
       token: 'b39639d589c44a2294b3dd1164607287'
+      users: ['user2']
       base_path: ""
       params:
         TLS: False
@@ -131,32 +133,34 @@ Parameters for the test is present in test.yaml which is as follows:
         ncores: 2
         memory: 8589934592
         spark-cluster: "none"
-      TLS: False
-      timedelay: 30 #Max
+      delay: 30 #Max
+      verify: False
     check_session:
       hostname: 'localhost'
       port: '443'
+      token: ""
       users: ['user2']
       base_path: ""
-      TLS: False
+      verify: False
     stop_session:
       hostname: 'localhost'
       port: '443'
+      token: ''
       users: ['user2']
       base_path: ""
-      TLS: False
+      verify: False
 ```
 1. **check_api** 
     - Test file : test_check_api.py"
     - Use case :  Checks hub's sanity by making a GET request to "https://localhost:443/hub/api/".
 On successful execution response code should be *200*.
-    - To run this test explicity use - `python3 test_check_api.py --port 443 --base_path ""`
+    - To run this test explicity use - `python3 test_check_api.py --token " " --port 443 --base_path ""`
 
 2. **token**
     - Test file : test_token.py"
     - Use case :  Checks token validity by making a GET request to "https://localhost:443/hub/api/users/user{}".
 On successful execution response code should be *200*.
-    - To run this test explicity use - `python3 test_token.py --port 443 --users user1 --base_path ""`
+    - To run this test explicity use - `python3 test_token.py --port 443 --token " " --users user1 --base_path ""`
 
 2. **create_session** 
    - Test file : test_create_session.py
@@ -168,7 +172,7 @@ On successful execution response code should be *200*.
       Example :    
       `TimeoutError: Server at http://172.18.0.15:8888/user/user0/ didn't respond in 30 seconds`
     - To run the test explicitly use following command:
-       `python3 test_create_session.py --port 443 --users user2  --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}' --delay 30 --base_path ""`
+       `python3 test_create_session.py --port 443 --token " " --users user2  --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}' --delay 30 --base_path ""`
 
    ---
    **warning** <br>
@@ -215,16 +219,16 @@ On successful execution response code should be *200*.
     - Test file : test_check_session.py
     - Use case : Checks if a session is running or not
     - To run this test explicitly use -
-        - For single user - `python3 test_check_session.py --port 443 --users user1 --base_path ""`
-        - For multiple users - `python3 test_check_session.py --port 443 --users user0 user1 user2 --base_path ""`
+        - For single user - `python3 test_check_session.py --port 443 --token " " --users user1 --base_path ""`
+        - For multiple users - `python3 test_check_session.py --port 443 --token " " --users user0 user1 user2 --base_path ""`
 
 4. **stop_session**
 
      - Test file : test_stop_session.py
      - Use case : Checks if a session  can be stopped or not
      - To run this test explicitly use -
-        - For single user - `python3 test_stop_session.py --port 443 --users user1 --base_path ""`
-        - For multiple users - `python3 test_stop_session.py --port 443 --users user0 user1 user2 --base_path ""`
+        - For single user - `python3 test_stop_session.py --port 443 --token " " --users user1 --base_path ""`
+        - For multiple users - `python3 test_stop_session.py --port 443 --token " " --users user0 user1 user2 --base_path ""`
 
 <h3>sqlite database</h3>
 

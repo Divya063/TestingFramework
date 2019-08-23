@@ -55,6 +55,7 @@ class CheckApi(JupyterhubTest):
             else:
                 self.log.write("error", "API is not reachable")
                 exit_code = 1
+
         self.log.write("info", "overall exit code " + str(exit_code))
         return exit_code
 

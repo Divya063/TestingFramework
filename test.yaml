@@ -2,6 +2,7 @@
 tests:
   storage:
     mount_sanity:
+      mountpoints: ['user/u/user2/']
       timeout: 8
     mount:
       mode: "sciencebox" #sciencebox mode
@@ -37,20 +38,20 @@ tests:
 
   database:
     token:
-      user: "user2"
-      table: "api_tokens"
-      mode: "active" #active mode
       path: "jupyterhub.sqlite"
+      user: "user2"
+      mode: "active" #active mode
+      table_name: "api_tokens"
     servers:
-      user: "user2"
-      table: "servers"
-      mode: "active" #active mode
       path: "jupyterhub.sqlite"
+      user: "user2"
+      mode: "active" #active mode
+      table_name: "servers"
     spawners:
-      user: "user2"
-      table: "spawners"
-      mode: "active" #active mode
       path: "jupyterhub.sqlite"
+      user: "user2"
+      mode: "active" #active mode
+      table_name: "spawners"
 
   user_docker:
     docker:
@@ -61,19 +62,21 @@ tests:
     check_api:
       hostname: 'localhost'
       port: '443'
-      TLS : False
+      token: ""
       base_path: ""
+      verify : False
     token:
       hostname: 'localhost'
       port: '443'
+      token: ""
       users: ['user2']
       base_path: ""
-      TLS: False
+      verify: False
     create_session:
       hostname: 'localhost'
       port: '443'
-      users: ['user2']
       token: 'b39639d589c44a2294b3dd1164607287'
+      users: ['user2']
       base_path: ""
       params:
         TLS: False
@@ -83,20 +86,23 @@ tests:
         ncores: 2
         memory: 8589934592
         spark-cluster: "none"
-      TLS: False
-      timedelay: 30 #Max
+      delay: 30 #Max
+      verify: False
+
     check_session:
       hostname: 'localhost'
       port: '443'
+      token: ""
       users: ['user2']
       base_path: ""
-      TLS: False
+      verify: False
     stop_session:
       hostname: 'localhost'
       port: '443'
+      token: ''
       users: ['user2']
       base_path: ""
-      TLS: False
+      verify: False
       
 output:
   logfile:

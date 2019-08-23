@@ -8,8 +8,7 @@ import importlib
 import subprocess
 
 from helper import docker_cp_to_container, docker_cp_from_container, docker_exec
-
-
+terminal = sys.stdout
 
 def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -105,13 +104,15 @@ def cleanup():
 
 
 def run_tests(tasks):
+    test_num = 0
+    test_passed = 0
     ignore_params = ['statFile']
+    passed = []
     for key, value in tasks.items():
         # skip output parameters present in yaml
         if key == "output":
             continue
         for directory, test in value.items():
-            print(directory, test)
             if test:
                 for test_name, param in test.items():
                     if test_name in ignore_params:
@@ -120,13 +121,21 @@ def run_tests(tasks):
                     string_list = test_name.split("_")
                     for string in string_list:
                         class_name += string.capitalize()
+
+                    test_num = test_num + 1
                     test_name = "test_%s" % test_name
                     module_name = 'tests.%s.%s' % (directory, test_name)
                     # Dynamically import the class name
                     module = importlib.import_module(module_name)
                     class_ = getattr(module, class_name)
                     instance = class_(**param)
-                    instance.run_test()
+                    exit_code = instance.run_test()
+                    if exit_code == 0:
+                        passed.append(directory + "_" + test_name)
+                        test_passed = test_passed + 1
+
+    print("Total tests passed %s" % test_passed, "Total number of tests %s" % test_num)
+    print("List of the tests passed", passed)
 
 
 def main():
@@ -134,7 +143,7 @@ def main():
     yaml_path = os.path.join(os.getcwd(), args.configfile)
     tasks = get_config(yaml_path)
     # These parameters are needed by 'TestBase.py' file for output conf
-    #TODO
+    # TODO
     # Look for an efficient method to pass these parameters to the 'TestBase.py' file
     with open('tests/tasks.pkl', 'wb') as f:
         pickle.dump(tasks, f)

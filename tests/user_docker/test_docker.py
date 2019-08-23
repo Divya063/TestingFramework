@@ -47,7 +47,7 @@ class Docker(Test):
         self.log.write("error", '{0} took too long'.format(fn_name))
         exit(1)
 
-    def check_container(self):
+    def run_test(self):
         timer = threading.Timer(self.timeout, self.quit_function, args=['check_container'])
         timer.start()
         # start docker events
@@ -84,4 +84,4 @@ class Docker(Test):
 if __name__ == "__main__":
     args = get_args()
     test_container = Docker(args.name, args.timeout)
-    (test_container.check_container())
+    (test_container.run_test())

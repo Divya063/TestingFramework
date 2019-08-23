@@ -20,7 +20,7 @@ class Test:
             tasks = self.load_conf(yaml_path)
         else:
             tasks = self.load_pickle()
-        self.stats[self.fname] = Grafana()
+        self.stats[self.ref_test_name] = Grafana()
         self.to_logs = tasks['output']['logfile']['logging']
         self.grafana = tasks['output']['grafana']
         self.to_grafana = self.grafana['push']

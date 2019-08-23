@@ -60,10 +60,10 @@ class CreateSession(JupyterhubTest):
 
     """
 
-    def __init__(self, hostname, port, token, users, data, delay, base_path, verify):
+    def __init__(self, hostname, port, token, users, base_path, params, delay, verify):
         self.ref_test_name = 'Session_Creation_test'
         super().__init__(hostname, port, token, base_path, verify)
-        self.data = data
+        self.data = params
         self.users = users
         self.delay = delay
 
@@ -76,7 +76,7 @@ class CreateSession(JupyterhubTest):
             try:
                 r = self.call_api("post", user, data=self.data, endpoint="/server")
             except requests.exceptions.RequestException as e:
-                self.log.write("error", "status code " + str(r.status_code) + " " + str(e))
+                self.log.write("error", str(e))
                 exit_code = 1
 
             else:

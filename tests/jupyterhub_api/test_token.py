@@ -10,7 +10,7 @@ import yaml
 import time
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
 import argparse
-from SessionUtils import Test, JupyterhubTest
+from jupyterhubtest import JupyterhubTest
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -52,9 +52,8 @@ class Token(JupyterhubTest):
     """
 
     def __init__(self, hostname, port, token, users, base_path, verify):
-        param = {}
-        param['test_name'] = "Check_Token"
-        super().__init__(hostname, port, token, base_path, verify, **param)
+        self.ref_test_name = "Check_Token"
+        super().__init__(hostname, port, token, base_path, verify)
         self.users = users
 
     def run_test(self):
@@ -63,7 +62,7 @@ class Token(JupyterhubTest):
         exit_code = 0
         for user in self.users:
             try:
-                r = self.api_calls("get", user)
+                r = self.call_api("get", user)
 
             except requests.exceptions.RequestException as e:
                 self.log.write("error", str(e))

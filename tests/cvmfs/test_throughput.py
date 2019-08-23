@@ -44,10 +44,13 @@ class Throughput(Test):
         self.log.write("performance", "\t".join(
             ["file_name","time_connect", "time_starttransfer" " total_time"]), val="read")
         count_files = 0
+        contain_files = 0
         for subdir, dirs, files in os.walk(self.path):
             count_files = count_files + 1
             for file in files:
                 relevant_files = os.path.join(subdir, file)
+                # checks if there is any file to read
+                contain_files = contain_files + 1
                 command = "curl -o /dev/null -s -w '%{time_connect} : %{time_starttransfer} : %{time_total}\n'" + " file:///" + relevant_files
                 p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
@@ -58,7 +61,8 @@ class Throughput(Test):
                     exit_code = 1
             if count_files == self.number:
                 break
-
+        if contain_files == 0:
+            exit_code = 1
         self.log.write("info", "overall exit code" + str(exit_code))
         return exit_code
 
