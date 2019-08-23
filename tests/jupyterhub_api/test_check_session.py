@@ -55,8 +55,7 @@ class CheckSession(JupyterhubTest):
         super().__init__(hostname, port, token, base_path, verify)
         self.users = users
 
-
-    def check_session(self):
+    def run_test(self):
 
         # Submit a  get request to  https://localhost:443/hub/api/users/user1, this will return the information
         # of particular user in json format, check the value of the field 'server' if it is null server is not active
@@ -69,13 +68,14 @@ class CheckSession(JupyterhubTest):
         #     json of user have non-active server -
         #     {"kind": "user", "name": "user3", "admin": false, "groups": [], "server": null, "pending": null}
 
+        exit_code = 0
         for user in self.users:
             try:
                 r = self.call_api("get", user)
 
             except requests.exceptions.RequestException as e:
                 self.log.write("error", str(e))
-                return 1
+                exit_code = 1
             else:
                 if r.status_code == 200:
                     status = r.json()
@@ -84,22 +84,17 @@ class CheckSession(JupyterhubTest):
                     self.log.write("info", "exit code : check_container " + str(check_container))
                     if server_status and check_container != 1:
                         self.log.write("info", user + " server is present at " + server_status)
-                        return 0
                     else:
                         self.log.write("error", user + " server is not present ")
-                        return 1
+                        exit_code = 1
                 else:
+                    exit_code = 1
                     self.log.write("error", r.content.decode('utf-8'))
-                    return 1
-
-    def exit_code(self):
-        self.exit = self.check_session()
-        self.log.write("info", "exit code %s" % self.exit)
-
-        return self.exit
+        self.log.write("info", "exit code %s" % exit_code)
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     test_active_session = CheckSession(args.hostname, args.port, args.token, args.users, args.base, verify=False)
-    (test_active_session.exit_code())
+    (test_active_session.run_test())

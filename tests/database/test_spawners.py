@@ -36,27 +36,24 @@ class Spawners(DatabaseTest):
         self.table_name = table_name
         super().__init__(path, user, mode)
 
-    def check_spawners(self):
+    def run_test(self):
+        exit_code = 0
         command = 'select server_id from %s' % self.table_name
         result = self.select_tasks(command)
         # result format if mode is delete - [(None,)]
         # format if mode is active - [(1,)]
         if result:
             self.log.write("info", "Server is active, %s" % result)
-            self.exit = 0 if self.mode == "active" else 1
+            exit_code = 0 if self.mode == "active" else 1
         else:
             self.log.write("info", "Server is not active, server_id field is none")
-            self.exit = 1 if self.mode == "active" else 0
-        return self.exit
-
-    def exit_code(self):
-        self.exit = self.check_spawners()
-        self.log.write("info", "exit code %s" % self.exit)
-        return self.exit
+            exit_code = 1 if self.mode == "active" else 0
+        self.log.write("info", "exit code %s" % exit_code)
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     mode = "active" if args.active else "delete" if args.delete else None
     test_spawners = Spawners(args.path, args.user, mode, args.table)
-    test_spawners.exit_code()
+    test_spawners.run_test()
