@@ -29,7 +29,7 @@ class Mount(Test):
         self.mode = mode
         super().__init__()
 
-    def check_mount(self):
+    def run_test(self):
         olddir = os.getcwd()
         os.chdir('/')
         first_command = subprocess.Popen(["mount", "-l"], stdout=subprocess.PIPE)
@@ -74,13 +74,6 @@ class Mount(Test):
             return 1
         return 0
 
-    def exit_code(self):
-        self.exit = self.check_mount()
-        self.log.write("info", "overall exit code " + str(self.exit))
-        return self.exit
-
-
 if __name__ == "__main__":
-    args = get_args()
-    test_mount = Mount(args.mode)
-    test_mount.exit_code()
+    test_mount = Mount()
+    test_mount.run_test()

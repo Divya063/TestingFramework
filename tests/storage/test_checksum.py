@@ -4,6 +4,7 @@ import sys
 
 sys.path.append("..")
 from logger import Logger, LOG_FOLDER, LOG_EXTENSION
+from grafana import Grafana
 from TestBase import Test
 import time
 import argparse
@@ -30,11 +31,11 @@ extension = ".txt"
 class Checksum(Test):
     """Calculates Checksum for a given number of files"""
 
-    def __init__(self, fileNumber, fileSize, filepath):
+    def __init__(self, fileNumber, fileSize, filePath):
         self.number_of_files = fileNumber
         self.input_size = fileSize
-        self.storage_path = filepath
-        self.file_path = os.path.join("/", filepath)
+        self.storage_path = filePath
+        self.file_path = os.path.join("/", filePath)
         self.ops = ReadWriteOp()
         self.check = ChecksumCal()
         self.match = None
@@ -53,7 +54,7 @@ class Checksum(Test):
             self.log.write("info", "eos directory exists, check passed...")
             return 0
 
-    def checksum_test(self, number_of_files, input_size):
+    def run_test(self):
         """
 
         :param number_of_files:
@@ -62,7 +63,7 @@ class Checksum(Test):
         """
         corrupted_files = 0
         self.log.write("info", "Creating workload...")
-        payload = self.ops.generate_payload(number_of_files, input_size)
+        payload = self.ops.generate_payload(self.number_of_files, self.input_size)
         self.log.write("info", "Workload created")
         self.log.write("info", "Begin of sanity check")
         self.log.write("consistency", "\t".join(["file_name", "matching", "source_checksum", "disk_checksum"])
@@ -93,15 +94,11 @@ class Checksum(Test):
 
         self.log.write("info", "Number of corrupted files " + str(corrupted_files))
         self.log.write("info", "End of sanity check")
-        return corrupted_files
-
-    def exit_code(self):
-        self.exit = 1 if self.checksum_test(self.number_of_files, self.input_size) > 0 else 0
-        self.log.write("info", "exit code: " + str(self.exit))
-        return self.exit
+        exit_code = 1 if self.checksum_test(self.number_of_files, self.input_size) > 0 else 0
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     test_integrity = Checksum(args.number, args.file_size, args.path)
-    test_integrity.exit_code()
+    test_integrity.run_test()

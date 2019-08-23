@@ -48,10 +48,10 @@ class Ttfb:
         self.log.write("parameters", "Test name: " + self.ref_test_name)
         self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
 
-
-    def ttfb(self, repo_path, path):
-        global ttfb
-        if(self.mount.check_mount(repo_path) == 0):
+    def run_test(self, repo_path, path):
+        ttfb = 0
+        exit_code = 0
+        if self.mount.check_mount(repo_path) == 0:
             start = time.time()
             try:
                 with open(path, 'rb') as file:
@@ -61,23 +61,20 @@ class Ttfb:
             except Exception as err:
                 self.log.write("error", "Error while reading " + path)
                 self.log.write("error", path + ": " + str(err))
-                self.exit |= 1
+                exit_code = 1
 
             else:
                 self.log.write("Performance", "\t".join(
                     [path,  str(("%.8f" % float(ttfb)))]))
         else:
             self.log.write("error", "repository is not mounted")
-            self.exit |= 1
+            exit_code = 1
 
-        return self.exit
+        self.log.write("info", "exit code: " + str(exit_code))
+        return exit_code
 
-    def exit_code(self):
-        code = self.ttfb(self.repo_path, self.path)
-        self.log.write("info", "exit code: " + str(self.exit))
-        return code
 
 if __name__ == "__main__":
     args = get_args()
     test_ttfb = Ttfb(args.repo_name, args.path)
-    test_ttfb.exit_code()
+    test_ttfb.run_test()

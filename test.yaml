@@ -7,19 +7,19 @@ tests:
       mode: "sciencebox" #sciencebox mode
     write:
       fileSize: 1M
-      filepath: "eos/user/u/user2/0.txt"
+      filePath: "eos/user/u/user2/0.txt"
     delete:
-      filepath: "eos/user/u/user2/0.txt"
+      filePath: "eos/user/u/user2/0.txt"
     exists:
-      filepath: "eos/user/u/user2/0.txt"
+      filePath: "eos/user/u/user2/0.txt"
     throughput: 
       fileNumber: 10
       fileSize: 1M
-      filepath: "eos/user/u/user2/"
+      filePath: "eos/user/u/user2/"
     checksum:
       fileNumber: 10
       fileSize: 1M
-      filepath: "eos/user/u/user2/"
+      filePath: "eos/user/u/user2/"
 
 #    statFile:
 #      filepath: "eos/user/u/user2/"
@@ -56,7 +56,7 @@ tests:
     docker:
       container_name: 'jupyter-user2'
       timeout: 5
-
+      
   jupyterhub_api:
     check_api:
       hostname: 'localhost'
@@ -97,3 +97,14 @@ tests:
       users: ['user2']
       base_path: ""
       TLS: False
+      
+output:
+  logfile:
+    logging: True
+  grafana:
+    push : False
+    hostname: ''
+    port: '80'
+    modules: ['Throughput']
+    namespace: 'swan.testingframework'
+

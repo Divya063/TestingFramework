@@ -53,8 +53,9 @@ class StopSession(JupyterhubTest):
         super().__init__(hostname, port, token, base_path, verify)
         self.users = users
 
-    def stop_session(self):
+    def run_test(self):
         self.log.write("info", "Terminating the sessions")
+        exit_code = 0
         for user in self.users:
             try:
                 # Makes a request to stop the server
@@ -62,7 +63,7 @@ class StopSession(JupyterhubTest):
 
             except requests.exceptions.RequestException as e:
                 self.log.write("error", str(e))
-                return 1
+                exit_code = 1
 
             else:
                 check_container = self.check_container(user)
@@ -70,19 +71,16 @@ class StopSession(JupyterhubTest):
                 # checks if the container is present or not
                 if r.status_code == 204 and check_container == 1:
                     self.log.write("info", user + " server was removed")
-                    return 0
                 else:
                     self.log.write("error", user + " server was not removed")
                     self.log.write("error", r.content.decode('utf-8'))
-                    return 1
+                    exit_code = 1
 
-    def exit_code(self):
-        self.exit = self.stop_session()
-        self.log.write("info", "exit code %s" % self.exit)
-        return self.exit
+        self.log.write("info", "overall exit code " + str(exit_code))
+        return exit_code
 
 
 if __name__ == "__main__":
     args = get_args()
     test_stop_session = StopSession(args.hostname, args.port, args.token, args.users, args.base, verify=False)
-    (test_stop_session.exit_code())
+    (test_stop_session.run_test())
