@@ -59,8 +59,8 @@ def check_input_validity(params):
 
     string_val = ['filePath', 'fileSize', 'repoName', 'repoSize', 'repoPath', 'user', 'table', 'path', 'hostname',
                   'port', 'hostname', 'base_path', 'token', 'LCG-rel', 'platform', 'scriptenv', 'spark-cluster',
-                  'container_name']
-    int_val = ['fileNumber', 'num', 'timeout', 'num', 'mode', 'ncores', 'memory']
+                  'container_name', 'mode']
+    int_val = ['fileNumber', 'num', 'timeout', 'num', 'ncores', 'memory']
     list_type = ['mountpoints', 'users']
     bool_type = ['TLS']
 
