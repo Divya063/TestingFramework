@@ -4,7 +4,7 @@ tests:
     mount_sanity:
       timeout: 8
     mount:
-      mode: 1 #sciencebox mode
+      mode: "sciencebox" #sciencebox mode
     write:
       fileSize: 1M
       filepath: "eos/user/u/user2/0.txt"
