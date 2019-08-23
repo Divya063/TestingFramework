@@ -16,7 +16,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--mode", dest="mode",
                         required=True,
-                        help='Specify the mode (e.g, 0 - host mode, 1 - sciencebox ')
+                        help='Specify the mode (e.g, "host" - host mode, "sciencebox" - sciencebox mode')
     args = parser.parse_args()
     return args
 
