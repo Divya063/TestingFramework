@@ -47,9 +47,9 @@ be already set in test.yaml file.)<br>
     - Test file : test_mount.py
     - Use case : Checks if eos is mounted on host and sciencebox
     - There are two testing modes:
-      - 0 : Host 
-      - 1 : sciencebox
-    -  To run this test explicitly use - `python3 test_mount.py --mode 1`
+      - "host"
+      - "sciencebox"
+    -  To run this test explicitly use - `python3 test_mount.py --mode host`
     
 3. throughput:
     - Test file : test_throughput.py
@@ -160,8 +160,7 @@ On successful execution response code should be *200*.
 
 2. **create_session** 
    - Test file : test_create_session.py
-   - Use case : creates a token and updates the token field in test.yaml file, 
-   checks if session can be created successfully or not.
+   - Use case : Checks if session can be created successfully or not.
    - parameters : 
      - params : This data needs to be passed to create a user container
      - timedelay : In the process of creating sessions, first the required user's server is requested which is  validated by the response code *202*, a server is created consequently, which needs to repond within 30s, otherwise the server
@@ -238,19 +237,23 @@ database:
     token:
       user: "user2"
       table: "api_tokens"
-      mode: 1 #active mode
+      mode: "active" #active mode
       path: "jupyterhub.sqlite"
     servers:
       user: "user2"
       table: "servers"
-      mode: 1 #active mode
+      mode: "active" #active mode
       path: "jupyterhub.sqlite"
     spawners:
       user: "user2"
       table: "spawners"
-      mode: 1 #active mode
+      mode: "active" #active mode
       path: "jupyterhub.sqlite"
 ```
+Two modes are there:
+- active mode - When the server is active
+- delete mode - When the server is removed or deleted
+
 1. **token**
      - Test file : test_token.py
      - Use case : Checks the status of "token" table when a session is created or removed.
