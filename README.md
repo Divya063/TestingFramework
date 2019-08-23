@@ -4,7 +4,7 @@
 
 There are two testing modes:
  - From the host machine (default)
- - From User-container - To run the test from user container use the flag `-u` and pass the 
+ - From container - To run the test from user container use the flag `-u` and pass the 
  session name as `--session {name}`, e.g- `--session user2`
  
 To run tests from host machine use the command - `python3 run.py --configfile [path of yaml file]` <br>
@@ -97,7 +97,7 @@ cvmfs:
 
 <h3>Jupyterhub API</h3>
 
-- To run the tests from user container use `python3 run.py -u --session {session-name} --test jupyterhub-api --configfile test.yaml`.
+- To run the tests from jupyterhub container use `python3 run.py -u --session {session-name} --test jupyterhub-api --configfile test.yaml`.
 e.g - `python3 run.py -u --session user2 --test jupyterhub-api --configfile test.yaml`
 
 1. Parameters
