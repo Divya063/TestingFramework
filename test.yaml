@@ -3,7 +3,8 @@ tests:
   storage:
     mount_sanity:
       timeout: 8
-      mountpoints: ['user/u/user2/']
+    mount:
+      mode: "sciencebox" #sciencebox mode
     write:
       fileSize: 1M
       filePath: "eos/user/u/user2/0.txt"
@@ -33,6 +34,7 @@ tests:
       num: 2 #Number of packages
       repoPath: 'cvmfs/sft.cern.ch/'
       filePath: 'cvmfs/sft.cern.ch/lcg/releases/'
+
   database:
     token:
       user: "user2"
@@ -49,10 +51,12 @@ tests:
       table: "spawners"
       mode: 1 #active mode
       path: "jupyterhub.sqlite"
+
   user_docker:
     docker:
       container_name: 'jupyter-user2'
       timeout: 5
+      
   jupyterhub_api:
     check_api:
       hostname: 'localhost'
@@ -93,6 +97,7 @@ tests:
       users: ['user2']
       base_path: ""
       TLS: False
+      
 output:
   logfile:
     logging: True
@@ -102,3 +107,4 @@ output:
     port: '80'
     modules: ['Throughput']
     namespace: 'swan.testingframework'
+
