@@ -10,12 +10,13 @@ import argparse
 import os
 import time
 import sys
+
 sys.path.append('..')
-from logger import Logger, LOG_FOLDER, LOG_EXTENSION
-from test_mount import Mount
+from TestBase import Test
+
 
 def get_args():
-    parser = argparse.ArgumentParser(description='Arguments', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description='Arguments', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--repo", dest="repo_name",
                         required=True,
                         help='Repository name')
@@ -27,48 +28,32 @@ def get_args():
     args = parser.parse_args()
     return args
 
-class Ttfb:
+
+class Ttfb(Test):
     def __init__(self, repoPath, filePath):
-        self.exit = None
-        #self.parent = os.path.join(os.getcwd(), os.pardir)
         self.repo_path = os.path.join('/', repoPath)
         self.path = os.path.join('/', filePath)
-        print(repoPath)
-        self.mount = Mount(repoPath, filePath)
         self.ref_test_name = "Time_till_First_Byte"
-        self.logger_folder = os.path.join(os.getcwd(), LOG_FOLDER)
-        self.log = Logger(os.path.join(self.logger_folder, self.ref_test_name +"_" + time.strftime("%Y-%m-%d_%H:%M:%S")+ LOG_EXTENSION))
-        self.log.write("info", "Tests starting...")
-        self.log.write("info", time.strftime("%c"))
-        self.exit = 0
-        self.ref_timestamp = int(time.time())
-        self.log_params()
+        super().__init__()
 
-    def log_params(self):
-        self.log.write("parameters", "Test name: " + self.ref_test_name)
-        self.log.write("parameters", "Test time: " + str(self.ref_timestamp))
-
-    def run_test(self, repo_path, path):
+    def run_test(self):
         ttfb = 0
         exit_code = 0
-        if self.mount.check_mount(repo_path) == 0:
-            start = time.time()
-            try:
-                with open(path, 'rb') as file:
-                    # read one byte
-                    file.read(1)
-                    ttfb = time.time() - start
-            except Exception as err:
-                self.log.write("error", "Error while reading " + path)
-                self.log.write("error", path + ": " + str(err))
-                exit_code = 1
 
-            else:
-                self.log.write("Performance", "\t".join(
-                    [path,  str(("%.8f" % float(ttfb)))]))
-        else:
-            self.log.write("error", "repository is not mounted")
+        start = time.time()
+        try:
+            with open(self.path, 'rb') as file:
+                # read one byte
+                file.read(1)
+                ttfb = time.time() - start
+        except Exception as err:
+            self.log.write("error", "Error while reading " + self.path)
+            self.log.write("error", self.path + ": " + str(err))
             exit_code = 1
+
+        else:
+            self.log.write("Performance", "\t".join(
+                [self.path, str(("%.8f" % float(ttfb)))]))
 
         self.log.write("info", "exit code: " + str(exit_code))
         return exit_code
