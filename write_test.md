@@ -1,6 +1,6 @@
 
 
-# How to add new tests?
+## How to add new tests?
 
 - The structure which is should maintained while adding new tests is as follows:
 ```
@@ -27,7 +27,7 @@ directory_name: # Directory containing the test file
         
 ```
 
-Append the new parameters into the relevant list given in [check_input_validity function](https://github.com/Divya063/TestingFramework/blob/c951f29802d90380a03b841c0f8752bcfe9cf737/run.py#L56) according to their types.
+Append the new parameters into the relevant list given in [check_input_validity function](https://github.com/Divya063/TestingFramework/blob/c951f29802d90380a03b841c0f8752bcfe9cf737/run.py#L56) present in run.py file according to their types.
 For instance, if the parameter type is string, append the parameter to the list `string_val`
 
 - While writing tests (which are meant to be run inside containers) for new components, make sure you register the test_name inside the main function present in [run.py](https://github.com/Divya063/TestingFramework/blob/c951f29802d90380a03b841c0f8752bcfe9cf737/run.py#L128) file
@@ -40,4 +40,40 @@ For instance, if the parameter type is string, append the parameter to the list 
         docker_cp_from_container(container, ":/")
   ```
   In this way all the relevant files will be copied to the target container, and the test file will be executed.
+  
+  ### Output configuration
+  ```yaml
+  output:
+  logfile:
+    logging: True
+  grafana:
+    push : False
+    hostname: ''
+    port: '80'
+    modules: ['Throughput']
+    namespace: 'swan.testingframework'
+  ```
+  - By default stdout would be true and logs would be visible on the terminal.
+  - Configuration can be changed in the yaml file.
+  ## Logging
+  **types of messages for logging** <br>
+  ```
+  "parameters": "[PARAMS] ",
+  "info": "[INFO] ",
+  "performance": "[PERF] ",
+  "consistency": "[INTEGRITY] ",
+  "warning": "[WARNING] ",
+  "error": "[ERROR] ",
+  ```
+  For instance, if you want to log a message related to performance, you can use - self.log.write("performance", msg)
+  
+  ### Grafana
+ 
+  Grafana is an open source metric analytics & visualization suite. To push metrics to grafana, make sure you add the name of class (whose metrics are needed) in the **modules** field(test.yaml).
+  In the test file:
+  - In case of successful execution use - self.stats[self.ref_test_name].set_success(), here is self.ref_test_name is test name defined in the constructor.
+  - In case of failure use -self.stats[self.ref_test_name].set_error("error message")
+  - If you want to store the metrics you can use - self.stats[self.ref_test_name].set_performance(value)
+  - At last after collecting metrics call the check_test_class function - self.check_test_class(self)
+  
   
