@@ -66,7 +66,7 @@ be already set in test.yaml file.)<br>
       timeout: 8
       mountpoints: ['user/u/user2/']
     mount:
-      user_mode : '0'
+      user_mode : 'sciencebox'
     write:
       fileSize: 1M
       filepath: "eos/user/u/user2/0.txt"
@@ -220,7 +220,7 @@ On successful execution response code should be *200*.
        `python3 test_create_session.py --port 443 --token " " --users user2  --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}' --delay 30 --base_path ""`
 
    ---
- ###  **warning** <br>
+ ### warning
    Before creating servers/sessions make sure -
    
    - You generate the token by running `jupyterhub token dummy_admin`, add the token inside jupyterhub_config.py
