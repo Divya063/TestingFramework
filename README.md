@@ -32,13 +32,13 @@ This testing framework covers the following components:
 
 Upstream Components :
 1. configurable-http-proxy
-2. JupyterHub API
-3. SQLite database managed by JupyterHub
-4. SWAN docker containers
+2. [JupyterHub API](#jupyterhub-api)
+3. [SQLite database managed by JupyterHub](#sqlite-database)
+4. [SWAN docker containers](#containers)
 
 CERN-specific components :
-1. The EOS filesystem
-2. The CVMFS repositories
+1. [The EOS filesystem](#storage)
+2. [The CVMFS repositories](#cvmfs)
 
 
 ## Setup Instructions
