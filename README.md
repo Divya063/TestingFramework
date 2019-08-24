@@ -1,5 +1,6 @@
 **[Installation](#setup-instructions)** |
 **[How to use](#how-to-use)** |
+**[How to write tests](write_test.md)**|
 **[Code](https://github.com/Divya063/TestingFramework)**
 
 # Google Summer of Code 2019
@@ -42,7 +43,13 @@ CERN-specific components :
 
 ## Setup Instructions
 
-- This project assumes a [SWAN](https://swan.web.cern.ch/) or [ScienceBox](https://github.com/cernbox/uboxed) setup. ScienceBox contains SWAN and all the other CERN-specific services (i.e., EOS, CERNBox, CVMFS). To install required dependencies run `pip3 install -r requirements.txt`.
+- This project assumes a [SWAN](https://swan.web.cern.ch/) or [ScienceBox](https://github.com/cernbox/uboxed) setup. ScienceBox contains SWAN and all the other CERN-specific services (i.e., EOS, CERNBox, CVMFS). To install required dependencies:
+
+```bash
+git clone https://github.com/Divya063/TestingFramework.git
+cd TestingFramework
+pip3 install -r requirements.txt
+```
 
 ## How to use
 
@@ -227,7 +234,7 @@ On successful execution response code should be *200*.
    file as `c.JupyterHub.service_tokens = {'dummy_admin' : '<token_value>'}` and restart the jupyterhub process with `supervisorctl restart jupyterhub`.
    Also add the token to "token" field present in the yaml file.
    
-   - you have created users as each server is created for one particular user. <br>
+   - And you have created users as each server is created for one particular user. <br>
    
        - Using curl :
        `curl -XPOST -v -k https://localhost:443/hub/api/users/user2 -H "Authorization: token {token from yaml file}"`
@@ -338,3 +345,16 @@ user_docker:
       timeout: 5
 ```
 Checks if a container is healthy or not.  
+
+## Future Work
+   - Pending Work
+      + [Filed issues](https://github.com/Divya063/TestingFramework/issues)
+      + Implement healthchecking mechanism similar to liveliness-probes and readiness-probes
+      
+### Student
+
+***Divya Rani***
+
+- **Email ID**: [ranidivya063@gmail.com](mailto:ranidivya063@gmail.com)
+- **Linkedin Profile**: [https://linkedin.com/in/divya-rani-23924481/](https://linkedin.com/in/divya-rani-23924481/)
+
