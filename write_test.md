@@ -71,7 +71,7 @@ For instance, if the parameter type is string, append the parameter to the list 
  
   Grafana is an open source metric analytics & visualization suite. To push metrics to grafana, make sure you add the name of class (whose metrics are needed) in the **modules** field(test.yaml).
   In the test file:
-  - In case of successful execution use - `self.stats[self.ref_test_name].set_success()`, here is `self.ref_test_name` is test name defined in the constructor.
+  - In case of successful execution use - `self.stats[self.ref_test_name].set_success()`, here is `self.ref_test_name` the is test name(should be unique) defined in the constructor of each test class.
   - In case of failure use - `self.stats[self.ref_test_name].set_error("error message")`
   - If you want to store the metrics you can use - `self.stats[self.ref_test_name].set_performance(value)`
   - At last after collecting metrics call the check_test_class function - `self.check_test_class(self)`
