@@ -34,7 +34,7 @@ Upstream Components :
 1. configurable-http-proxy
 2. [JupyterHub API](#jupyterhub-api)
 3. [SQLite database managed by JupyterHub](#sqlite-database)
-4. [SWAN docker containers](#containers)
+4. [SWAN docker containers](#container)
 
 CERN-specific components :
 1. [The EOS filesystem](#storage)
