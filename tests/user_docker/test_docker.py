@@ -48,7 +48,7 @@ class Docker(Test):
         exit(1)
 
     def run_test(self):
-        timer = threading.Timer(self.timeout, self.quit_function, args=['check_container'])
+        timer = threading.Timer(self.timeout, self.quit_function, args=['run_test'])
         timer.start()
         # start docker events
         try:
@@ -56,6 +56,7 @@ class Docker(Test):
             # exec into container and run a command
             output = client.containers.get(self.container_name).exec_run(cmd=["bin/ls", "-A"], workdir="/",
                                                                          stdout=True)
+            print(output)
         except Exception as exc:
             self.log.write("error", str(exc))
             return 1

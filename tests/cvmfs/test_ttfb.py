@@ -52,7 +52,7 @@ class Ttfb(Test):
             exit_code = 1
 
         else:
-            self.log.write("Performance", "\t".join(
+            self.log.write("performance", "\t".join(
                 [self.path, str(("%.8f" % float(ttfb)))]))
 
         self.log.write("info", "exit code: " + str(exit_code))

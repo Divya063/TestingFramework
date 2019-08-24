@@ -42,7 +42,7 @@ class Throughput(Test):
     def run_test(self):
         exit_code = 0
         self.log.write("performance", "\t".join(
-            ["file_name","time_connect", "time_starttransfer" " total_time"]), val="read")
+            ["file_name", "time_connect", "time_starttransfer " " total_time"]), val="read")
         count_files = 0
         contain_files = 0
         for subdir, dirs, files in os.walk(self.path):
@@ -63,7 +63,7 @@ class Throughput(Test):
                 break
         if contain_files == 0:
             exit_code = 1
-        self.log.write("info", "overall exit code" + str(exit_code))
+        self.log.write("info", "overall exit code " + str(exit_code))
         return exit_code
 
 

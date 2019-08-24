@@ -29,6 +29,7 @@ class Delete(Test):
     def __init__(self, filePath):
         self.ref_test_name = "Delete"
         self.file_path = filePath
+        self.file_path = os.path.join("/", filePath)
         self.params = {}
         self.params['file_path'] = self.file_path
         super().__init__(**self.params)

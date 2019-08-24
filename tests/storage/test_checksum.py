@@ -46,14 +46,6 @@ class Checksum(Test):
         self.params['output_folder'] = self.file_path
         super().__init__(**self.params)
 
-    def check_directory(self):
-        if not (os.path.isdir(self.file_path)):
-            self.log.write("error", "eos directory does not exist")
-            return 1
-        else:
-            self.log.write("info", "eos directory exists, check passed...")
-            return 0
-
     def run_test(self):
         """
 
@@ -94,7 +86,7 @@ class Checksum(Test):
 
         self.log.write("info", "Number of corrupted files " + str(corrupted_files))
         self.log.write("info", "End of sanity check")
-        exit_code = 1 if self.checksum_test(self.number_of_files, self.input_size) > 0 else 0
+        exit_code = 1 if corrupted_files > 0 else 0
         return exit_code
 
 

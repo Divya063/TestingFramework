@@ -9,11 +9,11 @@ tests:
     write:
       fileSize: 1M
       filePath: "eos/user/u/user2/0.txt"
-    delete:
-      filePath: "eos/user/u/user2/0.txt"
     exists:
       filePath: "eos/user/u/user2/0.txt"
-    throughput: 
+    delete:
+      filePath: "eos/user/u/user2/0.txt"
+    throughput:
       fileNumber: 10
       fileSize: 1M
       filePath: "eos/user/u/user2/"
@@ -57,25 +57,25 @@ tests:
     docker:
       container_name: 'jupyter-user2'
       timeout: 5
-      
+
   jupyterhub_api:
     check_api:
       hostname: 'localhost'
       port: '443'
-      token: ""
+      token: "183696b1bda44833a4faf4c693d08288"
       base_path: ""
       verify : False
     token:
       hostname: 'localhost'
       port: '443'
-      token: ""
+      token: "183696b1bda44833a4faf4c693d08288"
       users: ['user2']
       base_path: ""
       verify: False
     create_session:
       hostname: 'localhost'
       port: '443'
-      token: 'b39639d589c44a2294b3dd1164607287'
+      token: '183696b1bda44833a4faf4c693d08288'
       users: ['user2']
       base_path: ""
       params:
@@ -92,14 +92,14 @@ tests:
     check_session:
       hostname: 'localhost'
       port: '443'
-      token: ""
+      token: "183696b1bda44833a4faf4c693d08288"
       users: ['user2']
       base_path: ""
       verify: False
     stop_session:
       hostname: 'localhost'
       port: '443'
-      token: ''
+      token: '183696b1bda44833a4faf4c693d08288'
       users: ['user2']
       base_path: ""
       verify: False

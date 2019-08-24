@@ -21,7 +21,7 @@ def docker_cp_from_container(container_name, path, user=None):
 def docker_cp_to_container(container_name, dest="/"):
     """Copies files and folders to relevant containers"""
 
-    file_list = ['run.py', 'test.yaml', 'run_container.py']
+    file_list = ['run.py', 'test.yaml', 'run_container.py', 'requirements.txt']
     folder_list = ['tests']
     for file in file_list:
         try:

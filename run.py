@@ -167,12 +167,11 @@ def main():
                 docker_exec(container_name, test_name)
                 docker_cp_from_container(container_name, ":/")
 
-            if test_name == "CVMFS" or test_name == "user_docker":
+            # or because in both the cases files will be copied to user container and path will be same
+            if test_name == "cvmfs":
                 docker_cp_to_container(container)
                 docker_exec(container, test_name)
                 docker_cp_from_container(container, ":/")
-
-
 
     else:
         # From host

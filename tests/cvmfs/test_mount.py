@@ -45,7 +45,7 @@ class Mount(Test):
             self.log.write("error", self.repo_path + " does not exists")
             exit_code = 1
 
-        self.log.write("info", "overall exit code" + str(exit_code))
+        self.log.write("info", "overall exit code " + str(exit_code))
         return exit_code
 
 

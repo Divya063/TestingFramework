@@ -60,6 +60,7 @@ class Token(JupyterhubTest):
 
         # Submit a  get request to  https://localhost:443/hub/api/users/user{} to check if a token is valid or not
         exit_code = 0
+        error_codes = [403, 404, 405]
         for user in self.users:
             try:
                 r = self.call_api("get", user)
@@ -71,12 +72,12 @@ class Token(JupyterhubTest):
                 return 1
 
             else:
-                if r.status_code != 403:
-                    self.log.write("info", "token is valid")
-                    self.log.write("info", user + " info " + r.content.decode('utf-8'))
-                else:
+                if r.status_code in error_codes:
                     self.log.write("error", r.content.decode('utf-8'))
                     exit_code = 1
+                else:
+                    self.log.write("info", "token is valid")
+                    self.log.write("info", user + " info " + r.content.decode('utf-8'))
 
         self.log.write("info", "overall exit code " + str(exit_code))
         return exit_code

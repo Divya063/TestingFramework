@@ -77,14 +77,14 @@ class Throughput(Test):
 
             except Exception as err:
                 self.log.write("error", "Error while writing " + file_name)
-                self.stats[self.fname].set_error(err)
+                self.stats[self.ref_test_name].set_error(err)
                 self.log.write("error", file_name + ": " + str(err))
                 return 1
             else:
 
                 size, fsize = self.ops.convert_size(input_size)
-                self.stats[self.fname].set_success()
-                self.stats[self.fname].set_performance(str("%.4f" % float(self.ops.set_performance(val[2], fsize))))
+                self.stats[self.ref_test_name].set_success()
+                self.stats[self.ref_test_name].set_performance(str("%.4f" % float(self.ops.set_performance(val[2], fsize))))
                 self.log.write("performance", "\t".join(
                     [file_name, str(input_size), str("%.8f" % float(val[2])),
                      str("%.4f" % float(self.ops.set_performance(val[2], fsize))), str(val[0]), str(val[1])]),
@@ -113,14 +113,14 @@ class Throughput(Test):
                 measure.stop()
                 val = measure.val()
             except Exception as err:
-                self.stats[self.fname].set_error(err)
+                self.stats[self.ref_test_name].set_error(err)
                 self.log.write("error", "Error while reading " + file_name)
                 self.log.write("error", file_name + ": " + str(err))
                 return 1
             else:
                 size, fsize = self.ops.convert_size(self.input_size)
-                self.stats[self.fname].set_success()
-                self.stats[self.fname].set_performance(str("%.4f" % float(self.ops.set_performance(val[2], fsize))))
+                self.stats[self.ref_test_name].set_success()
+                self.stats[self.ref_test_name].set_performance(str("%.4f" % float(self.ops.set_performance(val[2], fsize))))
                 self.log.write("performance", "\t".join(
                     [file_name, str(self.input_size), str(("%.8f" % float(val[2]))),
                      str(("%.4f" % float(self.ops.set_performance(val[2], fsize)))), str(val[0]),

@@ -6,6 +6,7 @@ import yaml
 import subprocess
 import importlib
 
+
 # run tests from user container
 
 def get_args():
@@ -26,24 +27,32 @@ def get_config(cfg):
         raise Exception("yaml file not present")
 
 
+def install_requirements():
+    command = "pip3 install -r requirements.txt"
+    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+
+
 def run_tests(tasks, test_name):
+    test_num = 0
+    test_passed = 0
     ignore_params = ['statFile']
+    passed = []
+    install_requirements()
     for key, value in tasks.items():
         # skip output parameters present in yaml
         if key == "output":
             continue
         for directory, test in value.items():
-            print(directory)
             if directory == test_name:
                 if test:
                     for test_name, param in test.items():
-                        print(test_name, param)
                         if test_name in ignore_params:
                             continue
                         class_name = ""
+                        test_num = test_num + 1
                         string_list = test_name.split("_")
                         for string in string_list:
-                            print(class_name)
                             class_name += string.capitalize()
                         test_name = "test_%s" % test_name
                         module_name = 'tests.%s.%s' % (directory, test_name)
@@ -51,9 +60,13 @@ def run_tests(tasks, test_name):
                         module = importlib.import_module(module_name)
                         class_ = getattr(module, class_name)
                         instance = class_(**param)
-                        instance.run_test()
-            else:
-                break
+                        exit_code = instance.run_test()
+                        if exit_code == 0:
+                            passed.append(directory + "_" + test_name)
+                            test_passed = test_passed + 1
+
+    print("Total tests passed %s" % test_passed, " | Total number of tests %s" % test_num)
+    print("List of the tests passed", passed)
 
 
 def main():

@@ -30,6 +30,7 @@ class Exists(Test):
     def __init__(self, filePath):
         self.file_path = filePath
         self.ref_test_name = "file_exists"
+        self.file_path = os.path.join("/", filePath)
         self.params = {}
         self.params['file_path'] = self.file_path
         super().__init__(**self.params)
