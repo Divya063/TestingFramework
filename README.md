@@ -1,15 +1,60 @@
+**[Installation](#setup-instructions)** |
+**[How to use](#how-to-use)** |
+**[Code](https://github.com/Divya063/TestingFramework)**
+
 # Google Summer of Code 2019
 
 # [Testing Framework for Jupyter notebooks](https://summerofcode.withgoogle.com/projects/#5216539194687488)
 
+<center>
+<table>
+<tr>
+<td><a href="https://summerofcode.withgoogle.com/projects/#5216539194687488"><img src="https://user-images.githubusercontent.com/6822941/29750351-e95e7b1c-8b5b-11e7-9f6b-b25b69f7353a.png"/></a></td>
+<td><a href="http://hepsoftwarefoundation.org/"><img src="https://user-images.githubusercontent.com/6822941/29750350-e956b512-8b5b-11e7-9e34-4e3a5be9d37f.png"/></a></td>
+<td><a href="https://swan.web.cern.ch/"><img src="https://avatars0.githubusercontent.com/u/38285709?s=200&v=4"/></a></td>
+</tr>
+</table>
+</center>
+
+## Mentors
+- Enrico Bocchi
+- Diogo Castro
+- João Vicente
+- Jakub Moscicki
+- Enric Tejedor
+
+## Introduction
+
+SWAN (Service for Web-based ANalysis) is a cloud data analysis service developed and powered by CERN that provides Jupyter notebooks on demand. It is based on Jupyter upstream technology but it is deeply integrated with CERN-specific services, e.g., EOS which provides storage to SWAN , CVMFS which is used to retrieve software on the fly. Jupyter notebooks, despite being easily accessible from an intuitive web-based interface, are a complex environment, especially when used together with JupyterHub, custom extensions, external storage backends and computational clusters. This project aims at creating a testing framework for both upstream Jupyter components and SWAN-specific components which will allow the addition of new tests to cover new features of the SWAN service and will be able to run synthetic tests. The testing framework is self contained and  includes functional tests as well as performance tests.
+
+This testing framework covers the following components:
+
+Upstream Components :
+1. configurable-http-proxy
+2. JupyterHub API
+3. SQLite database managed by JupyterHub
+4. SWAN docker containers
+
+CERN-specific components :
+1. The EOS filesystem
+2. The CVMFS repositories
+
+
+## Setup Instructions
+
+- This project assumes a [SWAN](https://swan.web.cern.ch/) or [ScienceBox](https://github.com/cernbox/uboxed) setup. ScienceBox contains SWAN and all the other CERN-specific services (i.e., EOS, CERNBox, CVMFS). To install required dependencies run `pip3 install -r requirements.txt`.
+
+## How to use
+
 There are two testing modes:
  - From the host machine (default)
- - From container - To run the test from user container use the flag `-u` and pass the 
+ - From containers (sciencebox) - To run the test from user container use the flag `-u` and pass the 
  session name as `--session {name}`, e.g- `--session user2`
  
-To run tests from host machine use the command - `python3 run.py --configfile [path of yaml file]` <br>
+ 
+To run tests from host machine use the command - `python3 run.py --configfile [path of yaml file]`, while running this command it is assumed that all the parameters (required to run the tests) are provided in the [test.yaml]() file or in some cases([JupyterHub API](#warning)) necessary configuration has already been done. <br>
 
-<h3>Storage</h3>
+### Storage
 
 - To run the test from user container use the command given below (there is no need to provide path argument as it will
 be already set in test.yaml file.)<br>
@@ -61,7 +106,7 @@ be already set in test.yaml file.)<br>
     - Use case : Calculates the checksum
     - To run this test explicity use - `python3 test_checksum.py --num 10 --file-size 1M --dest eos/user/u/user2`
 
-<h3>CVMFS</h3>
+### CVMFS
 
 - To run the test from user container use the command given below.<br>
 `python3 run.py -u --session user2 --test CVMFS --configfile test.yaml`
@@ -95,7 +140,7 @@ cvmfs:
     - Use case : Benchmark performance when reading from the repository and compute the read throughput.
     - To run this test explicity use - `python3 test_throughput.py --num 2 --repo_path cvmfs/sft.cern.ch --path cvmfs/sft.cern.ch/lcg/releases/`
 
-<h3>Jupyterhub API</h3>
+### Jupyterhub API
 
 - To run the tests from jupyterhub container use `python3 run.py -u --session {session-name} --test jupyterhub-api --configfile test.yaml`.
 e.g - `python3 run.py -u --session user2 --test jupyterhub-api --configfile test.yaml`
@@ -175,7 +220,7 @@ On successful execution response code should be *200*.
        `python3 test_create_session.py --port 443 --token " " --users user2  --json '{"LCG-rel": "LCG_95a", "platform": "x86_64-centos7-gcc7-opt", "scriptenv": "none", "ncores": 2, "memory": 8589934592, "spark-cluster": "none"}' --delay 30 --base_path ""`
 
    ---
-   **warning** <br>
+ ###  **warning** <br>
    Before creating servers/sessions make sure -
    
    - You generate the token by running `jupyterhub token dummy_admin`, add the token inside jupyterhub_config.py
@@ -230,7 +275,7 @@ On successful execution response code should be *200*.
         - For single user - `python3 test_stop_session.py --port 443 --token " " --users user1 --base_path ""`
         - For multiple users - `python3 test_stop_session.py --port 443 --token " " --users user0 user1 user2 --base_path ""`
 
-<h3>sqlite database</h3>
+### sqlite database
 
 - This test checks the consistency of the sqlite database present inside `srv/jupyterhub/` as jupyterhub.sqlite.
 - To run this test use 
@@ -280,9 +325,9 @@ Two modes are there:
        `python3 test_spawners.py --path jupyterhub.sqlite -d --user user2 --table spawners`     
 
        
-<h3>Container</h3>
+### Container
 
-- To run this test use `python3 run.py --test user_docker --configfile test.yaml`
+- To run this test use `python3 run.py --configfile test.yaml` (this test is not meant to be run from the containers)
 
 Parameters:
 
